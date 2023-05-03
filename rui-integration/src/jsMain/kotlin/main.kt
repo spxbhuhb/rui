@@ -2,10 +2,10 @@
  * Copyright © 2020-2021, Simplexion, Hungary and contributors. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import zakadabar.rui.runtime.dom.RuiDOMAdapter
-import zakadabar.rui.runtime.dom.html.Button
-import zakadabar.rui.runtime.dom.html.Text
-import zakadabar.rui.runtime.rui
+import hu.simplexion.rui.runtime.dom.RuiDOMAdapter
+import hu.simplexion.rui.runtime.dom.html.Button
+import hu.simplexion.rui.runtime.dom.html.Text
+import hu.simplexion.rui.runtime.rui
 
 fun main() {
     rui(RuiDOMAdapter()) {
