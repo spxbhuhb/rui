@@ -8,6 +8,10 @@ import hu.simplexion.rui.runtime.RuiBridge
 import hu.simplexion.rui.runtime.RuiFragment
 import org.w3c.dom.Node
 
+/**
+ * Leaf nodes in HTML are nodes that does not have any children. A text or an image
+ * is a good example.
+ */
 abstract class LeafNode(
     override val ruiAdapter: RuiAdapter<Node>,
     override val ruiExternalPatch: (it: RuiFragment<Node>) -> Unit,

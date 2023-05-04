@@ -39,8 +39,8 @@ fun ifElseFragment() {
 
 @RuiTestResult
 fun ifElseResult(): String = """
-[ RuiRoot                        ]  init                  |  
-[ RuiIfElseFragment              ]  init                  |  
+[ RuiRoot                        ]  init                  |  ruiParent: null
+[ RuiIfElseFragment              ]  init                  |  ruiParent: null
 [ RuiEH1A                        ]  init                  |  p0: 22
 [ RuiRoot                        ]  create                |  
 [ RuiIfElseFragment              ]  create                |  

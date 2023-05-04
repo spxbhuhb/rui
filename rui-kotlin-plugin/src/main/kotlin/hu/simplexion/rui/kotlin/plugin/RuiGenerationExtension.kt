@@ -29,7 +29,11 @@ internal class RuiGenerationExtension(
 
         RuiFunctionVisitor(ruiContext).also {
             moduleFragment.accept(it, null)
-            RuiToIrTransform(ruiContext, it.ruiClasses, it.ruiEntryPoints).transform()
+            // this check prevents the plugin to go on if there is an error that would prevent
+            // generation of a correct IR tree
+            if (!ruiContext.compilationError) {
+                RuiToIrTransform(ruiContext, it.ruiClasses, it.ruiEntryPoints).transform()
+            }
         }
 
         RuiDumpPoint.RuiTree.dump(ruiContext) {

@@ -4,12 +4,14 @@
 package hu.simplexion.rui.kotlin.plugin.run
 
 import hu.simplexion.rui.kotlin.plugin.RuiTest
+import hu.simplexion.rui.kotlin.plugin.RuiTestDumpResult
 import hu.simplexion.rui.kotlin.plugin.RuiTestResult
 import hu.simplexion.rui.runtime.Rui
 import hu.simplexion.rui.runtime.rui
 import hu.simplexion.rui.runtime.testing.T1
 
 @RuiTest
+@RuiTestDumpResult
 fun blockTest() {
     rui {
         block(10)
@@ -24,8 +26,8 @@ fun block(i: Int) {
 
 @RuiTestResult
 fun blockTestResult(): String = """
-[ RuiRoot                        ]  init                  |  
-[ RuiBlock                       ]  init                  |  i: 10
+[ RuiRoot                        ]  init                  |  ruiParent: null
+[ RuiBlock                       ]  init                  |  ruiParent: null i: 10
 [ RuiT1                          ]  init                  |  
 [ RuiT1                          ]  init                  |  
 [ RuiRoot                        ]  create                |  

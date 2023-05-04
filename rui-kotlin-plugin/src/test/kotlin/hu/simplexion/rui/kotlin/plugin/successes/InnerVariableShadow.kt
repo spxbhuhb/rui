@@ -7,12 +7,10 @@ import hu.simplexion.rui.runtime.Rui
 
 @Suppress("unused", "TestFunctionName")
 @Rui
-fun StateVariableShadow(v: Int) {
+fun InnerVariableShadow(v: Int) {
     if (v == 1) {
         @Suppress("NAME_SHADOWING")
         val v = "s" // I would say this is a lesser kind of perversion...
         println(v)
     }
-    @Suppress("UNUSED_VARIABLE", "NAME_SHADOWING")
-    var v = v.toString() // I would say this is a greater kind of perversion...
 }

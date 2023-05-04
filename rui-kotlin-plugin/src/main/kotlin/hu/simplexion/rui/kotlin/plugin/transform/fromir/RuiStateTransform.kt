@@ -5,6 +5,7 @@ package hu.simplexion.rui.kotlin.plugin.transform.fromir
 
 import hu.simplexion.rui.kotlin.plugin.RuiPluginContext
 import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui.RUI_IR_RENDERING_VARIABLE
+import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui.RUI_IR_STATE_VARIABLE_SHADOW
 import hu.simplexion.rui.kotlin.plugin.model.*
 import hu.simplexion.rui.kotlin.plugin.util.*
 import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
@@ -101,7 +102,7 @@ class RuiStateTransform(
             if (index < skipParameters) return@forEachIndexed
 
             RuiExternalStateVariable(ruiClass, stateVariableIndex, valueParameter).also {
-                register(it)
+                register(it, valueParameter)
                 addDirtyMask(it)
             }
         }
@@ -125,7 +126,7 @@ class RuiStateTransform(
         }
 
         RuiInternalStateVariable(ruiClass, stateVariableIndex, irStatement).also {
-            register(it)
+            register(it, irStatement)
             addDirtyMask(it)
         }
     }
@@ -138,7 +139,13 @@ class RuiStateTransform(
         }
     }
 
-    fun register(it: RuiStateVariable) {
+    fun register(it: RuiStateVariable, declaration: IrDeclaration) {
+        // variable shadowing is a bad practice anyway, no big loss to forbid it
+        if (it.originalName in ruiClass.stateVariables) {
+            RUI_IR_STATE_VARIABLE_SHADOW.report(ruiClass, declaration)
+            return
+        }
+
         val root = blockStack[0]
         ruiClass.stateVariables[it.originalName] = it
         root.variables += it.originalName

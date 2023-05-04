@@ -28,6 +28,8 @@ class RuiPluginContext(
     val exportState = options.exportState
     val importState = options.importState
 
+    var compilationError = false
+
     val ruiClasses = mutableMapOf<FqName, RuiClass>()
     val ruiEntryPoints = mutableListOf<RuiEntryPoint>()
 

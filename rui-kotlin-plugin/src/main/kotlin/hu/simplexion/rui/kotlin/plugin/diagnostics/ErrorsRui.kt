@@ -35,6 +35,8 @@ object ErrorsRui {
     val RUI_IR_INVALID_EXTERNAL_CLASS = RuiIrError(11, "Invalid external class: ")
     val RUI_IR_INTERNAL_PLUGIN_ERROR = RuiIrError(12, "Internal plugin error: ")
 
+    val RUI_IR_STATE_VARIABLE_SHADOW = RuiIrError(13, "Shadowing state variables is not allowed.")
+
     class RuiIrError(
         val id: Int,
         val message: String,
@@ -67,6 +69,7 @@ object ErrorsRui {
 //        }
 
         fun report(ruiContext: RuiPluginContext, fileEntry: IrFileEntry, offset: Int, additionalInfo: String = "") {
+            ruiContext.compilationError = true
             ruiContext.diagnosticReporter.report(
                 IrMessageLogger.Severity.ERROR,
                 toMessage() + " " + additionalInfo,

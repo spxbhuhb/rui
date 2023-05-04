@@ -31,7 +31,7 @@ class SuccessesTest {
     fun sequence() = compile("Sequence.kt")
 
     @Test
-    fun stateVariableShadow() = compile("StateVariableShadow.kt")
+    fun innerVariableShadow() = compile("InnerVariableShadow.kt")
 
     @Test
     fun variables() = compile("Variables.kt")

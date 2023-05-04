@@ -174,6 +174,7 @@ class RuiClassBuilder(
      * Adds value parameters to the constructor:
      *
      * - `ruiAdapter` with type `RuiAdapter`
+     * - `ruiParent` with type `RuiParent<BT>`
      * - `ruiExternalPatch` with type `(it : RuiFragment) -> Unit`
      *
      * Later, `RuiStateTransformer` adds parameters from the original function.
@@ -371,7 +372,7 @@ class RuiClassBuilder(
     /**
      * Call a Rui function of this fragment.
      *
-     * @param scope The function we call from,
+     * @param scope The function we call from.
      */
     fun irRuiCall(callee: IrSimpleFunction, scope: IrSimpleFunction, builder: IrBlockBodyBuilder) {
         builder.run {
@@ -386,7 +387,7 @@ class RuiClassBuilder(
     /**
      * Call a Rui function of this fragment.
      *
-     * @param scope The function we call from,
+     * @param scope The function we call from.
      */
     fun irRuiCallWithBridge(callee: IrSimpleFunction, scope: IrSimpleFunction, builder: IrBlockBodyBuilder) {
         builder.run {

@@ -64,6 +64,9 @@ interface RuiBuilder {
     val classBoundFragmentType: IrType
         get() = ruiContext.ruiFragmentClass.typeWith(classBoundBridgeType.defaultType)
 
+    val classBoundFunction0Type: IrType
+        get() = irBuiltIns.functionN(0).typeWith(classBoundFragmentType)
+
     val classBoundExternalPatchType: IrType
         get() = irBuiltIns.functionN(1).typeWith(classBoundFragmentType, irBuiltIns.unitType)
 

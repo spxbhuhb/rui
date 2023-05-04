@@ -10,6 +10,19 @@ import hu.simplexion.rui.runtime.Rui
 import hu.simplexion.rui.runtime.rui
 import hu.simplexion.rui.runtime.testing.T1
 
+//  factories: VARARG
+//  factories: VARARG
+//    type=kotlin.Array<out kotlin.Function0<hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode>>>
+//    type=kotlin.Array<hu.simplexion.rui.runtime.RuiFragment<BT of hu.simplexion.rui.kotlin.plugin.run.gen.RuiIfWithoutElse>>
+//    varargElementType=kotlin.Function0<hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode>>
+//    varargElementType=hu.simplexion.rui.runtime.RuiFragment<BT of hu.simplexion.rui.kotlin.plugin.run.gen.RuiIfWithoutElse>
+
+//    FUNCTION_REFERENCE 'public final fun ruiBranch0 (): hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> declared in hu.simplexion.rui.kotlin.plugin.adhoc.Branch' type=kotlin.reflect.KFunction0<hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode>> origin=null reflectionTarget=<same>
+//    FUNCTION_REFERENCE 'local final fun ruiBranch1418 (): hu.simplexion.rui.runtime.RuiFragment<BT of hu.simplexion.rui.kotlin.plugin.run.gen.RuiIfWithoutElse> declared in hu.simplexion.rui.kotlin.plugin.run.gen.RuiIfWithoutElse' type=kotlin.Function0<hu.simplexion.rui.runtime.RuiFragment<BT of hu.simplexion.rui.kotlin.plugin.run.gen.RuiIfWithoutElse>> origin=null reflectionTarget=<same>
+
+//      $this: GET_VAR '<this>: hu.simplexion.rui.kotlin.plugin.adhoc.Branch declared in hu.simplexion.rui.kotlin.plugin.adhoc.Branch' type=hu.simplexion.rui.kotlin.plugin.adhoc.Branch origin=null
+//      $this: GET_VAR '<this>: hu.simplexion.rui.kotlin.plugin.run.gen.RuiIfWithoutElse declared in hu.simplexion.rui.kotlin.plugin.run.gen.RuiIfWithoutElse' type=hu.simplexion.rui.kotlin.plugin.run.gen.RuiIfWithoutElse origin=null
+
 @RuiTest
 @RuiTestDumpResult
 fun branchIfWithoutElse() {
@@ -25,8 +38,8 @@ fun ifWithoutElse(i: Int) {
 
 @RuiTestResult
 fun branchIfWithoutElseResult(): String = """
-[ RuiRoot                        ]  init                  |  
-[ RuiIfWithoutElse               ]  init                  |  i: 10
+[ RuiRoot                        ]  init                  |  ruiParent: null
+[ RuiIfWithoutElse               ]  init                  |  ruiParent: null i: 10
 [ RuiRoot                        ]  create                |  
 [ RuiIfWithoutElse               ]  create                |  
 [ RuiRoot                        ]  mount                 |  

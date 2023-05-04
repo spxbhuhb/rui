@@ -153,8 +153,8 @@ class RuiWhenBuilder(
     fun irBuilderVarargs(): IrExpression {
         return IrVarargImpl(
             SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
-            irBuiltIns.arrayClass.typeWith(classBoundFragmentType),
-            classBoundFragmentType,
+            irBuiltIns.arrayClass.typeWith(classBoundFunction0Type),
+            classBoundFunction0Type,
         ).also { vararg ->
             branches.forEach {
                 vararg.addElement(irBranchReference(it))
@@ -163,11 +163,9 @@ class RuiWhenBuilder(
     }
 
     private fun irBranchReference(it: IrSimpleFunction): IrVarargElement {
-        val functionType = irBuiltIns.functionN(0).typeWith(classBoundFragmentType)
-
         return IrFunctionReferenceImpl.fromSymbolOwner(
             SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
-            functionType,
+            classBoundFunction0Type,
             it.symbol,
             typeArgumentsCount = 0,
             reflectionTarget = it.symbol

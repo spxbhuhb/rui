@@ -103,7 +103,7 @@ fun H1(@Rui builder: () -> Unit) {
 @Suppress("unused")
 class RuiH1(
     ruiAdapter: RuiAdapter<TestNode>,
-    ruiParent: RuiFragment<TestNode>,
+    ruiParent: RuiFragment<TestNode>?,
     ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit,
     @Rui builder: (ruiAdapter: RuiAdapter<TestNode>) -> RuiFragment<TestNode>
 ) : RuiC1(ruiAdapter, ruiParent, ruiExternalPatch) {
@@ -123,7 +123,7 @@ class RuiH1(
 @Suppress("unused")
 abstract class RuiC1(
     ruiAdapter: RuiAdapter<TestNode>,
-    parent: RuiFragment<TestNode>,
+    parent: RuiFragment<TestNode>?,
     ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit
 ) : RuiTracingFragment<TestNode>(ruiAdapter, parent, ruiExternalPatch) {
 
@@ -163,7 +163,7 @@ fun EH1A(p0: Int, eventHandler: (np0: Int) -> Unit) {
 @Suppress("unused")
 class RuiEH1A(
     ruiAdapter: RuiAdapter<TestNode>,
-    ruiParent: RuiFragment<TestNode>,
+    ruiParent: RuiFragment<TestNode>?,
     ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit,
     var p0: Int,
     var eventHandler: (np0: Int) -> Unit,

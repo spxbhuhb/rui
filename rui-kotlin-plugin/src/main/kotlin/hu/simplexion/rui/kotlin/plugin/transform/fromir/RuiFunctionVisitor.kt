@@ -23,6 +23,12 @@ import org.jetbrains.kotlin.ir.util.superTypes
 import org.jetbrains.kotlin.psi.KtModifierListOwner
 import kotlin.collections.set
 
+/**
+ * Performs two functions:
+ *
+ * - creates a [RuiClass] for each function annotated with `@Rui`
+ * - creates a [RuiClass] for each call of the `rui` function defined in the runtime
+ */
 class RuiFunctionVisitor(
     private val ruiContext: RuiPluginContext
 ) : IrElementTransformerVoidWithContext(), RuiAnnotationBasedExtension {
@@ -36,7 +42,7 @@ class RuiFunctionVisitor(
         ruiContext.annotations
 
     /**
-     * Transforms a function annotated with `@Rui` into a Rui component class.
+     * Transforms a function annotated with `@Rui` into a Rui fragment class.
      */
     override fun visitFunctionNew(declaration: IrFunction): IrFunction {
         if (!declaration.isAnnotatedWithRui()) {

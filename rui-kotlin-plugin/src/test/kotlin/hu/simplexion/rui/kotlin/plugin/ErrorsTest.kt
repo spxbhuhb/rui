@@ -35,6 +35,11 @@ class ErrorsTest {
     }
 
     @Test
+    fun stateVariableShadow() {
+        compile("StateVariableShadow.kt", ErrorsRui.RUI_IR_STATE_VARIABLE_SHADOW, true)
+    }
+
+    @Test
     fun externalFunction() {
         compile("ExternalFunction.kt", ErrorsRui.RUI_IR_MISSING_FUNCTION_BODY, true)
     }

@@ -17,6 +17,24 @@ import org.jetbrains.kotlin.ir.expressions.impl.IrBlockImpl
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.psi.KtModifierListOwner
 
+/**
+ * Transforms one function into a [RuiClass]. This is a somewhat complex transformation.
+ *
+ * Calls [RuiStateTransform] to:
+ *
+ *   - convert function parameters into [RuiExternalStateVariable] instances
+ *   - convert function variables are converted into [RuiInternalStateVariable] instances
+ *
+ * Transforms IR structures such as loops, branches and calls into [RuiBlock] instances.
+ * The type of the block corresponds with the language construct:
+ *
+ * - code block: [RuiBlock]
+ * - `for` : [RuiForLoop]
+ * - `if`, `when`: [RuiWhen]
+ * - function call: [RuiCall]
+ *
+ * Calls [RuiDependencyVisitor] to build dependencies for each block.
+ */
 class RuiFromIrTransform(
     val ruiContext: RuiPluginContext,
     val irFunction: IrFunction,

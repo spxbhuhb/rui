@@ -21,7 +21,7 @@ fun blockInRoot() {
 
 @RuiTestResult
 fun blockInRootResult(): String = """
-[ RuiRoot                        ]  init                  |  
+[ RuiRoot                        ]  init                  |  ruiParent: null
 [ RuiT1                          ]  init                  |  
 [ RuiT1                          ]  init                  |  
 [ RuiRoot                        ]  create                |  
