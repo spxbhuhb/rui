@@ -3,55 +3,53 @@
  */
 package hu.simplexion.rui.kotlin.plugin.adhoc
 
-import hu.simplexion.rui.runtime.RuiAdapter
-import hu.simplexion.rui.runtime.RuiBridge
-import hu.simplexion.rui.runtime.RuiFragment
-import hu.simplexion.rui.runtime.testing.RuiT0
+import hu.simplexion.rui.runtime.Rui
+import hu.simplexion.rui.runtime.testing.T0
 
-//@Rui
-//fun test() {
-//    T0()
-//}
-
-open class RuiTest<BT>(
-    override var ruiAdapter: RuiAdapter<BT>,
-    override var ruiParent: RuiFragment<BT>?,
-    override var ruiExternalPatch: Function1<RuiFragment<BT>, Unit>
-) : RuiFragment<BT> {
-
-    var ruiFragment: RuiFragment<BT>
-
-    override fun ruiCreate() {
-        ruiFragment.ruiCreate()
-    }
-
-    override fun ruiMount(bridge: RuiBridge<BT>) {
-        ruiFragment.ruiMount(bridge = bridge)
-    }
-
-    override fun ruiPatch() {
-        val tmp0: RuiFragment<BT> = ruiFragment
-        tmp0.ruiExternalPatch.invoke(tmp0)
-        ruiFragment.ruiPatch()
-    }
-
-    override fun ruiDispose() {
-        ruiFragment.ruiDispose()
-    }
-
-    override fun ruiUnmount(bridge: RuiBridge<BT>) {
-        ruiFragment.ruiUnmount(bridge = bridge)
-    }
-
-    fun ruiEp602(it: RuiFragment<BT>) {
-        it as RuiT0<BT> /*~> Unit */
-    }
-
-    init {
-        ruiFragment = RuiT0(ruiAdapter = ruiAdapter, ruiParent = ruiParent, ruiExternalPatch = ::ruiEp602)
-    }
-
+@Rui
+fun test() {
+    T0()
 }
+//
+//open class RuiTest<BT>(
+//    override var ruiAdapter: RuiAdapter<BT>,
+//    override var ruiParent: RuiFragment<BT>?,
+//    override var ruiExternalPatch: Function1<RuiFragment<BT>, Unit>
+//) : RuiFragment<BT> {
+//
+//    var ruiFragment: RuiFragment<BT>
+//
+//    override fun ruiCreate() {
+//        ruiFragment.ruiCreate()
+//    }
+//
+//    override fun ruiMount(bridge: RuiBridge<BT>) {
+//        ruiFragment.ruiMount(bridge = bridge)
+//    }
+//
+//    override fun ruiPatch() {
+//        val tmp0: RuiFragment<BT> = ruiFragment
+//        tmp0.ruiExternalPatch.invoke(tmp0)
+//        ruiFragment.ruiPatch()
+//    }
+//
+//    override fun ruiDispose() {
+//        ruiFragment.ruiDispose()
+//    }
+//
+//    override fun ruiUnmount(bridge: RuiBridge<BT>) {
+//        ruiFragment.ruiUnmount(bridge = bridge)
+//    }
+//
+//    fun ruiEp602(it: RuiFragment<BT>) {
+//        it as RuiT0<BT> /*~> Unit */
+//    }
+//
+//    init {
+//        ruiFragment = RuiT0(ruiAdapter = ruiAdapter, ruiParent = ruiParent, ruiExternalPatch = ::ruiEp602)
+//    }
+//
+//}
 
 //@RuiTest
 //fun adhoc() {

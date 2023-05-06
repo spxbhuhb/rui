@@ -91,7 +91,7 @@ open class RuiGradleExtension(objects: ObjectFactory) {
      *
      * Default: `start-offset`
      */
-    val rootNameStrategy: ListProperty<String> = objects.listProperty(String::class.java)
+    val rootNameStrategy: Property<String> = objects.property(String::class.java).also { it.set("start-offset") }
 
     /**
      * ```

@@ -7,6 +7,7 @@ import hu.simplexion.rui.kotlin.plugin.*
 import hu.simplexion.rui.kotlin.plugin.model.RuiCall
 import hu.simplexion.rui.kotlin.plugin.model.RuiExpression
 import hu.simplexion.rui.kotlin.plugin.transform.RuiClassSymbols
+import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.Modality
@@ -53,7 +54,10 @@ class RuiCallBuilder(
 
             function.parent = irClass
             function.visibility = DescriptorVisibilities.LOCAL
-            function.dispatchReceiverParameter = irClass.thisReceiver
+
+            function.addDispatchReceiver {
+                type = irClass.typeWith(irClass.typeParameters.first().defaultType)
+            }
 
             val externalPatchIt = function.addValueParameter {
                 name = Name.identifier("it")

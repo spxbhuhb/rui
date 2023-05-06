@@ -249,7 +249,7 @@ class RuiClassBuilder(
             function.parent = irClass
 
             function.addDispatchReceiver {
-                type = irClass.defaultType
+                type = irClass.typeWith(irClass.typeParameters.first().defaultType)
             }
 
             if (functionName == RUI_MOUNT || functionName == RUI_UNMOUNT) {

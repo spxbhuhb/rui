@@ -14,10 +14,10 @@ repositories {
 
 rui {
     dumpPoints.set(listOf("before", "after", "rui-tree", "kotlin-like"))
-    trace.set(true)
+    trace.set(false)
     exportState.set(true)
     importState.set(true)
-    pluginLogDir.set("$projectDir/rui-integration/tmp/log")
+    //pluginLogDir.set("$projectDir/tmp/log")
 }
 
 kotlin {

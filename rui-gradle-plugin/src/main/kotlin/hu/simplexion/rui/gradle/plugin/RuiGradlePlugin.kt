@@ -82,7 +82,9 @@ class RuiGradlePlugin : KotlinCompilerPluginSupportPlugin {
         options += SubpluginOption(key = OPTION_NAME_EXPORT_STATE, extension.exportState.get().toString())
         options += SubpluginOption(key = OPTION_NAME_IMPORT_STATE, extension.importState.get().toString())
         options += SubpluginOption(key = OPTION_NAME_UNIT_TEST_MODE, extension.unitTestMode.get().toString())
-        options += SubpluginOption(key = OPTION_NAME_PLUGIN_LOG_DIR, extension.pluginLogDir.get().toString())
+        if (extension.pluginLogDir.isPresent) {
+            options += SubpluginOption(key = OPTION_NAME_PLUGIN_LOG_DIR, extension.pluginLogDir.get().toString())
+        }
 
         return project.provider { options }
     }
