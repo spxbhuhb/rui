@@ -2,29 +2,35 @@
  * Copyright © 2020-2021, Simplexion, Hungary and contributors. Use of this source code is governed by the Apache 2.0 license.
  */
 plugins {
-    kotlin("multiplatform") version "1.6.20"
-    id("zakadabar-rui") version "2022.6.2"
+    kotlin("multiplatform") version "1.8.20"
+    id("rui") version "0.1.0-SNAPSHOT"
+    application
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
+rui {
+    dumpPoints.set(listOf("before", "after", "rui-tree", "kotlin-like"))
+    trace.set(true)
+    exportState.set(true)
+    importState.set(true)
+    pluginLogDir.set("$projectDir/rui-integration/tmp/log")
+}
+
 kotlin {
-    jvm {
-        compilations.all {
-            kotlinOptions {
-                kotlinOptions.jvmTarget = "1.8"
-            }
-        }
-    }
+    jvm {}
     js(IR) {
         browser()
         binaries.executable()
     }
     sourceSets {
         val commonMain by getting {
-
+            dependencies {
+                implementation("hu.simplexion.rui:rui-runtime:0.1.0-SNAPSHOT")
+            }
         }
         val commonTest by getting {
             dependencies {
@@ -43,16 +49,4 @@ kotlin {
             }
         }
     }
-}
-
-// Fixes webpack-cli incompatibility by pinning the newest version.
-rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-    versions.webpackCli.version = "4.10.0"
-}
-
-rui {
-    dumpPoints.set(listOf("before", "after", "rui-tree", "kotlin-like"))
-    trace.set(true)
-    exportState.set(true)
-    importState.set(true)
 }

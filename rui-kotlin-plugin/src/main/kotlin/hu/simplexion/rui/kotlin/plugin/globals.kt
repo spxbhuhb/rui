@@ -3,15 +3,16 @@
  */
 package hu.simplexion.rui.kotlin.plugin
 
+import hu.simplexion.rui.kotlin.plugin.util.capitalizeFirstChar
 import hu.simplexion.rui.runtime.Plugin
 import org.jetbrains.kotlin.ir.declarations.IrFunction
+import org.jetbrains.kotlin.ir.declarations.name
 import org.jetbrains.kotlin.ir.util.file
 import org.jetbrains.kotlin.ir.util.isAnonymousFunction
 import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.parentOrNull
-import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 /**
  * Number of Rui related constructor arguments.
@@ -84,12 +85,12 @@ fun IrFunction.toRuiClassFqName(ruiContext: RuiPluginContext): FqName {
     return when {
         isAnonymousFunction || name.asString() == "<anonymous>" -> {
             val postfix = when (ruiContext.rootNameStrategy) {
-                RuiRootNameStrategy.StartOffset -> this.file.fqName.shortName().identifier + startOffset.toString()
+                RuiRootNameStrategy.StartOffset -> this.file.name.replace(".kt", "").capitalizeFirstChar() + startOffset.toString()
                 RuiRootNameStrategy.NoPostfix -> ""
             }
             parent.child(Name.identifier("$RUI_ROOT_CLASS_PREFIX$postfix"))
         }
 
-        else -> parent.child(Name.identifier("Rui" + name.identifier.capitalizeAsciiOnly()))
+        else -> parent.child(Name.identifier("Rui" + name.identifier.capitalizeFirstChar()))
     }
 }

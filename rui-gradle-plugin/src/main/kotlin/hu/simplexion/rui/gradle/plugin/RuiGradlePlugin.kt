@@ -22,12 +22,13 @@ import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_ANNOTATION
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_DUMP_POINT
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_EXPORT_STATE
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_IMPORT_STATE
+import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_PLUGIN_LOG_DIR
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_ROOT_NAME_STRATEGY
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_TRACE
+import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_UNIT_TEST_MODE
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_GROUP
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_ID
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_VERSION
-import hu.simplexion.rui.runtime.Plugin.RUNTIME_NAME
 import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
@@ -64,9 +65,11 @@ class RuiGradlePlugin : KotlinCompilerPluginSupportPlugin {
     ): Provider<List<SubpluginOption>> {
         val project = kotlinCompilation.target.project
 
-        kotlinCompilation.dependencies {
-            implementation("$PLUGIN_GROUP:$RUNTIME_NAME:$PLUGIN_VERSION")
-        }
+        // This does not work for multiplatform projects. So I'll go with manual dependency add for now.
+        // TODO check automatic dependency addition from gradle plugin
+//        kotlinCompilation.dependencies {
+//            implementation("$PLUGIN_GROUP:$RUNTIME_NAME:$PLUGIN_VERSION")
+//        }
 
         val extension = project.extensions.getByType(RuiGradleExtension::class.java)
 
@@ -78,6 +81,8 @@ class RuiGradlePlugin : KotlinCompilerPluginSupportPlugin {
         options += SubpluginOption(key = OPTION_NAME_TRACE, extension.trace.get().toString())
         options += SubpluginOption(key = OPTION_NAME_EXPORT_STATE, extension.exportState.get().toString())
         options += SubpluginOption(key = OPTION_NAME_IMPORT_STATE, extension.importState.get().toString())
+        options += SubpluginOption(key = OPTION_NAME_UNIT_TEST_MODE, extension.unitTestMode.get().toString())
+        options += SubpluginOption(key = OPTION_NAME_PLUGIN_LOG_DIR, extension.pluginLogDir.get().toString())
 
         return project.provider { options }
     }

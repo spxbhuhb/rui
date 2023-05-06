@@ -3,17 +3,21 @@
  */
 package hu.simplexion.rui.kotlin.plugin
 
+import com.google.auto.service.AutoService
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_ANNOTATION
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_DUMP_POINT
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_EXPORT_STATE
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_IMPORT_STATE
+import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_PLUGIN_LOG_DIR
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_ROOT_NAME_STRATEGY
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_TRACE
+import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_UNIT_TEST_MODE
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_ID
 import org.jetbrains.kotlin.compiler.plugin.*
 import org.jetbrains.kotlin.config.CompilerConfiguration
 
 @OptIn(ExperimentalCompilerApi::class)
+@AutoService(CommandLineProcessor::class)
 class RuiCommandLineProcessor : CommandLineProcessor {
     companion object {
 
@@ -41,7 +45,14 @@ class RuiCommandLineProcessor : CommandLineProcessor {
             OPTION_NAME_IMPORT_STATE, "boolean", "Generate state import functions",
             required = false, allowMultipleOccurrences = false
         )
-
+        val OPTION_UNIT_TEST_MODE = CliOption(
+            OPTION_NAME_UNIT_TEST_MODE, "boolean", "Use println for output instead of the compiler logging framework",
+            required = false, allowMultipleOccurrences = false
+        )
+        val OPTION_PLUGIN_LOG_DIR = CliOption(
+            OPTION_NAME_PLUGIN_LOG_DIR, "string", "Save plugin output into a file in this directory.",
+            required = false, allowMultipleOccurrences = false
+        )
     }
 
     override val pluginId = PLUGIN_ID
@@ -52,7 +63,9 @@ class RuiCommandLineProcessor : CommandLineProcessor {
         OPTION_ROOT_NAME_STRATEGY,
         OPTION_TRACE,
         OPTION_EXPORT_STATE,
-        OPTION_IMPORT_STATE
+        OPTION_IMPORT_STATE,
+        OPTION_UNIT_TEST_MODE,
+        OPTION_PLUGIN_LOG_DIR
     )
 
     override fun processOption(option: AbstractCliOption, value: String, configuration: CompilerConfiguration) {
@@ -63,6 +76,8 @@ class RuiCommandLineProcessor : CommandLineProcessor {
             OPTION_TRACE -> configuration.put(RuiConfigurationKeys.TRACE, value.toBooleanStrictOrNull() ?: false)
             OPTION_EXPORT_STATE -> configuration.put(RuiConfigurationKeys.EXPORT_STATE, value.toBooleanStrictOrNull() ?: false)
             OPTION_IMPORT_STATE -> configuration.put(RuiConfigurationKeys.IMPORT_STATE, value.toBooleanStrictOrNull() ?: false)
+            OPTION_UNIT_TEST_MODE -> configuration.put(RuiConfigurationKeys.UNIT_TEST_MODE, value.toBooleanStrictOrNull() ?: false)
+            OPTION_PLUGIN_LOG_DIR -> configuration.put(RuiConfigurationKeys.PLUGIN_LOG_DIR, value)
             else -> throw CliOptionProcessingException("Unknown option: ${option.optionName}")
         }
     }

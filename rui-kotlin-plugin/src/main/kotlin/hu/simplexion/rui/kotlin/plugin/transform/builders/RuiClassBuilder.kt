@@ -288,7 +288,7 @@ class RuiClassBuilder(
         irClass.declarations += initializer
 
         RuiDumpPoint.KotlinLike.dump(ruiContext) {
-            println(irClass.dumpKotlinLike())
+            ruiContext.output("KOTLIN LIKE", irClass.dumpKotlinLike(), irClass)
         }
     }
 

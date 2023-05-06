@@ -22,6 +22,7 @@ fun Button(title: String, onClick: () -> Unit) {
 @RuiPublicApi
 class RuiButton(
     ruiAdapter: RuiAdapter<Node>,
+    ruiParent: RuiFragment<Node>?,
     ruiExternalPatch: (it: RuiFragment<Node>) -> Unit,
     var label: String,
     var onClick: (MouseEvent) -> Unit

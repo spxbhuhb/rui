@@ -7,8 +7,11 @@ import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui
 import hu.simplexion.rui.kotlin.plugin.model.RuiClass
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.name.Name
+import java.util.*
 
 fun Name.isSynthetic() = identifier.startsWith('$') || identifier.endsWith('$')
+
+fun String.capitalizeFirstChar() = replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
 
 class RuiCompilationException(
     val error: ErrorsRui.RuiIrError,

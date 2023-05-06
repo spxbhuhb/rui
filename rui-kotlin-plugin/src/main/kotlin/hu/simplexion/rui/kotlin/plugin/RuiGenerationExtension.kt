@@ -20,11 +20,11 @@ internal class RuiGenerationExtension(
             pluginContext,
             options,
             pluginContext.createDiagnosticReporter(PLUGIN_ID),
+            moduleFragment
         )
 
         RuiDumpPoint.Before.dump(ruiContext) {
-            println("DUMP BEFORE")
-            println(moduleFragment.dump())
+            ruiContext.output("DUMP BEFORE", moduleFragment.dump())
         }
 
         RuiFunctionVisitor(ruiContext).also {
@@ -37,17 +37,12 @@ internal class RuiGenerationExtension(
         }
 
         RuiDumpPoint.RuiTree.dump(ruiContext) {
-            println("RUI CLASSES")
-            ruiContext.ruiClasses.values.forEach {
-                println(it.dump())
-            }
+            ruiContext.output("RUI CLASSES", ruiContext.ruiClasses.values.joinToString("\n\n") { it.dump() })
         }
 
         RuiDumpPoint.After.dump(ruiContext) {
-            println("DUMP AFTER")
-            println(moduleFragment.dump())
+            ruiContext.output("DUMP AFTER", moduleFragment.dump())
         }
     }
-
 }
 

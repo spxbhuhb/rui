@@ -4,12 +4,14 @@
 package hu.simplexion.rui.runtime
 
 object Plugin {
-    const val OPTION_NAME_ANNOTATION = "rui-annotation"
-    const val OPTION_NAME_DUMP_POINT = "rui-dump-point"
-    const val OPTION_NAME_ROOT_NAME_STRATEGY = "rui-root-name-strategy"
-    const val OPTION_NAME_TRACE = "rui-trace"
-    const val OPTION_NAME_EXPORT_STATE = "rui-export-state"
-    const val OPTION_NAME_IMPORT_STATE = "rui-import-state"
+    const val OPTION_NAME_ANNOTATION = "annotation"
+    const val OPTION_NAME_DUMP_POINT = "dump-point"
+    const val OPTION_NAME_ROOT_NAME_STRATEGY = "root-name-strategy"
+    const val OPTION_NAME_TRACE = "trace"
+    const val OPTION_NAME_EXPORT_STATE = "export-state"
+    const val OPTION_NAME_IMPORT_STATE = "import-state"
+    const val OPTION_NAME_UNIT_TEST_MODE = "unit-test-mode"
+    const val OPTION_NAME_PLUGIN_LOG_DIR = "plugin-log-dir"
 
     const val PLUGIN_ID = "rui"
     const val PLUGIN_GROUP = "hu.simplexion.rui"

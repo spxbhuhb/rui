@@ -71,7 +71,7 @@ class RuiEntryPointBuilder(
         }
 
         RuiDumpPoint.KotlinLike.dump(ruiContext) {
-            println(function.dumpKotlinLike())
+            ruiContext.output("KOTLIN LIKE", irClass.dumpKotlinLike(), irClass)
         }
     }
 

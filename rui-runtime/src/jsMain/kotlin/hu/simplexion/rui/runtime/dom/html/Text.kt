@@ -19,6 +19,7 @@ fun Text(content: String) {
 @RuiPublicApi
 class RuiText(
     ruiAdapter: RuiAdapter<Node>,
+    ruiParent: RuiFragment<Node>?,
     ruiExternalPatch: (it: RuiFragment<Node>) -> Unit,
     var content: String
 ) : LeafNode(ruiAdapter, ruiExternalPatch) {

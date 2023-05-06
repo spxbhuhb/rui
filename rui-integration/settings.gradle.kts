@@ -3,4 +3,17 @@
  */
 rootProject.name = "rui-integration"
 
-includeBuild("../../..")
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "rui") {
+                useModule("hu.simplexion.rui:rui-gradle-plugin:0.1.0-SNAPSHOT")
+            }
+        }
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}

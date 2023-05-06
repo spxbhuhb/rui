@@ -3,11 +3,13 @@
  */
 package hu.simplexion.rui.kotlin.plugin
 
-class RuiOptions(
+data class RuiOptions(
     val annotations: List<String>,
     val dumpPoints: List<RuiDumpPoint>,
     val rootNameStrategy: RuiRootNameStrategy,
     val withTrace: Boolean,
     val exportState: Boolean,
-    val importState: Boolean
+    val importState: Boolean,
+    val unitTestMode: Boolean,
+    val pluginLogDir: String?
 )

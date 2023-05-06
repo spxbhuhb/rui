@@ -3,75 +3,68 @@
  */
 package hu.simplexion.rui.kotlin.plugin.adhoc
 
-import hu.simplexion.rui.runtime.*
-import hu.simplexion.rui.runtime.testing.RuiT1
-import hu.simplexion.rui.runtime.testing.TestNode
+import hu.simplexion.rui.runtime.RuiAdapter
+import hu.simplexion.rui.runtime.RuiBridge
+import hu.simplexion.rui.runtime.RuiFragment
+import hu.simplexion.rui.runtime.testing.RuiT0
 
-@Suppress("unused")
-class Branch(
-    override val ruiAdapter: RuiAdapter<TestNode>
-) : RuiGeneratedFragment<TestNode> {
+//@Rui
+//fun test() {
+//    T0()
+//}
 
-    override val ruiParent: RuiFragment<TestNode>? = null
-    override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
+open class RuiTest<BT>(
+    override var ruiAdapter: RuiAdapter<BT>,
+    override var ruiParent: RuiFragment<BT>?,
+    override var ruiExternalPatch: Function1<RuiFragment<BT>, Unit>
+) : RuiFragment<BT> {
 
-    override val fragment: RuiFragment<TestNode>
+    var ruiFragment: RuiFragment<BT>
 
-    var v0: Int = 1
-
-    var ruiDirty0 = 0
-
-    fun ruiInvalidate0(mask: Int) {
-        ruiDirty0 = ruiDirty0 or mask
+    override fun ruiCreate() {
+        ruiFragment.ruiCreate()
     }
 
-    fun ruiEp0(it: RuiFragment<TestNode>) {
-        it as RuiT1
-        if (ruiDirty0 and 1 != 0) {
-            it.p0 = v0 + 10
-            ruiInvalidate0(1)
-        }
+    override fun ruiMount(bridge: RuiBridge<BT>) {
+        ruiFragment.ruiMount(bridge = bridge)
     }
 
-    fun ruiEp1(it: RuiFragment<TestNode>) {
-        it as RuiT1
-        if (ruiDirty0 and 1 != 0) {
-            it.p0 = v0 + 20
-            ruiInvalidate0(1)
-        }
+    override fun ruiPatch() {
+        val tmp0: RuiFragment<BT> = ruiFragment
+        tmp0.ruiExternalPatch.invoke(tmp0)
+        ruiFragment.ruiPatch()
     }
 
-    fun ruiBranch0(): RuiFragment<TestNode> = RuiT1(ruiAdapter, this, ::ruiEp0, v0 + 10)
-    fun ruiBranch1(): RuiFragment<TestNode> = RuiT1(ruiAdapter, this, ::ruiEp1, v0 + 20)
-    fun ruiBranch2(): RuiFragment<TestNode> = RuiPlaceholder(ruiAdapter)
+    override fun ruiDispose() {
+        ruiFragment.ruiDispose()
+    }
 
-    fun ruiSelect(): Int =
-        when (v0) {
-            1 -> 0 // index in RuiWhen.fragments
-            2 -> 1
-            else -> 2
-        }
+    override fun ruiUnmount(bridge: RuiBridge<BT>) {
+        ruiFragment.ruiUnmount(bridge = bridge)
+    }
+
+    fun ruiEp602(it: RuiFragment<BT>) {
+        it as RuiT0<BT> /*~> Unit */
+    }
 
     init {
-        fragment = RuiWhen(
-            ruiAdapter,
-            ::ruiSelect,
-            ::ruiBranch0,
-            ::ruiBranch1,
-            ::ruiBranch2
-        )
+        ruiFragment = RuiT0(ruiAdapter = ruiAdapter, ruiParent = ruiParent, ruiExternalPatch = ::ruiEp602)
     }
+
 }
 
-class E {
-    fun b1() = Unit
-    val b = B(this::b1)
-    val c = B(this::b1)
-}
-
-class B(
-    val func: () -> Unit
-)
+//@RuiTest
+//fun adhoc() {
+//    rui {
+//        eventHandlerFragment()
+//    }
+//}
+//
+//@Rui
+//fun eventHandlerFragment() {
+//    var i = 12
+//    EH1A(i + 1) { i++ }
+//}
 
 //@Suppress("UNUSED_PARAMETER")
 //fun rui(@RuiRoot block : (ruiAdapter : RuiAdapter) -> Unit) {
