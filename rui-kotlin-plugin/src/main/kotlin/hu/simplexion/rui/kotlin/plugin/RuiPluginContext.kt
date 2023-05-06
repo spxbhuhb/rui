@@ -79,10 +79,12 @@ class RuiPluginContext(
 
     fun output(title: String, content: String, declaration: IrDeclaration? = null) {
 
-        pluginLogFile?.appendText("$title\n$content")
+        val longTitle = "\n\n====  $title  ================================================================\n"
+
+        pluginLogFile?.appendText("$longTitle\n\n$content")
 
         if (unitTestMode) {
-            println(title)
+            println(longTitle)
             println(content)
         } else {
             diagnosticReporter.report(
