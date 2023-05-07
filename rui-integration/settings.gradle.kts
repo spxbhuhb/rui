@@ -4,13 +4,13 @@
 rootProject.name = "rui-integration"
 
 pluginManagement {
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "rui") {
-                useModule("hu.simplexion.rui:rui-gradle-plugin:0.1.0-SNAPSHOT")
-            }
-        }
-    }
+//    resolutionStrategy {
+//        eachPlugin {
+//            if (requested.id.id == "rui") {
+//                useModule("hu.simplexion.rui:rui-gradle-plugin:0.1.0-SNAPSHOT")
+//            }
+//        }
+//    }
     repositories {
         mavenLocal()
         mavenCentral()

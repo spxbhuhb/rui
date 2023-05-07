@@ -3,7 +3,7 @@
  */
 plugins {
     kotlin("multiplatform") version "1.8.20"
-    id("rui") version "0.1.0-SNAPSHOT"
+    id("hu.simplexion.rui") version "0.1.0-SNAPSHOT"
     application
 }
 

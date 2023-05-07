@@ -1,9 +1,52 @@
-# Rui: Introduction
+**DISCLAIMER** Rui is in a **proof-of-concept** phase. The examples below should work
+but changes may result in horrendous compilation error messages. Here there be monsters!
 
-Rui, short for Reactive UI, is a Kotlin compiler plugin that you may use to easily
-build error-free user interfaces.
+To get started with Rui you need a project to work with. Two simple ways to
+get one:
 
-Rui is inspired by [Svelte](https://svelte.io), but it is not a port of Svelte.
+* fork the [Example Project](https://github.com/spxbhuhb/rui-example)
+* create a new multiplatform project with IDEA and
+  * [add the Gradle plugin dependency](../README.md#dependencies)
+  * [add the runtime dependency](../README.md#dependencies)
+
+The best place to start experimenting with Rui is `src/jsMain/kotlin/main.kt`:
+
+```kotlin
+import hu.simplexion.rui.runtime.dom.RuiDOMAdapter
+import hu.simplexion.rui.runtime.dom.html.Button
+import hu.simplexion.rui.runtime.dom.html.Text
+import hu.simplexion.rui.runtime.rui
+
+fun main() {
+  rui(RuiDOMAdapter()) {
+    var counter = 0
+    Button("Counter: $counter") { counter++ }
+    Text("You've clicked $counter times.")
+  }
+}
+```
+
+On JVM you can use `RuiTestAdapter`.
+
+```kotlin
+import hu.simplexion.rui.runtime.rui
+import hu.simplexion.rui.runtime.testing.RuiTestAdapter
+import hu.simplexion.rui.runtime.testing.T1
+
+fun main() {
+  rui(RuiTestAdapter()) {
+    T1(12)
+  }
+}
+```
+
+## Adapters
+
+Adapters link Rui components with the underlying UI implementation. For browsers, it can be DOM or Canvas, for JVM
+it might be Swing or Android view based.
+
+- `RuiDOMAdapter` is an adapter for web browser DOM.
+- `RuiTestAdapter` is an adapter for testing, can be used on any platform.
 
 ## Basics: Components
 
@@ -14,7 +57,22 @@ text "Hello World!".
 ```kotlin
 @Rui
 fun HelloWorld() {
-    Text("Hello World!")
+  Text("Hello World!")
+}
+```
+
+You can try and add this component to the `main` function.
+
+**IMPORTANT** You have to add `HelloWorld` under `var counter = 0` more about that below.
+
+```kotlin
+fun main() {
+  rui(RuiDOMAdapter()) {
+    var counter = 0
+    HelloWorld()
+    Button("Counter: $counter") { counter++ }
+    Text("You've clicked $counter times.")
+  }
 }
 ```
 
@@ -155,71 +213,3 @@ fun Counter() {
     Button { "click to increment" } onClick { count++ }
 }
 ```
-
-## Basics: For Loops
-
-You can use the standard Kotlin `for` loops.
-
-```kotlin
-@Rui
-fun Counter() {
-    var count = 0
-    Button { "click count: $count" } onClick { count++ }
-
-    for (i in 0 until count) {
-        Text("click.")
-    }
-}
-```
-
-## Basics: While Loops
-
-You can use the standard Kotlin `while` and `do-while` loops, but you have to be
-careful. If you use a variable that is part of the component state, the while
-loop will increase that variable *in the state*.
-
-This means that you have to change that variable to update the content of
-the loop and the content will be updated based on the current value of the
-variable.
-
-To overcome this, you can use the `stateless` helper function. This function
-tells the compiler that the variable is not part of the component state,
-it is used only temporarily.
-
-```kotlin
-@Rui
-fun Counter() {
-    var count = 0
-    Button { "click count: $count" } onClick { count++ }
-
-    var i = stateless { 0 }
-
-    while (i < count) {
-        i++
-        Text("click.")
-    }
-}
-```
-
-## Basics: Higher Order Components
-
-Higher order components have a function parameter which in turn is another
-component.
-
-```kotlin
-@Rui
-fun Wrapper(@Rui block: () -> Unit) {
-    Text("before the block")
-    block()
-    Text("after the block")
-}
-
-@Rui
-fun Counter() {
-    var count = 0
-    Wrapper {
-        Button { "click count: $count" } onClick { count++ }
-    }
-}
-```
-
