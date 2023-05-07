@@ -7,9 +7,9 @@ import hu.simplexion.rui.kotlin.plugin.*
 import hu.simplexion.rui.kotlin.plugin.model.RuiCall
 import hu.simplexion.rui.kotlin.plugin.model.RuiExpression
 import hu.simplexion.rui.kotlin.plugin.transform.RuiClassSymbols
+import hu.simplexion.rui.kotlin.plugin.transform.util.RuiScopeTransform
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
-import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
@@ -36,26 +36,28 @@ class RuiCallBuilder(
 
     // we have to initialize this in build, after all other classes in the module are registered
     override lateinit var symbolMap: RuiClassSymbols
+
     private lateinit var externalPatch: IrSimpleFunction
+    private lateinit var dispatchReceiver: IrValueParameter
 
     override fun buildDeclarations() {
         tryBuild(ruiCall.irCall) {
             symbolMap = ruiContext.ruiSymbolMap.getSymbolMap(ruiCall.targetRuiClass)
-            irClass.declarations += irExternalPatch()
+            buildExternalPatch()
         }
     }
 
-    private fun irExternalPatch(): IrSimpleFunction =
+    private fun buildExternalPatch() {
         irFactory.buildFun {
             name = Name.identifier("$RUI_EXTERNAL_PATCH_OF_CHILD${ruiCall.irCall.startOffset}")
-            modality = Modality.FINAL
             returnType = irBuiltIns.unitType
+            modality = Modality.OPEN
         }.also { function ->
 
+            externalPatch = function
             function.parent = irClass
-            function.visibility = DescriptorVisibilities.LOCAL
 
-            function.addDispatchReceiver {
+            dispatchReceiver = function.addDispatchReceiver {
                 type = irClass.typeWith(irClass.typeParameters.first().defaultType)
             }
 
@@ -66,8 +68,9 @@ class RuiCallBuilder(
 
             function.body = irExternalPatchBody(function, externalPatchIt)
 
-            externalPatch = function
+            irClass.declarations += function
         }
+    }
 
     private fun irExternalPatchBody(function: IrSimpleFunction, externalPatchIt: IrValueParameter): IrBody =
         DeclarationIrBuilder(irContext, function.symbol).irBlockBody {
@@ -88,10 +91,10 @@ class RuiCallBuilder(
 
         ruiClass.dirtyMasks.forEach {
             args += irString("${it.name}:")
-            args += it.builder.propertyBuilder.irGetValue(ruiClass.builder.irThisReceiver())
+            args += it.builder.propertyBuilder.irGetValue(irGet(dispatchReceiver))
         }
 
-        ruiClassBuilder.irTrace(ruiClass.builder.irThisReceiver(), "external patch", args)
+        ruiClassBuilder.irTrace(irGet(dispatchReceiver), "external patch", args)
 
     }
 
@@ -111,9 +114,9 @@ class RuiCallBuilder(
 
     private fun irCondition(ruiExpression: RuiExpression): IrExpression {
         val dependencies = ruiExpression.dependencies
-        var result = dependencies[0].builder.irIsDirty(irThisReceiver())
+        var result = dependencies[0].builder.irIsDirty(irGet(dispatchReceiver))
         for (i in 1 until dependencies.size) {
-            result = irOrOr(result, dependencies[i].builder.irIsDirty(irThisReceiver()))
+            result = irOrOr(result, dependencies[i].builder.irIsDirty(irGet(dispatchReceiver)))
         }
         return result
     }
@@ -122,9 +125,12 @@ class RuiCallBuilder(
         return irBlock {
             val traceData = traceStateChangeBefore(externalPatchIt, index)
 
-            // TODO decide if this irTemporary has a real undesired effect (it is here solely because of trace)
-            // TODO check what deepCopyWithVariables exactly does
-            val newValue = irTemporary(ruiExpression.irExpression.deepCopyWithVariables())
+            val newValue = irTemporary(
+                RuiScopeTransform(ruiClassBuilder.ruiClass, dispatchReceiver.symbol)
+                    .visitExpression(
+                        ruiExpression.irExpression.deepCopyWithVariables()
+                    )
+            )
 
             // set the state variable in the child fragment
             +irCall(

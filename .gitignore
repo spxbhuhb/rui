@@ -132,3 +132,4 @@ Thumbs.db
 /.idea/kotlinScripting.xml
 /plugin/rui/rui-integration/kotlin-js-store/yarn.lock
 /rui-integration/kotlin-js-store/
+/rui-integration/tmp/

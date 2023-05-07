@@ -312,6 +312,10 @@ class RuiClassBuilder(
         initializer.body.statements += irTrace("init", args)
     }
 
+    /**
+     * Builds a function body that calls the same function of the child fragment. Except `ruiPatch` which
+     * calls the `ruiExternalPatch` first and then `ruiPatch`.
+     */
     fun buildRuiCall(function: IrSimpleFunction, rootBuilder: RuiFragmentBuilder, callee: IrSimpleFunction) {
         function.body = DeclarationIrBuilder(irContext, function.symbol).irBlockBody {
             traceRuiCall(function)
@@ -401,12 +405,21 @@ class RuiClassBuilder(
     }
 
     /**
-     * Call the external patch of this fragment. This is somewhat complex because the function
-     * is stored in a variable. So, we have to:
+     * Call the external patch of the child fragment. This is somewhat complex because the function
+     * is stored in a variable.
      *
-     * 1. fetch the fragment itself
-     * 1. fetch the function from the variable in the fragment
-     * 1. call the function with the fragment as dispatch receiver
+     * ```kotlin
+     * fragment.ruiExternalPatch(fragment)
+     * ```
+     *
+     * ```text
+     * CALL 'public abstract fun invoke (p1: P1 of kotlin.Function1): R of kotlin.Function1 [operator] declared in kotlin.Function1' type=kotlin.Unit origin=INVOKE
+     *   $this: CALL 'public abstract fun <get-ruiExternalPatch> (): kotlin.Function1<@[ParameterName(name = 'it')] hu.simplexion.rui.runtime.RuiFragment<BT of hu.simplexion.rui.runtime.RuiFragment>, kotlin.Unit> declared in hu.simplexion.rui.runtime.RuiFragment' type=kotlin.Function1<@[ParameterName(name = 'it')] hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode>, kotlin.Unit> origin=GET_PROPERTY
+     *     $this: CALL 'public open fun <get-fragment> (): hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> declared in hu.simplexion.rui.kotlin.plugin.adhoc.Block' type=hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> origin=GET_PROPERTY
+     *       $this: GET_VAR '<this>: hu.simplexion.rui.kotlin.plugin.adhoc.Block declared in hu.simplexion.rui.kotlin.plugin.adhoc.Block.ruiPatch' type=hu.simplexion.rui.kotlin.plugin.adhoc.Block origin=null
+     *   p1: CALL 'public open fun <get-fragment> (): hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> declared in hu.simplexion.rui.kotlin.plugin.adhoc.Block' type=hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> origin=GET_PROPERTY
+     *     $this: GET_VAR '<this>: hu.simplexion.rui.kotlin.plugin.adhoc.Block declared in hu.simplexion.rui.kotlin.plugin.adhoc.Block.ruiPatch' type=hu.simplexion.rui.kotlin.plugin.adhoc.Block origin=null
+     * ```
      */
     fun irCallExternalPatch(function: IrSimpleFunction, builder: IrBlockBodyBuilder) {
         builder.run {
@@ -420,7 +433,11 @@ class RuiClassBuilder(
             +irCallOp(
                 invoke,
                 type = irBuiltIns.unitType,
-                dispatchReceiver = irCallOp(rootBuilder.symbolMap.externalPatchGetter.symbol, function1Type.defaultType, irGet(fragment)),
+                dispatchReceiver = irCallOp(
+                    rootBuilder.symbolMap.externalPatchGetter.symbol,
+                    function1Type.defaultType,
+                    irGet(fragment)
+                ),
                 origin = IrStatementOrigin.INVOKE,
                 argument = irGet(fragment)
             )

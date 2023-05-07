@@ -47,15 +47,16 @@ engine running in the background to perform updates.
 ## External Patch
 
 External patch functions update the external state variables of a component.
-They are call-site dependent as two different call sites may need two different
-external patch functions. In the example below patching the two T1 components
-requires two different computations.
+
+They are part of the parent component because they are call-site dependent.
+Two different call sites may need two different external patch functions.
+In the example below patching the two T1 components requires two different computations.
 
 ```kotlin
 @Rui
 fun test(i: Int) {
-    T1(i + 1)
-    T1(i + 2)
+  T1(i + 1)
+  T1(i + 2)
 }
 ```
 
@@ -113,7 +114,7 @@ Consider the followings:
 3. A higher-order component may use the parameter function more than once.
 
 The key insight here is that the parameter functions cannot extend the state. As they are part of the rendering,
-they cannot define new state variables, therefore the states we are working here is static, it is defined by the
+they cannot define new state variables, therefore the state we are working here is static, it is defined by the
 parameters of the parameter functions.
 
 The parameter functions implicitly define components with:
