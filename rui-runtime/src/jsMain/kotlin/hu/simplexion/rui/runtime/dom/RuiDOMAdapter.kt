@@ -12,7 +12,7 @@ import org.w3c.dom.Node
 /**
  * The default adapter for W3C DOM nodes used in browsers.
  */
-class RuiDOMAdapter(
+open class RuiDOMAdapter(
     val node: Node = requireNotNull(window.document.body) { "window.document.body is null or undefined" }
 ) : RuiAdapter<Node> {
 

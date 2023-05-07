@@ -1,10 +1,12 @@
-**DISCLAIMER** Rui is in a **proof-of-concept** phase. The examples below should work
+**DISCLAIMER**
+
+Rui is in a **proof-of-concept** phase. The examples below should work
 but changes may result in horrendous compilation error messages. Here there be monsters!
 
 To get started with Rui you need a project to work with. Two simple ways to
 get one:
 
-* fork the [Example Project](https://github.com/spxbhuhb/rui-example)
+* check out the [Example Project](https://github.com/spxbhuhb/rui-example)
 * create a new multiplatform project with IDEA and
   * [add the Gradle plugin dependency](../README.md#dependencies)
   * [add the runtime dependency](../README.md#dependencies)
@@ -40,6 +42,11 @@ fun main() {
 }
 ```
 
+## Running
+
+You can use `jsBrowserRun` of the example project. It shows a web page with a functioning
+Rui button.
+
 ## Adapters
 
 Adapters link Rui components with the underlying UI implementation. For browsers, it can be DOM or Canvas, for JVM
@@ -63,7 +70,7 @@ fun HelloWorld() {
 
 You can try and add this component to the `main` function.
 
-**IMPORTANT** You have to add `HelloWorld` under `var counter = 0` more about that below.
+**IMPORTANT** You have to add `HelloWorld` under `var counter = 0`, more about that below.
 
 ```kotlin
 fun main() {
@@ -204,12 +211,22 @@ fun Counter() {
 ```kotlin
 @Rui
 fun Counter() {
-    var count = 0
-    when (count) {
-        1 -> Text("click count: 1")
-        2 -> Text("click count: 2")
-        else -> Text("click count > 2")
-    }
-    Button { "click to increment" } onClick { count++ }
+  var count = 0
+  when (count) {
+    1 -> Text("click count: 1")
+    2 -> Text("click count: 2")
+    else -> Text("click count > 2")
+  }
+  Button { "click to increment" } onClick { count++ }
 }
 ```
+
+## Everthing Else...
+
+...is to be written.
+
+I have actual plans for `for` lops and higher order functions. See  (not 100% up to date):
+
+* [Internals](./Internals.md) for some ideas
+* [TestForLoop](../rui-runtime/src/commonTest/kotlin/hu/simplexion/rui/runtime/test/manual/TestForLoop.kt)
+* [TestForLoop](../rui-runtime/src/commonTest/kotlin/hu/simplexion/rui/runtime/test/manual/TestHigherOrder.kt)

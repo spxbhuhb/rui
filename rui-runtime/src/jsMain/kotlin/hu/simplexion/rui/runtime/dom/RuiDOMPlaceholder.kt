@@ -6,7 +6,7 @@ package hu.simplexion.rui.runtime.dom
 import hu.simplexion.rui.runtime.RuiBridge
 import org.w3c.dom.Node
 
-class RuiDOMPlaceholder : RuiBridge<Node> {
+open class RuiDOMPlaceholder : RuiBridge<Node> {
 
     override val receiver = org.w3c.dom.Text()
 

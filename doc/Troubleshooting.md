@@ -22,7 +22,9 @@ rui {
 
 ## Runtime Problems
 
-Try to compile your code with trace enabled. The trace prints out all state and component changes.
+Try to compile your code with trace enabled. When trace is enabled, components calls the `trace` function of the
+adapter when something happens. `RuiDOMAdapter` prints out the trace, `RuiTestAdapter` collects it into a list.
+You can easily add your own adapter to process the trace whichever way you like.
 
 **NOTE** trace adds quite a lot of code to the plugin, thus the size of the resulting code will grow quite a lot.
 It is good practice to have trace switched off.

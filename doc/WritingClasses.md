@@ -3,9 +3,9 @@
 When writing a class manually the first thing you have to decide is to write a [bridge](./Internals.md#bridge)
 independent or a [bridge](./Internals.md#bridge) dependent class.
 
-All automatically generated classes are bridge independent, that is they can be used with any adapter.
+All automatically generated classes are bridge independent, so can be used with any adapters.
 
-Typically low level classes that interact with the underlying UI are bridge dependent, everything else should
+Typically, low level classes that interact with the underlying UI are bridge dependent, everything else should
 be bridge independent.
 
 In the code the difference is that:
@@ -51,11 +51,17 @@ class RuiText(
         receiver.data = content
     }
 
-    override fun ruiPatch() {
-        if (ruiDirty0 and 1 != 0) {
-            receiver.data = content
-        }
+  override fun ruiPatch() {
+    if (ruiDirty0 and 1 != 0) {
+      receiver.data = content
     }
+  }
 
 }
 ```
+
+You can find more examples in:
+
+[testing fragments](../rui-runtime/src/commonMain/kotlin/hu/simplexion/rui/runtime/testing/fragments.kt)
+[proof-of-concept fragments](../rui-runtime/src/commonTest/kotlin/hu/simplexion/rui/runtime/test/manual)
+

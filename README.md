@@ -6,7 +6,7 @@ Rui, short for Reactive UI, is a Kotlin compiler plugin for building reactive us
 
 Rui is inspired by [Svelte](https://svelte.io), but it is not a port of Svelte.
 
-Works on JVM and JS at the moment, it may work on Native also depending on the IR support of Native.
+Works on JVM and JS at the moment, may work on Native also, depending on the IR support of Native.
 
 ## Status
 
@@ -24,16 +24,8 @@ Gradle plugin repository (`settings.gradle.kts`, temporary until Gradle register
 
 ```kotlin
 pluginManagement {
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "hu.simplexion.rui") {
-                useModule("hu.simplexion.rui:rui-gradle-plugin:0.1.0")
-            }
-        }
-    }
     repositories {
         mavenCentral()
-        gradlePluginPortal()
     }
 }
 ```
