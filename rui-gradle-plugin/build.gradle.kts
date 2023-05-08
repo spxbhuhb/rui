@@ -8,12 +8,20 @@ plugins {
     `maven-publish`
 }
 
-val publishSnapshotUrl = (System.getenv("RUI_PUBLISH_SNAPSHOT_URL") ?: project.findProperty("rui.publish.snapshot.url"))?.toString()
-val publishReleaseUrl = (System.getenv("RUI_PUBLISH_RELEASE_URL") ?: project.findProperty("rui.publish.release.url"))?.toString()
-val publishUsername = (System.getenv("RUI_PUBLISH_USERNAME") ?: project.findProperty("rui.publish.username"))?.toString()
-val publishPassword = (System.getenv("RUI_PUBLISH_PASSWORD") ?: project.findProperty("rui.publish.password"))?.toString()
+val publishSnapshotUrl = (System.getenv("RUI_PUBLISH_SNAPSHOT_URL")
+    ?: project.findProperty("rui.publish.snapshot.url"))?.toString()
+val publishReleaseUrl = (System.getenv("RUI_PUBLISH_RELEASE_URL")
+    ?: project.findProperty("rui.publish.release.url"))?.toString()
+val publishUsername = (System.getenv("RUI_PUBLISH_USERNAME")
+    ?: project.findProperty("rui.publish.username"))?.toString()
+val publishPassword = (System.getenv("RUI_PUBLISH_PASSWORD")
+    ?: project.findProperty("rui.publish.password"))?.toString()
 val isSnapshot = "SNAPSHOT" in project.version.toString()
 val isPublishing = (System.getenv("RUI_PUBLISH") ?: project.findProperty("rui.publish")?.toString().toBoolean()) == true
+
+kotlin {
+    jvmToolchain(11)
+}
 
 dependencies {
     implementation(kotlin("gradle-plugin-api"))
