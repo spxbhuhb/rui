@@ -18,9 +18,7 @@ val isPublishing = (System.getenv("RUI_PUBLISH") ?: project.findProperty("rui.pu
 kotlin {
 
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
+        jvmToolchain(11)
     }
 
     js(IR) {
