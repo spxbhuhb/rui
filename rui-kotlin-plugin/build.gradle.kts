@@ -39,10 +39,6 @@ tasks.withType<KotlinCompile> {
     )
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
 tasks.register("sourcesJar", Jar::class) {
     group = "build"
     description = "Assembles Kotlin sources"
