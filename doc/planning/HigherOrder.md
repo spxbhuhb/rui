@@ -1,3 +1,5 @@
+**NOTE** This document is a bit confused at the moment as it is my working scratch or something like that.
+
 This is rather complex because of the scopes involved. Unfortunately we can't build on the actual Kotlin scopes because
 we transform a temporary function call structure into a permanent object instance tree.
 
@@ -76,7 +78,6 @@ fun test(p0: Int) {
 ```
 
 This case is quite problematic. What happens when I change `ho1.v`?
-
 
 I'm thinking about introducing a `RuiBuilder` class which would be responsible for making components by calling the
 builder function:
