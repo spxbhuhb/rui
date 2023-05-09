@@ -10,7 +10,7 @@ object Plugin {
     const val OPTION_NAME_TRACE = "trace"
     const val OPTION_NAME_EXPORT_STATE = "export-state"
     const val OPTION_NAME_IMPORT_STATE = "import-state"
-    const val OPTION_NAME_UNIT_TEST_MODE = "unit-test-mode"
+    const val OPTION_NAME_PRINT_DUMPS = "print-dumps"
     const val OPTION_NAME_PLUGIN_LOG_DIR = "plugin-log-dir"
 
     const val PLUGIN_ID = "rui"
@@ -27,6 +27,7 @@ object Plugin {
     const val RUI_ANNOTATION = "hu.simplexion.rui.runtime.Rui"
 
     val RUI_FRAGMENT_CLASS = listOf("hu", "simplexion", "rui", "runtime", "RuiFragment")
+    val RUI_GENERATED_FRAGMENT_CLASS = listOf("hu", "simplexion", "rui", "runtime", "RuiGeneratedFragment")
     val RUI_ADAPTER_CLASS = listOf("hu", "simplexion", "rui", "runtime", "RuiAdapter")
     val RUI_BRIDGE_CLASS = listOf("hu", "simplexion", "rui", "runtime", "RuiBridge")
     val RUI_BLOCK_CLASS = listOf("hu", "simplexion", "rui", "runtime", "RuiBlock")

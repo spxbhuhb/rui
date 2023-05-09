@@ -9,9 +9,9 @@ import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_DUMP_POINT
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_EXPORT_STATE
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_IMPORT_STATE
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_PLUGIN_LOG_DIR
+import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_PRINT_DUMPS
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_ROOT_NAME_STRATEGY
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_TRACE
-import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_UNIT_TEST_MODE
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_ID
 import org.jetbrains.kotlin.compiler.plugin.*
 import org.jetbrains.kotlin.config.CompilerConfiguration
@@ -45,8 +45,8 @@ class RuiCommandLineProcessor : CommandLineProcessor {
             OPTION_NAME_IMPORT_STATE, "boolean", "Generate state import functions",
             required = false, allowMultipleOccurrences = false
         )
-        val OPTION_UNIT_TEST_MODE = CliOption(
-            OPTION_NAME_UNIT_TEST_MODE, "boolean", "Use println for output instead of the compiler logging framework",
+        val OPTION_PRINT_DUMPS = CliOption(
+            OPTION_NAME_PRINT_DUMPS, "boolean", "Use println for output instead of the compiler logging framework",
             required = false, allowMultipleOccurrences = false
         )
         val OPTION_PLUGIN_LOG_DIR = CliOption(
@@ -64,7 +64,7 @@ class RuiCommandLineProcessor : CommandLineProcessor {
         OPTION_TRACE,
         OPTION_EXPORT_STATE,
         OPTION_IMPORT_STATE,
-        OPTION_UNIT_TEST_MODE,
+        OPTION_PRINT_DUMPS,
         OPTION_PLUGIN_LOG_DIR
     )
 
@@ -75,8 +75,12 @@ class RuiCommandLineProcessor : CommandLineProcessor {
             OPTION_ROOT_NAME_STRATEGY -> configuration.put(RuiConfigurationKeys.ROOT_NAME_STRATEGY, value.toRootNameStrategy())
             OPTION_TRACE -> configuration.put(RuiConfigurationKeys.TRACE, value.toBooleanStrictOrNull() ?: false)
             OPTION_EXPORT_STATE -> configuration.put(RuiConfigurationKeys.EXPORT_STATE, value.toBooleanStrictOrNull() ?: false)
-            OPTION_IMPORT_STATE -> configuration.put(RuiConfigurationKeys.IMPORT_STATE, value.toBooleanStrictOrNull() ?: false)
-            OPTION_UNIT_TEST_MODE -> configuration.put(RuiConfigurationKeys.UNIT_TEST_MODE, value.toBooleanStrictOrNull() ?: false)
+            OPTION_IMPORT_STATE -> configuration.put(RuiConfigurationKeys.IMPORT_STATE, value.toBooleanStrictOrNull()
+                ?: false)
+
+            OPTION_PRINT_DUMPS -> configuration.put(RuiConfigurationKeys.PRINT_DUMPS, value.toBooleanStrictOrNull()
+                ?: false)
+
             OPTION_PLUGIN_LOG_DIR -> configuration.put(RuiConfigurationKeys.PLUGIN_LOG_DIR, value)
             else -> throw CliOptionProcessingException("Unknown option: ${option.optionName}")
         }

@@ -23,9 +23,9 @@ import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_DUMP_POINT
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_EXPORT_STATE
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_IMPORT_STATE
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_PLUGIN_LOG_DIR
+import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_PRINT_DUMPS
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_ROOT_NAME_STRATEGY
 import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_TRACE
-import hu.simplexion.rui.runtime.Plugin.OPTION_NAME_UNIT_TEST_MODE
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_GROUP
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_ID
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_VERSION
@@ -81,7 +81,7 @@ class RuiGradlePlugin : KotlinCompilerPluginSupportPlugin {
         options += SubpluginOption(key = OPTION_NAME_TRACE, extension.trace.get().toString())
         options += SubpluginOption(key = OPTION_NAME_EXPORT_STATE, extension.exportState.get().toString())
         options += SubpluginOption(key = OPTION_NAME_IMPORT_STATE, extension.importState.get().toString())
-        options += SubpluginOption(key = OPTION_NAME_UNIT_TEST_MODE, extension.unitTestMode.get().toString())
+        options += SubpluginOption(key = OPTION_NAME_PRINT_DUMPS, extension.printDumps.get().toString())
         if (extension.pluginLogDir.isPresent) {
             options += SubpluginOption(key = OPTION_NAME_PLUGIN_LOG_DIR, extension.pluginLogDir.get().toString())
         }

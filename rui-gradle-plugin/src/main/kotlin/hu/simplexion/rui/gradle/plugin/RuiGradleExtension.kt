@@ -111,9 +111,10 @@ open class RuiGradleExtension(objects: ObjectFactory) {
      * Category: Plugin development
      * ```
      *
-     * When `true` the plugin prints dumps specified by [dumpPoints] to the standard output.
+     * When `true` the plugin prints dumps specified by [dumpPoints] to the standard output instead passing them
+     * to the compiler framework.
      */
-    val unitTestMode: Property<Boolean> = objects.property(Boolean::class.java).also { it.set(false) }
+    val printDumps: Property<Boolean> = objects.property(Boolean::class.java).also { it.set(false) }
 
     /**
      * ```

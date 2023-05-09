@@ -9,9 +9,9 @@ import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.DUMP
 import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.EXPORT_STATE
 import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.IMPORT_STATE
 import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.PLUGIN_LOG_DIR
+import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.PRINT_DUMPS
 import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.ROOT_NAME_STRATEGY
 import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.TRACE
-import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.UNIT_TEST_MODE
 import hu.simplexion.rui.runtime.Plugin.RUI_ANNOTATION
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
@@ -31,7 +31,7 @@ class RuiCompilerPluginRegistrar(
     val trace: Boolean = false,
     val exportState: Boolean = false,
     val importState: Boolean = false,
-    val unitTestMode: Boolean = false,
+    val printDumps: Boolean = false,
     val pluginLogDir: String? = null
 ) : CompilerPluginRegistrar() {
 
@@ -45,7 +45,7 @@ class RuiCompilerPluginRegistrar(
         val trace = configuration.get(TRACE) ?: trace
         val exportState = configuration.get(EXPORT_STATE) ?: exportState
         val importState = configuration.get(IMPORT_STATE) ?: importState
-        val unitTestMode = configuration.get(UNIT_TEST_MODE) ?: unitTestMode
+        val unitTestMode = configuration.get(PRINT_DUMPS) ?: printDumps
         val pluginLogDir = configuration.get(PLUGIN_LOG_DIR) ?: pluginLogDir
 
         val options = RuiOptions(annotations, dumpPoints, rootNameStrategy, trace, exportState, importState, unitTestMode, pluginLogDir)
@@ -63,19 +63,6 @@ class RuiCompilerPluginRegistrar(
             RuiGenerationExtension(options)
         )
 
-    }
-
-    companion object {
-        fun withAll() =
-            RuiCompilerPluginRegistrar(
-                RuiDumpPoint.values().toList(),
-                RuiRootNameStrategy.NoPostfix,
-                trace = true,
-                exportState = true,
-                importState = true,
-                unitTestMode = true,
-                pluginLogDir = null
-            )
     }
 
 }

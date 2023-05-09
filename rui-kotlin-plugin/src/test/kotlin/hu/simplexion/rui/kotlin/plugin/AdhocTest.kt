@@ -39,7 +39,7 @@ class AdhocTest {
                     SourceFile.fromPath(File(sourceDir, fileName))
                 )
                 useIR = true
-                compilerPluginRegistrars = listOf(RuiCompilerPluginRegistrar.withAll())
+                compilerPluginRegistrars = forPluginDevelopment()
                 inheritClassPath = true
             }
             .compile()

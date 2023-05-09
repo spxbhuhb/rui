@@ -8,5 +8,11 @@ class RuiImplicit0<BT>(
     override val ruiParent: RuiFragment<BT>,
     override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit,
 ) : RuiGeneratedFragment<BT> {
-    override lateinit var fragment: RuiFragment<BT>
+
+    override lateinit var ruiFragment: RuiFragment<BT>
+
+    override fun ruiPatch() {
+        ruiFragment.ruiExternalPatch(ruiFragment)
+        ruiFragment.ruiPatch()
+    }
 }

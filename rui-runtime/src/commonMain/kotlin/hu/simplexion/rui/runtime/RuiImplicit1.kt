@@ -8,6 +8,15 @@ class RuiImplicit1<BT, VT>(
     override val ruiAdapter: RuiAdapter<BT>,
     override val ruiParent: RuiFragment<BT>,
     override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit,
-    override val fragment: RuiFragment<BT>,
+    override val ruiFragment: RuiFragment<BT>,
     var v0: VT
-) : RuiGeneratedFragment<BT>
+) : RuiGeneratedFragment<BT> {
+
+    // TODO fix RuiImplicit1 dirty mask and patch
+
+    override fun ruiPatch() {
+        ruiFragment.ruiExternalPatch(ruiFragment)
+        ruiFragment.ruiPatch()
+    }
+
+}

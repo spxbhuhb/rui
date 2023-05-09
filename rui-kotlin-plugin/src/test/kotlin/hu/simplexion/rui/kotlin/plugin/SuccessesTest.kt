@@ -42,8 +42,20 @@ class SuccessesTest {
     @Test
     fun basic() = compile("Basic.kt")
 
+    fun compile(fileName: String, manual: Boolean = false) {
+        compile(fileName, production = false, manual)
+        compile(fileName, production = true, manual)
+    }
+
     @OptIn(ExperimentalCompilerApi::class)
-    fun compile(fileName: String, dumpResult: Boolean = false) {
+    fun compile(fileName: String, production: Boolean, manual: Boolean = false) {
+
+        val registrar = when {
+            manual -> forPluginDevelopment()
+            production -> forProduction()
+            else -> forValidatedResult()
+        }
+
         val result = KotlinCompilation()
             .apply {
                 workingDir = File("./tmp")
@@ -51,15 +63,14 @@ class SuccessesTest {
                     SourceFile.fromPath(File(sourceDir, fileName))
                 )
                 useIR = true
-                compilerPluginRegistrars = listOf(RuiCompilerPluginRegistrar.withAll())
+                compilerPluginRegistrars = registrar
                 inheritClassPath = true
             }
             .compile()
 
         assertEquals(KotlinCompilation.ExitCode.OK, result.exitCode)
 
-        if (dumpResult) println(result.dump())
-
+        if (manual) println(result.dump())
     }
 
     fun KotlinCompilation.Result.dump(): String {

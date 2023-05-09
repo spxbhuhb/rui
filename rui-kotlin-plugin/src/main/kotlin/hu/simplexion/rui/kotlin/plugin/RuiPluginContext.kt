@@ -38,7 +38,7 @@ class RuiPluginContext(
     val withTrace = options.withTrace
     val exportState = options.exportState
     val importState = options.importState
-    val unitTestMode = options.unitTestMode
+    val printDumps = options.printDumps
 
     val pluginLogDir: Path? = options.pluginLogDir?.let { Paths.get(options.pluginLogDir).also { it.createDirectories() } }
     val pluginLogTimestamp: String = DateTimeFormatter.ofPattern("yyyyMMdd'-'HHmmss").format(LocalDateTime.now())
@@ -52,6 +52,8 @@ class RuiPluginContext(
     val ruiFragmentClass = requireNotNull(irContext.referenceClass(RUI_FQN_FRAGMENT_CLASS)) { "missing class: ${RUI_FQN_FRAGMENT_CLASS.asString()}" }
     val ruiFragmentType = ruiFragmentClass.defaultType
 
+    val ruiGeneratedFragmentClass = requireNotNull(irContext.referenceClass(RUI_FQN_GENERATED_FRAGMENT_CLASS)) { "missing class: ${RUI_FQN_GENERATED_FRAGMENT_CLASS.asString()}" }
+
     val ruiAdapterClass = requireNotNull(irContext.referenceClass(RUI_FQN_ADAPTER_CLASS)) { "missing class: ${RUI_FQN_FRAGMENT_CLASS.asString()}" }
     val ruiAdapterType = ruiAdapterClass.defaultType
     val ruiAdapterTrace = ruiAdapterClass.functionByName(RUI_ADAPTER_TRACE)
@@ -62,6 +64,7 @@ class RuiPluginContext(
     val ruiAdapter = property(RUI_ADAPTER)
     val ruiParent = property(RUI_PARENT)
     val ruiExternalPatch = property(RUI_EXTERNAL_PATCH)
+    val ruiFragment = property(RUI_FRAGMENT)
 
     val ruiCreate = function(RUI_CREATE)
     val ruiMount = function(RUI_MOUNT)
@@ -72,10 +75,10 @@ class RuiPluginContext(
     val ruiSymbolMap = RuiSymbolMap(this)
 
     private fun property(name: String) =
-        ruiFragmentClass.owner.properties.filter { it.name.asString() == name }.map { it.symbol }.toList()
+        ruiGeneratedFragmentClass.owner.properties.filter { it.name.asString() == name }.map { it.symbol }.toList()
 
     private fun function(name: String) =
-        listOf(ruiFragmentClass.functions.single { it.owner.name.asString() == name })
+        listOf(ruiGeneratedFragmentClass.functions.single { it.owner.name.asString() == name })
 
     fun output(title: String, content: String, declaration: IrDeclaration? = null) {
 
@@ -83,7 +86,7 @@ class RuiPluginContext(
 
         pluginLogFile?.appendText("$longTitle\n\n$content")
 
-        if (unitTestMode) {
+        if (printDumps) {
             println(longTitle)
             println(content)
         } else {

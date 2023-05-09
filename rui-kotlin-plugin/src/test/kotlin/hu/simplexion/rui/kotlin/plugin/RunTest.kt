@@ -52,8 +52,13 @@ class RunTest {
     @Test
     fun blockAsRoot() = compile("BlockAsRoot.kt")
 
+    fun compile(fileName: String, manual: Boolean = false) {
+        compile(fileName, production = false, manual)
+        compile(fileName, production = true, manual)
+    }
+
     @OptIn(ExperimentalCompilerApi::class)
-    fun compile(fileName: String, dumpResult: Boolean = false) {
+    fun compile(fileName: String, production: Boolean, manual: Boolean = false) {
 
         // The test source codes are compiled by the IDE before the tests run. That compilation
         // does not apply the plugin, but the generates the class files. Those class files do not
@@ -67,6 +72,12 @@ class RunTest {
 
         val result: KotlinCompilation.Result
 
+        val registrar = when {
+            manual -> forPluginDevelopment()
+            production -> forProduction()
+            else -> forValidatedResult()
+        }
+
         val duration = measureTimeMillis {
             result = KotlinCompilation()
                 .apply {
@@ -75,7 +86,7 @@ class RunTest {
                         SourceFile.kotlin(fileName, sourceCode)
                     )
                     useIR = true
-                    compilerPluginRegistrars = listOf(RuiCompilerPluginRegistrar.withAll())
+                    compilerPluginRegistrars = registrar
                     commandLineProcessors = listOf(RuiCommandLineProcessor())
                     inheritClassPath = true
                 }
@@ -86,30 +97,44 @@ class RunTest {
 
         assertEquals(KotlinCompilation.ExitCode.OK, result.exitCode)
 
-        if (dumpResult) println(result.dump())
+        if (manual) println(result.dump())
 
         val expectedResults = mutableMapOf<String, String>()
 
         with(result.classLoader.loadClass("hu.simplexion.rui.kotlin.plugin.run.gen.${fileName.replace(".kt", "Kt")}")) {
 
-            this.declaredMethods.forEach { method ->
-                if (method.annotations.firstOrNull { it.annotationClass.simpleName == "RuiTestResult" } != null) {
-                    expectedResults[method.name.dropLast(6)] = (method.invoke(this) as String).replace("\r\n", "\n")
+            if (production) {
+
+                // production code has no trace, it's pointless to check it, we can run and hope for the best
+                // TODO add state snapshot checking to production code tests
+
+                this.declaredMethods.forEach { method ->
+                    if (method.annotations.firstOrNull { it.annotationClass.simpleName == "RuiTest" } != null) {
+                        method.invoke(this)
+                    }
                 }
-            }
 
-            this.declaredMethods.forEach { method ->
-                if (method.annotations.firstOrNull { it.annotationClass.simpleName == "RuiTest" } != null) {
-                    RuiTestAdapter.lastTrace.clear()
-                    method.invoke(this)
-                    val actual = RuiTestAdapter.lastTrace.joinToString("\n")
+            } else {
 
-                    if (method.annotations.firstOrNull { it.annotationClass.simpleName == "RuiTestDumpResult" } != null) {
-                        assertEquals(expectedResults[method.name], actual, "unexpected output for ${method.name}")
-                        if (dumpResult) {
-                            println("======== Results for ${method.name} ========")
-                            println(actual)
-                            println("========\n")
+                this.declaredMethods.forEach { method ->
+                    if (method.annotations.firstOrNull { it.annotationClass.simpleName == "RuiTestResult" } != null) {
+                        expectedResults[method.name.dropLast(6)] = (method.invoke(this) as String).replace("\r\n", "\n")
+                    }
+                }
+
+                this.declaredMethods.forEach { method ->
+                    if (method.annotations.firstOrNull { it.annotationClass.simpleName == "RuiTest" } != null) {
+                        RuiTestAdapter.lastTrace.clear()
+                        method.invoke(this)
+                        val actual = RuiTestAdapter.lastTrace.joinToString("\n")
+
+                        if (method.annotations.firstOrNull { it.annotationClass.simpleName == "RuiTestDumpResult" } != null) {
+                            assertEquals(expectedResults[method.name], actual, "unexpected output for ${method.name}")
+                            if (manual) {
+                                println("======== Results for ${method.name} ========")
+                                println(actual)
+                                println("========\n")
+                            }
                         }
                     }
                 }

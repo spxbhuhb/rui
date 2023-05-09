@@ -4,19 +4,39 @@
 package hu.simplexion.rui.runtime.test.manual
 
 import hu.simplexion.rui.runtime.*
-import hu.simplexion.rui.runtime.testing.RuiT0
-import hu.simplexion.rui.runtime.testing.RuiT1
-import hu.simplexion.rui.runtime.testing.TestNode
+import hu.simplexion.rui.runtime.testing.*
+import kotlin.test.assertEquals
+
+class ForLoopTest {
+
+    // not implemented yet @Test
+    fun test() {
+        val adapter = RuiTestAdapter()
+        val root = RuiTestBridge(1)
+
+        ForLoop(adapter).apply {
+            ruiCreate()
+            ruiMount(root)
+        }
+
+        assertEquals(testResult, adapter.trace.joinToString("\n"))
+    }
+
+    val testResult = """
+        ...
+    """.trimIndent()
+
+}
 
 @Suppress("unused")
-class TestForLoop(
+class ForLoop(
     override val ruiAdapter: RuiAdapter<TestNode>
 ) : RuiGeneratedFragment<TestNode> {
 
     override val ruiParent: RuiFragment<TestNode>? = null
     override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
 
-    override val fragment: RuiFragment<TestNode>
+    override val ruiFragment: RuiFragment<TestNode>
 
     var v0 = 1
 
@@ -34,6 +54,11 @@ class TestForLoop(
         }
     }
 
+    override fun ruiPatch() {
+        ruiFragment.ruiExternalPatch(ruiFragment)
+        ruiFragment.ruiPatch()
+    }
+
     fun ruiIterator0() = IntRange(0, 10).iterator()
 
     fun ruiBuilder0() =
@@ -44,7 +69,7 @@ class TestForLoop(
         )
 
     init {
-        fragment = RuiLoop(
+        ruiFragment = RuiLoop(
             ruiAdapter,
             ::ruiIterator0,
             ::ruiBuilder0

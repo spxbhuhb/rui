@@ -7,19 +7,39 @@ import hu.simplexion.rui.runtime.RuiAdapter
 import hu.simplexion.rui.runtime.RuiFragment
 import hu.simplexion.rui.runtime.RuiGeneratedFragment
 import hu.simplexion.rui.runtime.RuiImplicit0
-import hu.simplexion.rui.runtime.testing.RuiH1
-import hu.simplexion.rui.runtime.testing.RuiT1
-import hu.simplexion.rui.runtime.testing.TestNode
+import hu.simplexion.rui.runtime.testing.*
+import kotlin.test.assertEquals
+
+class HigherOrderTest {
+
+    // not implemented yet @Test
+    fun test() {
+        val adapter = RuiTestAdapter()
+        val root = RuiTestBridge(1)
+
+        HigherOrder(adapter).apply {
+            ruiCreate()
+            ruiMount(root)
+        }
+
+        assertEquals(testResult, adapter.trace.joinToString("\n"))
+    }
+
+    val testResult = """
+        ...
+    """.trimIndent()
+
+}
 
 @Suppress("unused")
-class TestHigherOrder(
+class HigherOrder(
     override val ruiAdapter: RuiAdapter<TestNode>
 ) : RuiGeneratedFragment<TestNode> {
 
     override val ruiParent: RuiFragment<TestNode>? = null
     override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
 
-    override val fragment: RuiFragment<TestNode>
+    override val ruiFragment: RuiFragment<TestNode>
 
     var v0 = 1
 
@@ -44,12 +64,17 @@ class TestHigherOrder(
         }
     }
 
+    override fun ruiPatch() {
+        ruiFragment.ruiExternalPatch(ruiFragment)
+        ruiFragment.ruiPatch()
+    }
+
     fun ruiBuilder0(ruiAdapter: RuiAdapter<TestNode>) =
         RuiImplicit0(ruiAdapter, this, ::ruiEp0).also {
-            it.fragment = RuiT1(ruiAdapter, it, ::ruiEp1, v0)
+            it.ruiFragment = RuiT1(ruiAdapter, it, ::ruiEp1, v0)
         }
 
     init {
-        fragment = RuiH1(ruiAdapter, this, ::ruiEp0, ::ruiBuilder0)
+        ruiFragment = RuiH1(ruiAdapter, this, ::ruiEp0, ::ruiBuilder0)
     }
 }

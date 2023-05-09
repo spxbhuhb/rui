@@ -80,7 +80,7 @@ class RuiClassBuilder(
         initTypeParameters()
 
         irClass.parent = irFunction.file
-        irClass.superTypes = listOf(ruiContext.ruiFragmentClass.typeWith(irClass.typeParameters.first().defaultType))
+        irClass.superTypes = listOf(ruiContext.ruiGeneratedFragmentClass.typeWith(irClass.typeParameters.first().defaultType))
         irClass.metadata = irFunction.metadata
 
         name = irClass.name.identifier
@@ -96,11 +96,14 @@ class RuiClassBuilder(
 
         initializer = initInitializer()
 
-        create = initRuiFunction(RUI_CREATE, ruiContext.ruiCreate)
-        mount = initRuiFunction(RUI_MOUNT, ruiContext.ruiMount)
-        patch = initRuiFunction(RUI_PATCH, ruiContext.ruiPatch)
-        dispose = initRuiFunction(RUI_DISPOSE, ruiContext.ruiDispose)
-        unmount = initRuiFunction(RUI_UNMOUNT, ruiContext.ruiUnmount)
+        val fake = !ruiContext.withTrace // generate fake overrides when trace is not enabled
+
+        create = initRuiFunction(RUI_CREATE, ruiContext.ruiCreate, fake)
+        mount = initRuiFunction(RUI_MOUNT, ruiContext.ruiMount, fake)
+        patch = initRuiFunction(RUI_PATCH, ruiContext.ruiPatch, false)
+        dispose = initRuiFunction(RUI_DISPOSE, ruiContext.ruiDispose, fake)
+        unmount = initRuiFunction(RUI_UNMOUNT, ruiContext.ruiUnmount, fake)
+
     }
 
     private fun initTypeParameters() {
@@ -164,8 +167,9 @@ class RuiClassBuilder(
         }
 
     private fun initFragmentProperty(): RuiPropertyBuilder =
-        RuiPropertyBuilder(ruiClassBuilder, Name.identifier(RUI_FRAGMENT), ruiContext.ruiFragmentType, isVar = false)
-    // TODO add overridden when if the class extends RuiGeneratedFragment
+        RuiPropertyBuilder(ruiClassBuilder, Name.identifier(RUI_FRAGMENT), ruiContext.ruiFragmentType, isVar = false).also {
+            it.irProperty.overriddenSymbols = ruiContext.ruiFragment
+        }
 
     /**
      * Creates a primary constructor with a standard body (super class constructor call
@@ -238,11 +242,12 @@ class RuiClassBuilder(
         return initializer
     }
 
-    private fun initRuiFunction(functionName: String, overrides: List<IrSimpleFunctionSymbol>): IrSimpleFunction =
+    private fun initRuiFunction(functionName: String, overrides: List<IrSimpleFunctionSymbol>, fake: Boolean = false): IrSimpleFunction =
         irFactory.buildFun {
             name = Name.identifier(functionName)
             returnType = irBuiltIns.unitType
             modality = Modality.OPEN
+            isFakeOverride = fake
         }.also { function ->
 
             function.overriddenSymbols = overrides
@@ -268,11 +273,20 @@ class RuiClassBuilder(
 
         rootBuilder.buildDeclarations()
 
-        buildRuiCall(create, rootBuilder, rootBuilder.symbolMap.create)
-        buildRuiCall(mount, rootBuilder, rootBuilder.symbolMap.mount)
+        // we need to build these functions only when trace is enabled, otherwise we can use
+        // a fake override and use the version from RuiGeneratedFragment
+
+        if (ruiContext.withTrace) {
+            buildRuiCall(create, rootBuilder, rootBuilder.symbolMap.create)
+            buildRuiCall(mount, rootBuilder, rootBuilder.symbolMap.mount)
+            buildRuiCall(unmount, rootBuilder, rootBuilder.symbolMap.unmount)
+            buildRuiCall(dispose, rootBuilder, rootBuilder.symbolMap.dispose)
+        }
+
+        // paths has to be generated in all cases because it calls external patch
+        // which is class dependent
+
         buildRuiCall(patch, rootBuilder, rootBuilder.symbolMap.patch)
-        buildRuiCall(unmount, rootBuilder, rootBuilder.symbolMap.unmount)
-        buildRuiCall(dispose, rootBuilder, rootBuilder.symbolMap.dispose)
 
         // State initialisation must precede fragment initialisation, so the fragments
         // will get initialized values in their constructor.

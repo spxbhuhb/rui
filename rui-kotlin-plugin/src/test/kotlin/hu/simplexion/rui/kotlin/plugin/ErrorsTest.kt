@@ -53,7 +53,7 @@ class ErrorsTest {
                     SourceFile.fromPath(File(sourceDir, fileName))
                 )
                 useIR = true
-                compilerPluginRegistrars = listOf(RuiCompilerPluginRegistrar())
+                compilerPluginRegistrars = forCompilationError()
                 inheritClassPath = true
             }
             .compile()

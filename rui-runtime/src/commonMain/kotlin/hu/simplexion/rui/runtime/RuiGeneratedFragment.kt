@@ -11,28 +11,24 @@ package hu.simplexion.rui.runtime
 @RuiPublicApi
 interface RuiGeneratedFragment<BT> : RuiFragment<BT> {
 
-    // FIXME code generation uses RuiFragment at the moment, check if it is better to use this RuiGeneratedFragment
-
-    val fragment: RuiFragment<BT>
+    val ruiFragment: RuiFragment<BT>
 
     override fun ruiCreate() {
-        fragment.ruiCreate()
+        ruiFragment.ruiCreate()
     }
 
     override fun ruiMount(bridge: RuiBridge<BT>) {
-        fragment.ruiMount(bridge)
+        ruiFragment.ruiMount(bridge)
     }
 
-    override fun ruiPatch() {
-        fragment.ruiPatch()
-    }
+    // do not override ruiPatch, it should be generated in all cases
 
     override fun ruiUnmount(bridge: RuiBridge<BT>) {
-        fragment.ruiUnmount(bridge)
+        ruiFragment.ruiUnmount(bridge)
     }
 
     override fun ruiDispose() {
-        fragment.ruiDispose()
+        ruiFragment.ruiDispose()
     }
 
 }

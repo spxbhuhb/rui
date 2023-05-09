@@ -13,7 +13,7 @@ import hu.simplexion.rui.runtime.testing.T0
 //    override val ruiParent: RuiFragment<TestNode>? = null
 //    override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
 //
-//    override val fragment: RuiFragment<TestNode>
+//    override val ruiFragment : RuiFragment<TestNode> = RuiT0(ruiAdapter, null, {})
 //
 //    var v0 = 1
 //
@@ -33,12 +33,11 @@ import hu.simplexion.rui.runtime.testing.T0
 //    }
 //
 //    override fun ruiPatch() {
-//        fragment.ruiExternalPatch(fragment)
-//        super.ruiPatch()
+//        ruiFragment.ruiExternalPatch(ruiFragment)
 //    }
 //
 //    init {
-//        fragment = RuiBlock(
+//        ruiFragment = RuiBlock(
 //            ruiAdapter,
 //            RuiT1(ruiAdapter, this, ::ruiEp1, v0),
 //            RuiT0(ruiAdapter, this) { }

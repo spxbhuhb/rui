@@ -10,6 +10,6 @@ data class RuiOptions(
     val withTrace: Boolean,
     val exportState: Boolean,
     val importState: Boolean,
-    val unitTestMode: Boolean,
+    val printDumps: Boolean,
     val pluginLogDir: String?
 )
