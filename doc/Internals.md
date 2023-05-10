@@ -1,8 +1,6 @@
-# Notes
-
 ## Coding Conventions
 
-In the compiler plugin source code function names follows these conventions:
+Plugin source code function names follow these conventions:
 
 - `init*` functions are called during instance initialization
 - `build*` functions are called from `RuiClassBuilder.build` (maybe deeper in the chain), they do no return with
@@ -28,7 +26,8 @@ defined in when deciding how to render the UI.
 A *fragment* is a *component* or a *structural*. Fragments are the building blocks of
 the runtime Rui structure.
 
-A *higher-order function* is a Rui function that gets a Rui function as a parameter.
+A *higher-order function* is an *original function* that has a function type parameter
+annotated with `@Rui`.
 
 A *parameter function* is a function passed as parameter to a *higher-order function*.
 
@@ -60,29 +59,19 @@ fun test(i: Int) {
 }
 ```
 
-Declaration of external patch functions could be done with:
-
-- lambdas,
-- functions defined in the component, their reference passed as a parameter.
-
-Lambdas are a bit easier to define but on JVM they result on a new class generated.
-That may raise the problem of long application startup, therefore it seems better
-to stick to function definitions.
+The compiler generates a function in the parent component for each call site.
 
 Name of generated external patch functions is `ruiEpX` where `X` is the start offset
 of the original function call the external patch belongs to.
 
 ```kotlin
-fun ruiEp543(it: RuiT1) {
-    if (ruiDirty0 and 2 != 0) { // 2 is the mask for `this.value`
-        it.p0 = this.value * 2
-        it.ruiInvalidate(1) // 1 is the mask of `it.p0`
-    }
+fun ruiEp543(it: RuiT1, mask0: Long) {
+  if (mask0 and 2 != 0) { // 2 is the mask for `this.value`
+    it.p0 = this.value * 2
+    it.ruiInvalidate(1) // 1 is the mask of `it.p0`
+  }
 }
 ```
-
-External patch of higher order functions and loop blocks is complicated. See
-Higher-Order Functions for details.
 
 ## Bridge
 
@@ -136,3 +125,117 @@ replace is impossible. For browsers the placeholder may be a simple `Node`
 (Svelte uses a `Text`), for Android an actual Placeholder view exists.
 
 Placeholders are created by the `RuiAdapter.createPlaceholder` function.
+
+## Higher Order Functions
+
+Transformation of higher order functions is rather complex because of the scopes involved. Unfortunately we can't
+build on the actual Kotlin scopes (we transform a temporary runtime memory stack into a persistent object instance
+tree).
+
+The following example shows the complexity:
+
+```kotlin
+@Rui
+fun ho(ph: Int, @Rui func: (pc: Int) -> Unit) {
+  val vv = randomInt()
+  func(ph * 2 + vv)
+  func(ph * 3 + vv)
+}
+
+@Rui
+fun test(p0: Int) {
+  ho(p0) { p1 ->
+    ho(p1) { p2 ->
+      ho(p2) { p3 ->
+        T1(p0 + p1 + p2 + p3)
+      }
+    }
+  }
+}
+```
+
+### Scopes
+
+*start scope* State of the component in which the *parameter function* is defined.
+
+*local scope* The state defined by the parameters of one *parameter function*.
+
+*end scope* The state that is defined as the union of the *start scope* and all *local scopes*
+between the *start scope* and the *end scope* (inclusive).
+
+Example:
+
+```kotlin
+fun start(s1: Int) {      // start scope
+  var s2: Int
+  ho(s1) { p1 ->         // local scope
+    ho(s2) { p2 ->     // end scope
+      t1(p1 + p2)
+    }
+  }
+}
+
+fun ho(ho1: Int, @Rui func: (pc: Int) -> Unit) {
+  var ho2: Int
+}
+```
+
+States:
+
+```
+start scope    local scope    end scope
+
+    s1             s1            s1
+    s2             s2            s2
+                   p1            p1
+                                 p2
+```
+
+### Considerations
+
+1. Higher-order components may perform calculations needed to properly patch the components deeper in the tree.
+2. Components lower in the tree may access function parameters higher in the tree.
+3. A higher-order component may use the parameter function more than once.
+
+### Implicit Components
+
+The parameter functions implicitly define components with the *end scope* as the component state.
+We use classes from the runtime to create instances of these implicit components:
+
+- RuiImplicit0
+- RuiImplicit1
+- RuiImplicitN
+
+The number in the class name is the number of state variables the class stores. The first two should cover
+most of the use cases why the last may be used for any number of parameters.
+
+These classes **do not actually store** the state variables from the *start scope* and the intermediate *local scopes*.
+Instead, they have a `ruiParentScope` property which stores the parent scope of the component.
+
+### Patching
+
+Effective patching have to decide which components may be ignored. External patch passed to implicit fragments have to
+know the dirty mask of their parent scopes to make these decisions possible.
+
+This code has a limitation of 64 state variables, but I think we can live with that.
+
+```kotlin
+fun ruiEp123(it: RuiFragment, scopeMask: Long): Long {
+  it as RuiImplicit
+  if ((scopeMask and it.callSiteDependencyMask) == 0) return 0
+  // do external patch stuff, updates it.ruiDirtyMask0
+  return scopeMask or (it.ruiDirtyMask0 lsh numberOfStateVariables)
+}
+
+fun ruiPatch(scopeMask: Long) {
+  val extendedScopeMask = fragment.ruiEp123(scopeMask)
+  if (extendedScopeMask != 0) fragment.patch(extendedScopeMask)
+}
+```
+
+`callSiteDependencyMask` bits belong to the state variables of the *end scope*. Any given call site will probably use
+a subset of the state variables. We do not have to patch components that do not depend on changed variables.
+
+`numberOfStateVariables` is the number of state variables in the parent scope.
+
+For normal components (not higher order) `scopeMask` is simply the `ruiDirtyMask0` of the start scope.

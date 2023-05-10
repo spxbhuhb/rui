@@ -10,7 +10,3 @@
 
 * [Internals](./Internals.md)
 * [Troubleshooting](./Troubleshooting.md)
-
-## Planning
-
-* [Higher Order Functions](./planning/HigherOrder.md)
