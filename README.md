@@ -55,7 +55,7 @@ val commonMain by getting {
 | `doc`               | Documentation                                                         |
 | `rui-gradle-plugin` | Gradle plugin that applies the compiler plugin.                       |
 | `rui-kotlin-plugin` | Kotlin compiler plugin that compiles functions into reactive classes. |
-| `rui-integraion`    | Test project for plugin development, independently built.             |
+| `rui-integration`   | Test project for plugin development, independently built.             |
 | `rui-runtime`       | Library that contains the code required to use the reactive classes.  |
 
 ## License
