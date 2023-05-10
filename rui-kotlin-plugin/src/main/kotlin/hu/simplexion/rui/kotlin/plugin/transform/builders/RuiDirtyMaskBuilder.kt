@@ -9,6 +9,7 @@ import hu.simplexion.rui.kotlin.plugin.model.RuiDirtyMask
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.declarations.buildFun
 import org.jetbrains.kotlin.ir.builders.irBlockBody
@@ -72,4 +73,11 @@ class RuiDirtyMaskBuilder(
                 receiver = irGet(receiver)
             )
         }
+
+    fun irClear(receiver: IrValueParameter): IrStatement =
+        propertyBuilder.irSetValue(
+            irConst(0L),
+            receiver = irGet(receiver)
+        )
+
 }

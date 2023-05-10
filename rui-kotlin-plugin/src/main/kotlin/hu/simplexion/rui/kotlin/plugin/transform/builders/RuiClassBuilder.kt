@@ -337,17 +337,19 @@ class RuiClassBuilder(
             val symbolMap = rootBuilder.symbolMap
 
             when (callee.name.identifier) {
-                RUI_CREATE -> irRuiCall(symbolMap.create, function, this)
-                RUI_MOUNT -> irRuiCallWithBridge(symbolMap.mount, function, this)
-                RUI_PATCH -> {
-                    irCallExternalPatch(function, this)
-                    irRuiCall(symbolMap.patch, function, this)
-                }
-
-                RUI_UNMOUNT -> irRuiCallWithBridge(symbolMap.unmount, function, this)
-                RUI_DISPOSE -> irRuiCall(symbolMap.dispose, function, this)
+                RUI_CREATE -> buildRuiCall(symbolMap.create, function, this)
+                RUI_MOUNT -> buildRuiCallWithBridge(symbolMap.mount, function, this)
+                RUI_PATCH -> buildRuiPatch(symbolMap.patch, function, this)
+                RUI_UNMOUNT -> buildRuiCallWithBridge(symbolMap.unmount, function, this)
+                RUI_DISPOSE -> buildRuiCall(symbolMap.dispose, function, this)
             }
         }
+    }
+
+    private fun buildRuiPatch(callee: IrSimpleFunction, function: IrSimpleFunction, builder: IrBlockBodyBuilder) {
+        irCallExternalPatch(function, builder)
+        buildRuiCall(callee, function, builder)
+        builder.run { ruiClass.dirtyMasks.forEach { +it.builder.irClear(function.dispatchReceiverParameter!!) } }
     }
 
     private fun IrBlockBodyBuilder.traceRuiCall(function: IrSimpleFunction) {
@@ -392,7 +394,7 @@ class RuiClassBuilder(
      *
      * @param scope The function we call from.
      */
-    fun irRuiCall(callee: IrSimpleFunction, scope: IrSimpleFunction, builder: IrBlockBodyBuilder) {
+    fun buildRuiCall(callee: IrSimpleFunction, scope: IrSimpleFunction, builder: IrBlockBodyBuilder) {
         builder.run {
             +irCallOp(
                 callee.symbol,
@@ -407,7 +409,7 @@ class RuiClassBuilder(
      *
      * @param scope The function we call from.
      */
-    fun irRuiCallWithBridge(callee: IrSimpleFunction, scope: IrSimpleFunction, builder: IrBlockBodyBuilder) {
+    fun buildRuiCallWithBridge(callee: IrSimpleFunction, scope: IrSimpleFunction, builder: IrBlockBodyBuilder) {
         builder.run {
             +irCallOp(
                 callee.symbol,

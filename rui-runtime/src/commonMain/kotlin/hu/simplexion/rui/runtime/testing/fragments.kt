@@ -76,7 +76,7 @@ class RuiT1<BT>(
 
     @Suppress("unused")
     fun ruiInvalidate0(mask: Int) {
-        ruiAdapter.trace(traceName, "invalidate", "mask:", mask, "ruiDirty0", ruiDirty0)
+        ruiAdapter.trace(traceName, "invalidate", "mask:", mask, "ruiDirty0:", ruiDirty0)
         ruiDirty0 = ruiDirty0 or mask
     }
 
