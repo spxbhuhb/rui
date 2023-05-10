@@ -8,12 +8,15 @@ plugins {
     `maven-publish`
 }
 
-val publishSnapshotUrl = (System.getenv("RUI_PUBLISH_SNAPSHOT_URL") ?: project.findProperty("rui.publish.snapshot.url"))?.toString()
-val publishReleaseUrl = (System.getenv("RUI_PUBLISH_RELEASE_URL") ?: project.findProperty("rui.publish.release.url"))?.toString()
-val publishUsername = (System.getenv("RUI_PUBLISH_USERNAME") ?: project.findProperty("rui.publish.username"))?.toString()
-val publishPassword = (System.getenv("RUI_PUBLISH_PASSWORD") ?: project.findProperty("rui.publish.password"))?.toString()
+val String.propValue
+    get() = (System.getenv(this.toUpperCase().replace('.', '_')) ?: project.findProperty(this))?.toString() ?: ""
+
+val isPublishing = "rui.publish".propValue
+val publishSnapshotUrl = "rui.publish.snapshot.url".propValue
+val publishReleaseUrl = "rui.publish.release.url".propValue
+val publishUsername = "rui.publish.username".propValue
+val publishPassword = "rui.publish.password".propValue
 val isSnapshot = "SNAPSHOT" in project.version.toString()
-val isPublishing = (System.getenv("RUI_PUBLISH") ?: project.findProperty("rui.publish")?.toString().toBoolean()) == true
 
 kotlin {
 

@@ -39,17 +39,16 @@ class RuiCompilerPluginRegistrar(
 
     override fun ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
 
-        val annotations = configuration.get(ANNOTATION).let { if (!it.isNullOrEmpty()) it else listOf(RUI_ANNOTATION) }
-        val dumpPoints = configuration.get(DUMP) ?: dumpPoints
-        val rootNameStrategy = configuration.get(ROOT_NAME_STRATEGY) ?: rootNameStrategy
-        val trace = configuration.get(TRACE) ?: trace
-        val exportState = configuration.get(EXPORT_STATE) ?: exportState
-        val importState = configuration.get(IMPORT_STATE) ?: importState
-        val unitTestMode = configuration.get(PRINT_DUMPS) ?: printDumps
-        val pluginLogDir = configuration.get(PLUGIN_LOG_DIR) ?: pluginLogDir
-
-        val options = RuiOptions(annotations, dumpPoints, rootNameStrategy, trace, exportState, importState, unitTestMode, pluginLogDir)
-
+        val options = RuiOptions(
+            annotations = configuration.get(ANNOTATION).let { if (! it.isNullOrEmpty()) it else listOf(RUI_ANNOTATION) },
+            configuration.get(DUMP) ?: dumpPoints,
+            configuration.get(ROOT_NAME_STRATEGY) ?: rootNameStrategy,
+            configuration.get(TRACE) ?: trace,
+            configuration.get(EXPORT_STATE) ?: exportState,
+            configuration.get(IMPORT_STATE) ?: importState,
+            configuration.get(PRINT_DUMPS) ?: printDumps,
+            configuration.get(PLUGIN_LOG_DIR) ?: pluginLogDir
+        )
         registerComponents(options, configuration.getBoolean(JVMConfigurationKeys.IR))
     }
 
