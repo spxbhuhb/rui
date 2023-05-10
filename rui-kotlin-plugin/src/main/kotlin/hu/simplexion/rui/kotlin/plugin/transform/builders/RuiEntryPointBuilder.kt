@@ -45,7 +45,7 @@ class RuiEntryPointBuilder(
                 RUI_FRAGMENT_ARGUMENT_COUNT
             ).also { call ->
                 call.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_ADAPTER, irGetAdapter(function))
-                call.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_PARENT, irNull())
+                call.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_SCOPE, irNull())
                 call.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_EXTERNAL_PATCH, irExternalPatch(ruiClass, function.symbol))
             }
 

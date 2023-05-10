@@ -181,13 +181,13 @@ class RuiCallBuilder(
             symbolMap.primaryConstructor.symbol,
             typeArgumentsCount = 1, // bridge type
             constructorTypeArgumentsCount = 0,
-            ruiCall.valueArguments.size + RUI_FRAGMENT_ARGUMENT_COUNT // +3 = adapter + parent + external patch
+            ruiCall.valueArguments.size + RUI_FRAGMENT_ARGUMENT_COUNT // +3 = adapter + scope + external patch
         ).also { constructorCall ->
 
             constructorCall.putTypeArgument(RUI_FRAGMENT_TYPE_INDEX_BRIDGE, classBoundBridgeType.defaultType)
 
             constructorCall.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_ADAPTER, ruiClassBuilder.adapterPropertyBuilder.irGetValue())
-            constructorCall.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_PARENT, ruiClassBuilder.parentPropertyBuilder.irGetValue())
+            constructorCall.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_SCOPE, ruiClassBuilder.scopePropertyBuilder.irGetValue())
             constructorCall.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_EXTERNAL_PATCH, irExternalPatchReference())
 
             ruiCall.valueArguments.forEachIndexed { index, ruiExpression ->

@@ -33,8 +33,8 @@ fun eventHandlerFragment() {
 
 @RuiTestResult
 fun eventHandlerTestResult(): String = """
-[ RuiRoot                        ]  init                  |  ruiParent: null
-[ RuiEventHandlerFragment        ]  init                  |  ruiParent: null
+[ RuiRoot                        ]  init                  |  ruiScope: null
+[ RuiEventHandlerFragment        ]  init                  |  ruiScope: null
 [ RuiEH1A                        ]  init                  |  p0: 13
 [ RuiRoot                        ]  create                |  
 [ RuiEventHandlerFragment        ]  create                |  

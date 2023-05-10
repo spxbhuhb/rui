@@ -9,7 +9,7 @@ class RuiLoop<BT, IT>(
     val makeFragment: () -> RuiFragment<BT>
 ) : RuiFragment<BT> {
 
-    override val ruiParent = null
+    override val ruiScope = null
     override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit = { }
 
     var loopVariable: IT? = null

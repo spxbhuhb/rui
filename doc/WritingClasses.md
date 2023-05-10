@@ -31,7 +31,7 @@ fun Text(content: String) {
 
 class RuiText(
     ruiAdapter: RuiAdapter<Node>,
-    ruiParent: RuiFragment<Node>?,
+    ruiScope: RuiFragment<Node>?,
     ruiExternalPatch: (it: RuiFragment<Node>) -> Unit,
     var content: String
 ) : LeafNode(ruiAdapter, ruiExternalPatch) {
@@ -40,7 +40,7 @@ class RuiText(
 
     var ruiDirty0 = 0
 
-    override val ruiParent: RuiFragment<Node>
+    override val ruiScope: RuiFragment<Node>
         get() = TODO("Not yet implemented")
 
     fun ruiInvalidate0(mask: Int) {

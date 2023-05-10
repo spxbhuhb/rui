@@ -5,7 +5,7 @@ package hu.simplexion.rui.runtime
 
 class RuiImplicit0<BT>(
     override val ruiAdapter: RuiAdapter<BT>,
-    override val ruiParent: RuiFragment<BT>,
+    override val ruiScope: RuiFragment<BT>,
     override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit,
 ) : RuiGeneratedFragment<BT> {
 

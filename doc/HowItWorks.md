@@ -51,14 +51,14 @@ Let's have a look at the generated `RuiHeader` class:
 
 ```kotlin
 class RuiHeader<BT>(
-    ruiAdapter: RuiAdapter<BT>,
-    ruiParent: RuiFragment<BT>?,
-    ruiExternalPatch: (it: RuiFragment<BT>) -> Unit,
-    title: String
+        ruiAdapter: RuiAdapter<BT>,
+        ruiScope: RuiFragment<BT>?,
+        ruiExternalPatch: (it: RuiFragment<BT>) -> Unit,
+        title: String
 ) : RuiFragment<BT>(
-    ruiAdapter,
-    ruiParent,
-    ruiExternalPatch
+        ruiAdapter,
+        ruiScope,
+        ruiExternalPatch
 ) {
 
     val ruiFragment: RuiFragment<BT>

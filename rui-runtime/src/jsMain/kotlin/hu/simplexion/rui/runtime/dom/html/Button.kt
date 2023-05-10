@@ -22,7 +22,7 @@ fun Button(title: String, onClick: () -> Unit) {
 @RuiPublicApi
 class RuiButton(
     ruiAdapter: RuiAdapter<Node>,
-    ruiParent: RuiFragment<Node>?,
+    ruiScope: RuiFragment<Node>?,
     ruiExternalPatch: (it: RuiFragment<Node>) -> Unit,
     var label: String,
     var onClick: (MouseEvent) -> Unit
@@ -32,7 +32,7 @@ class RuiButton(
 
     var ruiDirty0 = 0
 
-    override val ruiParent: RuiFragment<Node>
+    override val ruiScope: RuiFragment<Node>
         get() = TODO("Not yet implemented")
 
     @RuiPublicApi

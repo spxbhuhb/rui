@@ -210,7 +210,7 @@ The number in the class name is the number of state variables the class stores. 
 most of the use cases why the last may be used for any number of parameters.
 
 These classes **do not actually store** the state variables from the *start scope* and the intermediate *local scopes*.
-Instead, they have a `ruiParentScope` property which stores the parent scope of the component.
+Instead, they have a `ruiScope` property which stores the first upper level scope.
 
 ### Patching
 
@@ -223,8 +223,8 @@ This code has a limitation of 64 state variables, but I think we can live with t
 fun ruiEp123(it: RuiFragment, scopeMask: Long): Long {
   it as RuiImplicit
   if ((scopeMask and it.callSiteDependencyMask) == 0) return 0
-  // do external patch stuff, updates it.ruiDirtyMask0
-  return scopeMask or (it.ruiDirtyMask0 lsh numberOfStateVariables)
+  // do external patch stuff, updates it.ruiDirty0
+  return scopeMask or (it.ruiDirty0 lsh numberOfStateVariables)
 }
 
 fun ruiPatch(scopeMask: Long) {
@@ -238,4 +238,4 @@ a subset of the state variables. We do not have to patch components that do not 
 
 `numberOfStateVariables` is the number of state variables in the parent scope.
 
-For normal components (not higher order) `scopeMask` is simply the `ruiDirtyMask0` of the start scope.
+For normal components (not higher order) `scopeMask` is simply the `ruiDirty0` of the start scope.

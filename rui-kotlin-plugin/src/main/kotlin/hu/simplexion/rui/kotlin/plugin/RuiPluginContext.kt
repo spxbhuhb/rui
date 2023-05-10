@@ -62,7 +62,7 @@ class RuiPluginContext(
     val ruiBridgeType = ruiBridgeClass.defaultType
 
     val ruiAdapter = property(RUI_ADAPTER)
-    val ruiParent = property(RUI_PARENT)
+    val ruiScope = property(RUI_SCOPE)
     val ruiExternalPatch = property(RUI_EXTERNAL_PATCH)
     val ruiFragment = property(RUI_FRAGMENT)
 

@@ -10,7 +10,7 @@ import hu.simplexion.rui.runtime.testing.T0
 //    override val ruiAdapter: RuiAdapter<TestNode>
 //) : RuiGeneratedFragment<TestNode> {
 //
-//    override val ruiParent: RuiFragment<TestNode>? = null
+//    override val ruiScope: RuiFragment<TestNode>? = null
 //    override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
 //
 //    override val ruiFragment : RuiFragment<TestNode> = RuiT0(ruiAdapter, null, {})
@@ -53,7 +53,7 @@ fun test() {
 //
 //open class RuiTest<BT>(
 //    override var ruiAdapter: RuiAdapter<BT>,
-//    override var ruiParent: RuiFragment<BT>?,
+//    override var ruiScope: RuiFragment<BT>?,
 //    override var ruiExternalPatch: Function1<RuiFragment<BT>, Unit>
 //) : RuiFragment<BT> {
 //
@@ -86,7 +86,7 @@ fun test() {
 //    }
 //
 //    init {
-//        ruiFragment = RuiT0(ruiAdapter = ruiAdapter, ruiParent = ruiParent, ruiExternalPatch = ::ruiEp602)
+//        ruiFragment = RuiT0(ruiAdapter = ruiAdapter, ruiParent = ruiScope, ruiExternalPatch = ::ruiEp602)
 //    }
 //
 //}
@@ -152,7 +152,7 @@ fun test() {
 //    override val ruiAdapter: RuiAdapter<TestNode>
 //) : RuiGeneratedFragment<TestNode> {
 //
-//    override val ruiParent: RuiFragment<TestNode>? = null
+//    override val ruiScope: RuiFragment<TestNode>? = null
 //    override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = {  }
 //
 //    override val fragment: RuiFragment<TestNode>

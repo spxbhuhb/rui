@@ -8,7 +8,7 @@ open class RuiBlock<BT>(
     vararg val fragments: RuiFragment<BT>
 ) : RuiFragment<BT> {
 
-    override val ruiParent = null
+    override val ruiScope = null
     override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit = { }
 
     override fun ruiCreate() {

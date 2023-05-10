@@ -176,7 +176,7 @@ class RuiStateTransform(
 
         if (!lastPop.stateVariableChange) return transformed
 
-        val ps = parentScope
+        val ps = parentScope // this is the IR scope, not the Rui scope
 
         return when {
             ps == null -> irPatch(transformed)

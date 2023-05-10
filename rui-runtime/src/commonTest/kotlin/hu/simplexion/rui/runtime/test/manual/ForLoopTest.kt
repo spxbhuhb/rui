@@ -33,7 +33,7 @@ class ForLoop(
     override val ruiAdapter: RuiAdapter<TestNode>
 ) : RuiGeneratedFragment<TestNode> {
 
-    override val ruiParent: RuiFragment<TestNode>? = null
+    override val ruiScope: RuiFragment<TestNode>? = null
     override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
 
     override val ruiFragment: RuiFragment<TestNode>

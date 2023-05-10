@@ -26,8 +26,8 @@ fun block(i: Int) {
 
 @RuiTestResult
 fun blockTestResult(): String = """
-[ RuiRoot                        ]  init                  |  ruiParent: null
-[ RuiBlock                       ]  init                  |  ruiParent: null i: 10
+[ RuiRoot                        ]  init                  |  ruiScope: null
+[ RuiBlock                       ]  init                  |  ruiScope: null i: 10
 [ RuiT1                          ]  init                  |  
 [ RuiT1                          ]  init                  |  
 [ RuiRoot                        ]  create                |  

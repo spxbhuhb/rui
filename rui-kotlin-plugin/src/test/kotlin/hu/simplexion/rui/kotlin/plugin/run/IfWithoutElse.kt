@@ -38,8 +38,8 @@ fun ifWithoutElse(i: Int) {
 
 @RuiTestResult
 fun branchIfWithoutElseResult(): String = """
-[ RuiRoot                        ]  init                  |  ruiParent: null
-[ RuiIfWithoutElse               ]  init                  |  ruiParent: null i: 10
+[ RuiRoot                        ]  init                  |  ruiScope: null
+[ RuiIfWithoutElse               ]  init                  |  ruiScope: null i: 10
 [ RuiRoot                        ]  create                |  
 [ RuiIfWithoutElse               ]  create                |  
 [ RuiRoot                        ]  mount                 |  

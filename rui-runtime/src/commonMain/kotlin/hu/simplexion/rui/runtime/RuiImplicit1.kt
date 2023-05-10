@@ -6,7 +6,7 @@ package hu.simplexion.rui.runtime
 @Suppress("unused")
 class RuiImplicit1<BT, VT>(
     override val ruiAdapter: RuiAdapter<BT>,
-    override val ruiParent: RuiFragment<BT>,
+    override val ruiScope: RuiFragment<BT>,
     override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit,
     override val ruiFragment: RuiFragment<BT>,
     var v0: VT

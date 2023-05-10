@@ -52,11 +52,11 @@ class RuiClassBuilder(
     val thisReceiver: IrValueParameter
 
     private lateinit var adapterConstructorParameter: IrValueParameter
-    private lateinit var parentConstructorParameter: IrValueParameter
+    private lateinit var scopeConstructorParameter: IrValueParameter
     private lateinit var externalPatchConstructorParameter: IrValueParameter
 
     val adapterPropertyBuilder: RuiPropertyBuilder
-    val parentPropertyBuilder: RuiPropertyBuilder
+    val scopePropertyBuilder: RuiPropertyBuilder
     val externalPatchPropertyBuilder: RuiPropertyBuilder
     val fragmentPropertyBuilder: RuiPropertyBuilder
 
@@ -90,7 +90,7 @@ class RuiClassBuilder(
         constructor = initConstructor()
 
         adapterPropertyBuilder = initAdapterProperty()
-        parentPropertyBuilder = initParentProperty()
+        scopePropertyBuilder = initScopeProperty()
         externalPatchPropertyBuilder = initExternalPatchProperty()
         fragmentPropertyBuilder = initFragmentProperty()
 
@@ -154,10 +154,10 @@ class RuiClassBuilder(
             it.irProperty.overriddenSymbols = ruiContext.ruiAdapter
         }
 
-    private fun initParentProperty(): RuiPropertyBuilder =
-        RuiPropertyBuilder(ruiClassBuilder, Name.identifier(RUI_PARENT), classBoundFragmentType.makeNullable(), isVar = false).also {
-            it.irField.initializer = irFactory.createExpressionBody(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET, irGet(parentConstructorParameter))
-            it.irProperty.overriddenSymbols = ruiContext.ruiParent
+    private fun initScopeProperty(): RuiPropertyBuilder =
+        RuiPropertyBuilder(ruiClassBuilder, Name.identifier(RUI_SCOPE), classBoundFragmentType.makeNullable(), isVar = false).also {
+            it.irField.initializer = irFactory.createExpressionBody(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET, irGet(scopeConstructorParameter))
+            it.irProperty.overriddenSymbols = ruiContext.ruiScope
         }
 
     private fun initExternalPatchProperty(): RuiPropertyBuilder =
@@ -178,7 +178,7 @@ class RuiClassBuilder(
      * Adds value parameters to the constructor:
      *
      * - `ruiAdapter` with type `RuiAdapter`
-     * - `ruiParent` with type `RuiParent<BT>`
+     * - `ruiScope` with type `RuiFragment<BT>`
      * - `ruiExternalPatch` with type `(it : RuiFragment) -> Unit`
      *
      * Later, `RuiStateTransformer` adds parameters from the original function.
@@ -195,8 +195,8 @@ class RuiClassBuilder(
             type = ruiContext.ruiAdapterType
         }
 
-        parentConstructorParameter = constructor.addValueParameter {
-            name = Name.identifier(RUI_PARENT)
+        scopeConstructorParameter = constructor.addValueParameter {
+            name = Name.identifier(RUI_SCOPE)
             type = classBoundFragmentType.makeNullable()
         }
 

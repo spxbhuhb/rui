@@ -31,17 +31,27 @@ class HigherOrderTest {
 
 }
 
+/**
+ * ```kotlin
+ * fun higherOrder() {
+ *     var i = 12
+ *     H1 {
+ *         T1(i)
+ *     }
+ * }
+ * ```
+ */
 @Suppress("unused")
 class HigherOrder(
     override val ruiAdapter: RuiAdapter<TestNode>
 ) : RuiGeneratedFragment<TestNode> {
 
-    override val ruiParent: RuiFragment<TestNode>? = null
+    override val ruiScope: RuiFragment<TestNode>? = null
     override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
 
     override val ruiFragment: RuiFragment<TestNode>
 
-    var v0 = 1
+    var i = 1
 
     var ruiDirty0 = 0
 
@@ -58,7 +68,7 @@ class HigherOrder(
     fun ruiEp1(it: RuiFragment<TestNode>) {
         it as RuiT1
         if (ruiDirty0 and 1 != 0) {
-            it.p0 = v0
+            it.p0 = i
             it.ruiInvalidate0(1)
             it.ruiPatch()
         }
@@ -71,7 +81,7 @@ class HigherOrder(
 
     fun ruiBuilder0(ruiAdapter: RuiAdapter<TestNode>) =
         RuiImplicit0(ruiAdapter, this, ::ruiEp0).also {
-            it.ruiFragment = RuiT1(ruiAdapter, it, ::ruiEp1, v0)
+            it.ruiFragment = RuiT1(ruiAdapter, it, ::ruiEp1, i)
         }
 
     init {

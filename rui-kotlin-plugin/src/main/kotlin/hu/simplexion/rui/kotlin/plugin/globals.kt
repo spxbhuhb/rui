@@ -18,11 +18,12 @@ import org.jetbrains.kotlin.name.parentOrNull
  * Number of Rui related constructor arguments.
  *
  * 1. ruiAdapter
- * 2. ruiPatchExternal
+ * 2. ruiScope
+ * 3. ruiPatchExternal
  */
 const val RUI_FRAGMENT_ARGUMENT_COUNT = 3
 const val RUI_FRAGMENT_ARGUMENT_INDEX_ADAPTER = 0
-const val RUI_FRAGMENT_ARGUMENT_INDEX_PARENT = 1
+const val RUI_FRAGMENT_ARGUMENT_INDEX_SCOPE = 1
 const val RUI_FRAGMENT_ARGUMENT_INDEX_EXTERNAL_PATCH = 2
 
 const val RUI_BLOCK_ARGUMENT_COUNT = 2
@@ -59,7 +60,7 @@ const val RUI_INVALIDATE = "ruiInvalidate"
 const val RUI_DIRTY = "ruiDirty"
 
 const val RUI_ADAPTER = "ruiAdapter"
-const val RUI_PARENT = "ruiParent"
+const val RUI_SCOPE = "ruiScope"
 const val RUI_EXTERNAL_PATCH = "ruiExternalPatch"
 const val RUI_FRAGMENT = "ruiFragment"
 const val RUI_MASK = "mask"
