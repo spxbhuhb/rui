@@ -38,6 +38,10 @@ const val RUI_TRACE_ARGUMENT_NAME = 0
 const val RUI_TRACE_ARGUMENT_POINT = 1
 const val RUI_TRACE_ARGUMENT_DATA = 2
 
+const val RUI_PATCH_ARGUMENT_INDEX_SCOPE_MASK = 0
+
+const val RUI_STATE_VARIABLE_LIMIT = 60
+
 /**
  * Bridge type parameter for classes.
  */

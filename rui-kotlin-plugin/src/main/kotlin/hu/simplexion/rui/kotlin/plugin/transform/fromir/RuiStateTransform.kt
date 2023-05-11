@@ -3,6 +3,8 @@
  */
 package hu.simplexion.rui.kotlin.plugin.transform.fromir
 
+import hu.simplexion.rui.kotlin.plugin.RUI_PATCH_ARGUMENT_INDEX_SCOPE_MASK
+import hu.simplexion.rui.kotlin.plugin.RUI_STATE_VARIABLE_LIMIT
 import hu.simplexion.rui.kotlin.plugin.RuiPluginContext
 import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui.RUI_IR_RENDERING_VARIABLE
 import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui.RUI_IR_STATE_VARIABLE_SHADOW
@@ -194,11 +196,22 @@ class RuiStateTransform(
 
         function.body = DeclarationIrBuilder(irContext, function.symbol).irBlockBody {
             for (statement in body.statements) +statement
-            +irCallOp(
+
+            // SOURCE  this.patch(ruiDirty0)
+            +irCall(
                 ruiClass.builder.patch.symbol,
                 ruiClass.builder.irBuiltIns.unitType,
-                ruiClass.builder.irThisReceiver()
-            )
+                valueArgumentsCount = 1,
+                typeArgumentsCount = 0,
+                origin = IrStatementOrigin.INVOKE
+            ).apply {
+                dispatchReceiver = ruiClass.builder.irThisReceiver()
+
+                putValueArgument(
+                    RUI_PATCH_ARGUMENT_INDEX_SCOPE_MASK,
+                    ruiClass.dirtyMasks.first().builder.propertyBuilder.irGetValue(dispatchReceiver!!)
+                )
+            }
         }
 
         return function
@@ -260,10 +273,10 @@ class RuiStateTransform(
             +stateVariable.builder.irSetValue(expression.value)
 
             +irCallOp(
-                ruiClass.dirtyMasks[stateVariable.index / 32].builder.invalidate,
+                ruiClass.dirtyMasks[stateVariable.index / RUI_STATE_VARIABLE_LIMIT].builder.invalidate,
                 irBuiltIns.unitType,
                 ruiClass.builder.irThisReceiver(),
-                (stateVariableIndex % 32).toIrConst(irBuiltIns.intType)
+                (stateVariableIndex % RUI_STATE_VARIABLE_LIMIT).toIrConst(irBuiltIns.longType)
             )
 
             traceStateChangeAfter(stateVariable, traceData)

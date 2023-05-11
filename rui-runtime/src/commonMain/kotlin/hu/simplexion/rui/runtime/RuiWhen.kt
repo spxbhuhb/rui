@@ -10,7 +10,7 @@ open class RuiWhen<BT>(
 ) : RuiFragment<BT> {
 
     override val ruiScope = null
-    override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit = { }
+    override val ruiExternalPatch: RuiExternalPathType<BT> = { _, scopeMask -> scopeMask }
 
     lateinit var placeholder: RuiBridge<BT>
 
@@ -28,10 +28,10 @@ open class RuiWhen<BT>(
         fragment?.ruiMount(placeholder)
     }
 
-    override fun ruiPatch() {
+    override fun ruiPatch(scopeMask: Long) {
         val newBranch = ruiSelect()
         if (newBranch == branch) {
-            fragment?.ruiPatch()
+            fragment?.ruiPatch(scopeMask)
         } else {
             fragment?.ruiUnmount(placeholder)
             fragment?.ruiDispose()

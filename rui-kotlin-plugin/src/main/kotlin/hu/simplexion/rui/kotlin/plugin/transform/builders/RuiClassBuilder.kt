@@ -5,6 +5,7 @@ package hu.simplexion.rui.kotlin.plugin.transform.builders
 
 import hu.simplexion.rui.kotlin.plugin.*
 import hu.simplexion.rui.kotlin.plugin.model.RuiClass
+import hu.simplexion.rui.kotlin.plugin.transform.RuiClassSymbols
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.ClassKind
@@ -257,6 +258,13 @@ class RuiClassBuilder(
                 type = irClass.typeWith(irClass.typeParameters.first().defaultType)
             }
 
+            if (functionName == RUI_PATCH) {
+                function.addValueParameter {
+                    name = Name.identifier("scopeMask")
+                    type = irBuiltIns.longType
+                }
+            }
+
             if (functionName == RUI_MOUNT || functionName == RUI_UNMOUNT) {
                 function.addValueParameter {
                     name = Name.identifier("bridge")
@@ -328,7 +336,7 @@ class RuiClassBuilder(
 
     /**
      * Builds a function body that calls the same function of the child fragment. Except `ruiPatch` which
-     * calls the `ruiExternalPatch` first and then `ruiPatch`.
+     * is more complex. This is called only when there is a trace.
      */
     fun buildRuiCall(function: IrSimpleFunction, rootBuilder: RuiFragmentBuilder, callee: IrSimpleFunction) {
         function.body = DeclarationIrBuilder(irContext, function.symbol).irBlockBody {
@@ -339,17 +347,11 @@ class RuiClassBuilder(
             when (callee.name.identifier) {
                 RUI_CREATE -> buildRuiCall(symbolMap.create, function, this)
                 RUI_MOUNT -> buildRuiCallWithBridge(symbolMap.mount, function, this)
-                RUI_PATCH -> buildRuiPatch(symbolMap.patch, function, this)
+                RUI_PATCH -> this.buildRuiPatch(symbolMap, function)
                 RUI_UNMOUNT -> buildRuiCallWithBridge(symbolMap.unmount, function, this)
                 RUI_DISPOSE -> buildRuiCall(symbolMap.dispose, function, this)
             }
         }
-    }
-
-    private fun buildRuiPatch(callee: IrSimpleFunction, function: IrSimpleFunction, builder: IrBlockBodyBuilder) {
-        irCallExternalPatch(function, builder)
-        buildRuiCall(callee, function, builder)
-        builder.run { ruiClass.dirtyMasks.forEach { +it.builder.irClear(function.dispatchReceiverParameter!!) } }
     }
 
     private fun IrBlockBodyBuilder.traceRuiCall(function: IrSimpleFunction) {
@@ -362,6 +364,9 @@ class RuiClassBuilder(
             name.startsWith("ruiPatch") -> {
 
                 val args = mutableListOf<IrExpression>()
+
+                args += irConst("scopeMask:")
+                args += irGet(function.valueParameters[0])
 
                 ruiClass.dirtyMasks.forEach {
                     args += irString("${it.name}:")
@@ -420,12 +425,38 @@ class RuiClassBuilder(
         }
     }
 
+    // ------------------------------------------------------------------------------
+    // Patch
+    // ------------------------------------------------------------------------------
+
+    private fun IrBlockBodyBuilder.buildRuiPatch(symbolMap: RuiClassSymbols, function: IrSimpleFunction) {
+        // SOURCE  val extendedScopeMask = ruiFragment.ruiExternalPatch(ruiFragment, scopeMask)
+        val extendedScopeMask = irCallExternalPatch(function)
+
+        // SOURCE  if (extendedScopeMask != 0L) fragment.ruiPatch(extendedScopeMask)
+        +irIf(
+            irNotEqual(
+                irGet(extendedScopeMask),
+                irConst(0L)
+            ),
+            irCallOp(
+                symbolMap.patch.symbol,
+                type = irBuiltIns.unitType,
+                dispatchReceiver = irGetFragment(function),
+                argument = irGet(extendedScopeMask)
+            )
+        )
+
+        // SOURCE  ruiDirty0 = 0L
+        ruiClass.dirtyMasks.forEach { +it.builder.irClear(function.dispatchReceiverParameter!!) }
+    }
+
     /**
      * Call the external patch of the child fragment. This is somewhat complex because the function
      * is stored in a variable.
      *
      * ```kotlin
-     * fragment.ruiExternalPatch(fragment)
+     * fragment.ruiExternalPatch(fragment, scopeMask)
      * ```
      *
      * ```text
@@ -437,27 +468,32 @@ class RuiClassBuilder(
      *     $this: GET_VAR '<this>: hu.simplexion.rui.kotlin.plugin.adhoc.Block declared in hu.simplexion.rui.kotlin.plugin.adhoc.Block.ruiPatch' type=hu.simplexion.rui.kotlin.plugin.adhoc.Block origin=null
      * ```
      */
-    fun irCallExternalPatch(function: IrSimpleFunction, builder: IrBlockBodyBuilder) {
-        builder.run {
+    fun IrBlockBodyBuilder.irCallExternalPatch(function: IrSimpleFunction): IrVariable {
 
-            val function1Type = irBuiltIns.functionN(1)
-            val invoke = function1Type.functions.first { it.name.identifier == "invoke" }.symbol
+        val function2Type = irBuiltIns.functionN(2)
+        val invoke = function2Type.functions.first { it.name.identifier == "invoke" }.symbol
 
-            val fragment = irTemporary(irGetFragment(function))
-            val rootBuilder = ruiClass.rootBlock.builder
+        val fragment = irTemporary(irGetFragment(function))
+        val rootBuilder = ruiClass.rootBlock.builder
 
-            +irCallOp(
+        // returns with the extended scope mask
+        return irTemporary(
+            irCall(
                 invoke,
-                type = irBuiltIns.unitType,
+                irBuiltIns.longType,
+                valueArgumentsCount = 2,
+                typeArgumentsCount = 0,
+                origin = IrStatementOrigin.INVOKE
+            ).apply {
                 dispatchReceiver = irCallOp(
                     rootBuilder.symbolMap.externalPatchGetter.symbol,
-                    function1Type.defaultType,
+                    function2Type.defaultType,
                     irGet(fragment)
-                ),
-                origin = IrStatementOrigin.INVOKE,
-                argument = irGet(fragment)
-            )
-        }
+                )
+                putValueArgument(0, irGet(fragment))
+                putValueArgument(1, irGet(function.valueParameters[RUI_PATCH_ARGUMENT_INDEX_SCOPE_MASK]))
+            }
+        )
     }
 
     fun irTrace(point: String, parameters: List<IrExpression>): IrStatement {

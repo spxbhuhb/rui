@@ -3,6 +3,7 @@
  */
 package hu.simplexion.rui.kotlin.plugin.transform.builders
 
+import hu.simplexion.rui.kotlin.plugin.RUI_STATE_VARIABLE_LIMIT
 import hu.simplexion.rui.kotlin.plugin.model.RuiExternalStateVariable
 import hu.simplexion.rui.kotlin.plugin.model.RuiInternalStateVariable
 import hu.simplexion.rui.kotlin.plugin.model.RuiStateVariable
@@ -72,14 +73,14 @@ class RuiStateVariableBuilder private constructor(
 
     fun irIsDirty(receiver: IrExpression): IrExpression {
         val variableIndex = ruiStateVariable.index
-        val maskIndex = variableIndex / 32
-        val bitIndex = variableIndex % 32
+        val maskIndex = variableIndex / RUI_STATE_VARIABLE_LIMIT
+        val bitIndex = variableIndex % RUI_STATE_VARIABLE_LIMIT
 
         val mask = ruiClassBuilder.ruiClass.dirtyMasks[maskIndex]
 
         return irNotEqual(
-            irAnd(mask.builder.propertyBuilder.irGetValue(receiver), irConst(1 shl bitIndex)),
-            irConst(0)
+            irAnd(mask.builder.propertyBuilder.irGetValue(receiver), irConst(1L shl bitIndex)),
+            irConst(0L)
         )
     }
 

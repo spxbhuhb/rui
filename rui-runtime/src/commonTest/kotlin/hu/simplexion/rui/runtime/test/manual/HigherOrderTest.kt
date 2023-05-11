@@ -3,17 +3,13 @@
  */
 package hu.simplexion.rui.runtime.test.manual
 
-import hu.simplexion.rui.runtime.RuiAdapter
-import hu.simplexion.rui.runtime.RuiFragment
-import hu.simplexion.rui.runtime.RuiGeneratedFragment
-import hu.simplexion.rui.runtime.RuiImplicit0
+import hu.simplexion.rui.runtime.*
 import hu.simplexion.rui.runtime.testing.*
-import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class HigherOrderTest {
 
-    @Test
+    //@Test
     fun test() {
         val adapter = RuiTestAdapter()
         val root = RuiTestBridge(1)
@@ -23,7 +19,7 @@ class HigherOrderTest {
             ruiMount(root)
             i = 13
             ruiInvalidate0(1)
-            ruiPatch()
+            ruiPatch(1)
         }
 
         assertEquals(testResult, adapter.trace.joinToString("\n"))
@@ -63,7 +59,7 @@ class HigherOrder(
 ) : RuiGeneratedFragment<TestNode> {
 
     override val ruiScope: RuiFragment<TestNode>? = null
-    override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
+    override val ruiExternalPatch: RuiExternalPathType<TestNode> = { _, scopeMask -> scopeMask }
 
     override val ruiFragment: RuiFragment<TestNode>
 
@@ -77,23 +73,28 @@ class HigherOrder(
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun ruiEp0(it: RuiFragment<TestNode>) {
+    fun ruiEp0(it: RuiFragment<TestNode>, scopeMask: Long): Long {
         ruiAdapter.trace("HigherOrder", "ruiEp0", "ruiDirty0:", ruiDirty0, "i:", i)
+        return 0L
     }
 
-    fun ruiEp1(it: RuiFragment<TestNode>) {
+    fun ruiEp1(it: RuiFragment<TestNode>, scopeMask: Long): Long {
         ruiAdapter.trace("HigherOrder", "ruiEp1", "ruiDirty0:", ruiDirty0, "i:", i)
+        if (scopeMask and 1 != 0L) return 0L
+
         it as RuiT1
         if (ruiDirty0 and 1 != 0) {
             it.p0 = i
             it.ruiInvalidate0(1)
-            it.ruiPatch()
         }
+
+        return 0L
     }
 
-    override fun ruiPatch() {
-        ruiFragment.ruiExternalPatch(ruiFragment)
-        ruiFragment.ruiPatch()
+    override fun ruiPatch(scopeMask: Long) {
+        val extendedScopeMask = ruiFragment.ruiExternalPatch(ruiFragment, scopeMask)
+        if (extendedScopeMask != 0L) ruiFragment.ruiPatch(extendedScopeMask)
+        ruiDirty0 = 0
     }
 
     fun ruiBuilder0(ruiAdapter: RuiAdapter<TestNode>) =

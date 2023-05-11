@@ -25,7 +25,7 @@ class BranchTest {
             fun v(value: Int) {
                 v0 = value
                 ruiInvalidate0(1)
-                ruiPatch()
+                ruiPatch(1)
             }
 
             v(1)
@@ -63,7 +63,7 @@ class Branch(
 ) : RuiGeneratedFragment<TestNode> {
 
     override val ruiScope: RuiFragment<TestNode>? = null
-    override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
+    override val ruiExternalPatch: RuiExternalPathType<TestNode> = { _, _ -> 0L }
 
     override val ruiFragment: RuiFragment<TestNode>
 
@@ -75,25 +75,34 @@ class Branch(
         ruiDirty0 = ruiDirty0 or mask
     }
 
-    fun ruiEp0(it: RuiFragment<TestNode>) {
+    fun ruiEp0(it: RuiFragment<TestNode>, scopeMask: Long): Long {
+        if (scopeMask and 1 != 0L) return 0L
+
         it as RuiT1
         if (ruiDirty0 and 1 != 0) {
             it.p0 = v0 + 10
             ruiInvalidate0(1)
         }
+
+        return scopeMask
     }
 
-    fun ruiEp1(it: RuiFragment<TestNode>) {
+    fun ruiEp1(it: RuiFragment<TestNode>, scopeMask: Long): Long {
+        if (scopeMask and 1 != 0L) return 0L
+
         it as RuiT1
         if (ruiDirty0 and 1 != 0) {
             it.p0 = v0 + 20
             ruiInvalidate0(1)
         }
+
+        return scopeMask
     }
 
-    override fun ruiPatch() {
-        ruiFragment.ruiExternalPatch(ruiFragment)
-        ruiFragment.ruiPatch()
+    override fun ruiPatch(scopeMask: Long) {
+        val extendedScopeMask = ruiFragment.ruiExternalPatch(ruiFragment, scopeMask)
+        if (extendedScopeMask != 0L) ruiFragment.ruiPatch(extendedScopeMask)
+        ruiDirty0 = 0
     }
 
     fun ruiBranch0(): RuiFragment<TestNode> = RuiT1(ruiAdapter, this, ::ruiEp0, v0 + 10)

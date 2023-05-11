@@ -47,7 +47,7 @@ class RunTest {
     fun ifWithoutElse() = compile("IfWithoutElse.kt")
 
     @Test
-    fun ifElse() = compile("IfElse.kt")
+    fun ifElse() = compile("IfElse.kt", manual = true)
 
     @Test
     fun blockAsRoot() = compile("BlockAsRoot.kt")

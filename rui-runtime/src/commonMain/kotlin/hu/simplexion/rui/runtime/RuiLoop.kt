@@ -10,7 +10,7 @@ class RuiLoop<BT, IT>(
 ) : RuiFragment<BT> {
 
     override val ruiScope = null
-    override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit = { }
+    override val ruiExternalPatch: RuiExternalPathType<BT> = { _, scopeMask -> scopeMask }
 
     var loopVariable: IT? = null
 
@@ -34,7 +34,7 @@ class RuiLoop<BT, IT>(
         }
     }
 
-    override fun ruiPatch() {
+    override fun ruiPatch(scopeMask: Long) {
         var index = 0
         for (loopVariable in makeIterator()) {
             this.loopVariable = loopVariable
@@ -44,7 +44,10 @@ class RuiLoop<BT, IT>(
                 f.ruiCreate()
                 f.ruiMount(placeholder)
             } else {
-                fragments[index].ruiPatch()
+                fragments[index].also {
+                    val extendedScopeMask = it.ruiExternalPatch(it, scopeMask)
+                    if (extendedScopeMask != 0L) it.ruiPatch(extendedScopeMask)
+                }
             }
             index++
         }

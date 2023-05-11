@@ -5,15 +5,12 @@
 
 package hu.simplexion.rui.runtime.testing
 
-import hu.simplexion.rui.runtime.Rui
-import hu.simplexion.rui.runtime.RuiAdapter
-import hu.simplexion.rui.runtime.RuiBridge
-import hu.simplexion.rui.runtime.RuiFragment
+import hu.simplexion.rui.runtime.*
 
 open class RuiTracingFragment<BT>(
     override val ruiAdapter: RuiAdapter<BT>,
     override val ruiScope: RuiFragment<BT>?,
-    override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit
+    override val ruiExternalPatch: RuiExternalPathType<BT>
 ) : RuiFragment<BT> {
 
     val traceName = this::class.simpleName.toString()
@@ -26,7 +23,7 @@ open class RuiTracingFragment<BT>(
         ruiAdapter.trace(traceName, "mount", "bridge:", bridge)
     }
 
-    override fun ruiPatch() {
+    override fun ruiPatch(scopeMask: Long) {
         ruiAdapter.trace(traceName, "patch")
     }
 
@@ -48,7 +45,7 @@ fun T0() {
 class RuiT0<BT>(
     ruiAdapter: RuiAdapter<BT>,
     ruiScope: RuiFragment<BT>?,
-    ruiExternalPatch: (it: RuiFragment<BT>) -> Unit
+    ruiExternalPatch: RuiExternalPathType<BT>
 ) : RuiTracingFragment<BT>(
     ruiAdapter,
     ruiScope,
@@ -64,7 +61,7 @@ fun T1(p0: Int) {
 class RuiT1<BT>(
     ruiAdapter: RuiAdapter<BT>,
     ruiScope: RuiFragment<BT>?,
-    ruiExternalPatch: (it: RuiFragment<BT>) -> Unit,
+    ruiExternalPatch: RuiExternalPathType<BT>,
     var p0: Int
 ) : RuiTracingFragment<BT>(
     ruiAdapter,
@@ -88,7 +85,7 @@ class RuiT1<BT>(
         ruiAdapter.trace(traceName, "create", "p0:", p0)
     }
 
-    override fun ruiPatch() {
+    override fun ruiPatch(scopeMask: Long) {
         ruiAdapter.trace(traceName, "patch", "ruiDirty0:", ruiDirty0, "p0:", p0)
         ruiDirty0 = 0
     }
@@ -104,7 +101,7 @@ fun H1(@Rui builder: () -> Unit) {
 class RuiH1(
     ruiAdapter: RuiAdapter<TestNode>,
     ruiScope: RuiFragment<TestNode>?,
-    ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit,
+    ruiExternalPatch: RuiExternalPathType<TestNode>,
     @Rui builder: (ruiAdapter: RuiAdapter<TestNode>) -> RuiFragment<TestNode>
 ) : RuiC1(ruiAdapter, ruiScope, ruiExternalPatch) {
 
@@ -124,7 +121,7 @@ class RuiH1(
 abstract class RuiC1(
     ruiAdapter: RuiAdapter<TestNode>,
     scope: RuiFragment<TestNode>?,
-    ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit
+    ruiExternalPatch: RuiExternalPathType<TestNode>
 ) : RuiTracingFragment<TestNode>(ruiAdapter, scope, ruiExternalPatch) {
 
     abstract val fragment0: RuiFragment<TestNode>
@@ -139,9 +136,9 @@ abstract class RuiC1(
         fragment0.ruiMount(bridge)
     }
 
-    override fun ruiPatch() {
-        super.ruiPatch()
-        fragment0.ruiPatch()
+    override fun ruiPatch(scopeMask: Long) {
+        super.ruiPatch(scopeMask)
+        fragment0.ruiPatch(scopeMask)
     }
 
     override fun ruiUnmount(bridge: RuiBridge<TestNode>) {
@@ -164,7 +161,7 @@ fun EH1A(p0: Int, eventHandler: (np0: Int) -> Unit) {
 class RuiEH1A(
     ruiAdapter: RuiAdapter<TestNode>,
     ruiScope: RuiFragment<TestNode>?,
-    ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit,
+    ruiExternalPatch: RuiExternalPathType<TestNode>,
     var p0: Int,
     var eventHandler: (np0: Int) -> Unit,
 ) : RuiTracingFragment<TestNode>(
@@ -192,7 +189,7 @@ class RuiEH1A(
         ruiDirty0 = ruiDirty0 or mask
     }
 
-    override fun ruiPatch() {
+    override fun ruiPatch(scopeMask: Long) {
         ruiAdapter.trace(traceName, "patch", "ruiDirty0:", ruiDirty0, "p0:", p0)
         ruiDirty0 = 0
     }
@@ -208,7 +205,7 @@ fun EH1B(p0: Int, eventHandler: (np0: Int) -> Unit) {
 class RuiEH1B(
     ruiAdapter: RuiAdapter<TestNode>,
     ruiScope: RuiFragment<TestNode>?,
-    ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit,
+    ruiExternalPatch: RuiExternalPathType<TestNode>,
     var p0: Int,
     var eventHandler: (np0: Int) -> Unit,
 ) : RuiTracingFragment<TestNode>(
@@ -236,7 +233,7 @@ class RuiEH1B(
         ruiDirty0 = ruiDirty0 or mask
     }
 
-    override fun ruiPatch() {
+    override fun ruiPatch(scopeMask: Long) {
         ruiAdapter.trace(traceName, "patch", "ruiDirty0:", ruiDirty0, "p0:", p0)
         ruiDirty0 = 0
     }

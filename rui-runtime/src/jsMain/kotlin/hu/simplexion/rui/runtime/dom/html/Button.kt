@@ -5,10 +5,7 @@
 
 package hu.simplexion.rui.runtime.dom.html
 
-import hu.simplexion.rui.runtime.Rui
-import hu.simplexion.rui.runtime.RuiAdapter
-import hu.simplexion.rui.runtime.RuiFragment
-import hu.simplexion.rui.runtime.RuiPublicApi
+import hu.simplexion.rui.runtime.*
 import kotlinx.browser.document
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.Node
@@ -23,7 +20,7 @@ fun Button(title: String, onClick: () -> Unit) {
 class RuiButton(
     ruiAdapter: RuiAdapter<Node>,
     ruiScope: RuiFragment<Node>?,
-    ruiExternalPatch: (it: RuiFragment<Node>) -> Unit,
+    ruiExternalPatch: RuiExternalPathType<Node>,
     var label: String,
     var onClick: (MouseEvent) -> Unit
 ) : LeafNode(ruiAdapter, ruiExternalPatch) {
@@ -45,7 +42,7 @@ class RuiButton(
         receiver.onclick = onClick
     }
 
-    override fun ruiPatch() {
+    override fun ruiPatch(scopeMask: Long) {
         if (ruiDirty0 and 1 != 0) {
             receiver.innerText = label
         }

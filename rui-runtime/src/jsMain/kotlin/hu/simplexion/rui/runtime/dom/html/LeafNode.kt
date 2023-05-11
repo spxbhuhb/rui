@@ -14,7 +14,7 @@ import org.w3c.dom.Node
  */
 abstract class LeafNode(
     override val ruiAdapter: RuiAdapter<Node>,
-    override val ruiExternalPatch: (it: RuiFragment<Node>) -> Unit,
+    override val ruiExternalPatch: (it: RuiFragment<Node>, scopeMask: Long) -> Long,
 ) : RuiFragment<Node>, RuiBridge<Node> {
 
 

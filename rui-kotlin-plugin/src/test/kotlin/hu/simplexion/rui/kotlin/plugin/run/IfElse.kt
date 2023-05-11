@@ -48,13 +48,13 @@ fun ifElseResult(): String = """
 [ RuiRoot                        ]  mount                 |  
 [ RuiIfElseFragment              ]  mount                 |  
 [ RuiEH1A                        ]  mount                 |  bridge: 2
-[ RuiIfElseFragment              ]  patch                 |  ruiDirty0: 1
+[ RuiIfElseFragment              ]  patch                 |  scopeMask: 1 ruiDirty0: 1
 [ RuiEH1A                        ]  unmount               |  bridge: 2
 [ RuiEH1A                        ]  dispose               |  
 [ RuiEH1B                        ]  init                  |  p0: 33
 [ RuiEH1B                        ]  create                |  
 [ RuiEH1B                        ]  mount                 |  bridge: 2
-[ RuiIfElseFragment              ]  patch                 |  ruiDirty0: 1
+[ RuiIfElseFragment              ]  patch                 |  scopeMask: 1 ruiDirty0: 1
 [ RuiEH1B                        ]  unmount               |  bridge: 2
 [ RuiEH1B                        ]  dispose               |  
 [ RuiEH1A                        ]  init                  |  p0: 24

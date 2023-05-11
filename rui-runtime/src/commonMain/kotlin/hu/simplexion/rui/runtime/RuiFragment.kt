@@ -25,11 +25,11 @@ interface RuiFragment<BT> {
 
     val ruiAdapter: RuiAdapter<BT>
     val ruiScope: RuiFragment<BT>?
-    val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit
+    val ruiExternalPatch: RuiExternalPathType<BT>
 
     fun ruiCreate()
     fun ruiMount(bridge: RuiBridge<BT>)
-    fun ruiPatch()
+    fun ruiPatch(scopeMask: Long)
     fun ruiUnmount(bridge: RuiBridge<BT>)
     fun ruiDispose()
 

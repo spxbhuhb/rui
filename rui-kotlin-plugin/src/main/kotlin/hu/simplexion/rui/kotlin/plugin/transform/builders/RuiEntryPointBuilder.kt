@@ -86,7 +86,7 @@ class RuiEntryPointBuilder(
         val function = irFactory.buildFun {
             name = Name.special("<anonymous>")
             origin = IrDeclarationOrigin.LOCAL_FUNCTION_FOR_LAMBDA
-            returnType = irBuiltIns.unitType
+            returnType = irBuiltIns.longType
         }.also { function ->
 
             function.parent = parent.owner
@@ -97,7 +97,17 @@ class RuiEntryPointBuilder(
                 type = ruiContext.ruiFragmentType
             }
 
-            function.body = DeclarationIrBuilder(ruiContext.irContext, function.symbol).irBlockBody { }
+            function.addValueParameter {
+                name = Name.identifier("scopeMask")
+                type = irBuiltIns.longType
+            }
+
+            function.body = DeclarationIrBuilder(ruiContext.irContext, function.symbol).irBlockBody {
+                +irReturn(
+                    function.symbol,
+                    irConst(0L)
+                )
+            }
         }
 
         return IrFunctionExpressionImpl(

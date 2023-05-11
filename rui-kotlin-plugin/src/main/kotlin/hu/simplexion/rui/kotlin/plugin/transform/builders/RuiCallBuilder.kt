@@ -34,6 +34,8 @@ class RuiCallBuilder(
     val ruiCall: RuiCall
 ) : RuiFragmentBuilder {
 
+    var callSiteDependencyMask = 0L
+
     // we have to initialize this in build, after all other classes in the module are registered
     override lateinit var symbolMap: RuiClassSymbols
 
@@ -41,16 +43,27 @@ class RuiCallBuilder(
     private lateinit var dispatchReceiver: IrValueParameter
 
     override fun buildDeclarations() {
+        calcCallSiteDependencyMask()
+
         tryBuild(ruiCall.irCall) {
             symbolMap = ruiContext.ruiSymbolMap.getSymbolMap(ruiCall.targetRuiClass)
             buildExternalPatch()
         }
     }
 
+    private fun calcCallSiteDependencyMask() {
+        callSiteDependencyMask = 0
+        for (argument in ruiCall.valueArguments) {
+            for (stateVariable in argument.dependencies) {
+                callSiteDependencyMask = callSiteDependencyMask or (1L shl stateVariable.index)
+            }
+        }
+    }
+
     private fun buildExternalPatch() {
         irFactory.buildFun {
             name = Name.identifier("$RUI_EXTERNAL_PATCH_OF_CHILD${ruiCall.irCall.startOffset}")
-            returnType = irBuiltIns.unitType
+            returnType = irBuiltIns.longType
             modality = Modality.OPEN
         }.also { function ->
 
@@ -66,21 +79,40 @@ class RuiCallBuilder(
                 type = classBoundFragmentType
             }
 
-            function.body = irExternalPatchBody(function, externalPatchIt)
+            val scopeMask = function.addValueParameter {
+                name = Name.identifier("scopeMask")
+                type = irBuiltIns.longType
+            }
+
+            function.body = irExternalPatchBody(function, externalPatchIt, scopeMask)
 
             irClass.declarations += function
         }
     }
 
-    private fun irExternalPatchBody(function: IrSimpleFunction, externalPatchIt: IrValueParameter): IrBody =
+    private fun irExternalPatchBody(function: IrSimpleFunction, externalPatchIt: IrValueParameter, scopeMask: IrValueParameter): IrBody =
         DeclarationIrBuilder(irContext, function.symbol).irBlockBody {
             traceExternalPatch()
+
+            +irIf(
+                irEqual(
+                    irAnd(irGet(scopeMask), irConst(callSiteDependencyMask)),
+                    irConst(0)
+                ),
+                irReturn(
+                    irGet(scopeMask)
+                )
+            )
 
             +irAs(symbolMap.defaultType, irGet(externalPatchIt))
 
             ruiCall.valueArguments.forEachIndexed { index, ruiExpression ->
                 irVariablePatch(externalPatchIt, index, ruiExpression)
             }
+
+            +irReturn(
+                irGet(scopeMask)
+            )
         }
 
     private fun IrBlockBodyBuilder.traceExternalPatch() {
@@ -195,21 +227,15 @@ class RuiCallBuilder(
             }
         }
 
-    fun irExternalPatchReference(): IrExpression {
-        val functionType = irBuiltIns.functionN(1).typeWith(
-            classBoundFragmentType,
-            irBuiltIns.unitType
-        )
-
-        return IrFunctionReferenceImpl.fromSymbolOwner(
+    fun irExternalPatchReference(): IrExpression =
+        IrFunctionReferenceImpl.fromSymbolOwner(
             SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
-            functionType,
+            classBoundExternalPatchType,
             externalPatch.symbol,
             typeArgumentsCount = 0,
             reflectionTarget = externalPatch.symbol
         ).also {
             it.dispatchReceiver = irThisReceiver()
         }
-    }
 
 }

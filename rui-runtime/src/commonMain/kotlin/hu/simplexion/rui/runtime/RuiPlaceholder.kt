@@ -9,7 +9,7 @@ class RuiPlaceholder<BT>(
 
     override val ruiScope = null
 
-    override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit = { }
+    override val ruiExternalPatch: RuiExternalPathType<BT> = { _, scopeMask -> scopeMask }
 
     val bridge = ruiAdapter.createPlaceholder()
 
@@ -21,7 +21,7 @@ class RuiPlaceholder<BT>(
         bridge.add(this.bridge)
     }
 
-    override fun ruiPatch() {
+    override fun ruiPatch(scopeMask: Long) {
 
     }
 

@@ -6,13 +6,13 @@ package hu.simplexion.rui.runtime
 class RuiImplicit0<BT>(
     override val ruiAdapter: RuiAdapter<BT>,
     override val ruiScope: RuiFragment<BT>,
-    override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit,
+    override val ruiExternalPatch: RuiExternalPathType<BT>,
 ) : RuiGeneratedFragment<BT> {
 
     override lateinit var ruiFragment: RuiFragment<BT>
 
-    override fun ruiPatch() {
-        ruiFragment.ruiExternalPatch(ruiFragment)
-        ruiFragment.ruiPatch()
+    override fun ruiPatch(scopeMask: Long) {
+        val extendedScopeMask = ruiFragment.ruiExternalPatch(ruiFragment, scopeMask)
+        if (extendedScopeMask != 0L) ruiFragment.ruiPatch(extendedScopeMask)
     }
 }

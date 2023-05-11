@@ -3,10 +3,7 @@
  */
 package hu.simplexion.rui.runtime.test.manual
 
-import hu.simplexion.rui.runtime.RuiAdapter
-import hu.simplexion.rui.runtime.RuiBlock
-import hu.simplexion.rui.runtime.RuiFragment
-import hu.simplexion.rui.runtime.RuiGeneratedFragment
+import hu.simplexion.rui.runtime.*
 import hu.simplexion.rui.runtime.testing.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -43,7 +40,7 @@ class Block(
 ) : RuiGeneratedFragment<TestNode> {
 
     override val ruiScope: RuiFragment<TestNode>? = null
-    override val ruiExternalPatch: (it: RuiFragment<TestNode>) -> Unit = { }
+    override val ruiExternalPatch: RuiExternalPathType<TestNode> = { _, _ -> 0L }
 
     override val ruiFragment: RuiFragment<TestNode>
 
@@ -55,18 +52,21 @@ class Block(
         ruiDirty0 = ruiDirty0 or mask
     }
 
-    fun ruiEp1(it: RuiFragment<TestNode>) {
+    fun ruiEp1(it: RuiFragment<TestNode>, scopeMask: Long): Long {
+        if (scopeMask and 1 != 0L) return 0L
+
         it as RuiT1
         if (ruiDirty0 and 1 != 0) {
             it.p0 = v0
             it.ruiInvalidate0(1)
-            it.ruiPatch()
         }
+
+        return scopeMask
     }
 
-    override fun ruiPatch() {
-        ruiFragment.ruiExternalPatch(ruiFragment) // TODO-- optimize out ruiExternalPatch for RuiBlock, it's an empty call
-        ruiFragment.ruiPatch()
+    override fun ruiPatch(scopeMask: Long) {
+        val extendedScopeMask = ruiFragment.ruiExternalPatch(ruiFragment, scopeMask)
+        if (extendedScopeMask != 0L) ruiFragment.ruiPatch(extendedScopeMask)
         ruiDirty0 = 0
     }
 
@@ -74,7 +74,7 @@ class Block(
         ruiFragment = RuiBlock(
             ruiAdapter,
             RuiT1(ruiAdapter, this, ::ruiEp1, v0),
-            RuiT0(ruiAdapter, this) { }
+            RuiT0(ruiAdapter, this) { _, _ -> 0L }
         )
     }
 

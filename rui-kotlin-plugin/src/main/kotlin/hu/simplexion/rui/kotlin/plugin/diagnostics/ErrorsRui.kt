@@ -3,6 +3,7 @@
  */
 package hu.simplexion.rui.kotlin.plugin.diagnostics
 
+import hu.simplexion.rui.kotlin.plugin.RUI_STATE_VARIABLE_LIMIT
 import hu.simplexion.rui.kotlin.plugin.RuiPluginContext
 import hu.simplexion.rui.kotlin.plugin.model.RuiClass
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -31,7 +32,7 @@ object ErrorsRui {
     val RUI_IR_RENDERING_INVALID_DECLARATION = RuiIrError(8, "This declaration is not allowed in the rendering part.")
 
     //    val RUI_IR_MISSING_RUI_CLASS = RuiIrError(9, "Missing Rui class.")
-//    val RUI_IR_MISSING_RUI_FUNCTION = RuiIrError(10, "Missing Rui function.")
+    val RUI_IR_TOO_MANY_STATE_VARIABLES = RuiIrError(10, "Rui can handle maximum $RUI_STATE_VARIABLE_LIMIT state variables in one scope.")
     val RUI_IR_INVALID_EXTERNAL_CLASS = RuiIrError(11, "Invalid external class: ")
     val RUI_IR_INTERNAL_PLUGIN_ERROR = RuiIrError(12, "Internal plugin error: ")
 

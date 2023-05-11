@@ -9,7 +9,7 @@ open class RuiBlock<BT>(
 ) : RuiFragment<BT> {
 
     override val ruiScope = null
-    override val ruiExternalPatch: (it: RuiFragment<BT>) -> Unit = { }
+    override val ruiExternalPatch: RuiExternalPathType<BT> = { _, scopeMask -> scopeMask }
 
     override fun ruiCreate() {
         for (i in fragments.indices) {
@@ -23,10 +23,10 @@ open class RuiBlock<BT>(
         }
     }
 
-    override fun ruiPatch() {
+    override fun ruiPatch(scopeMask: Long) {
         for (fragment in fragments) {
-            fragment.ruiExternalPatch(fragment)
-            fragment.ruiPatch()
+            val extendedScopeMask = fragment.ruiExternalPatch(fragment, scopeMask)
+            if (extendedScopeMask != 0L) fragment.ruiPatch(extendedScopeMask)
         }
     }
 

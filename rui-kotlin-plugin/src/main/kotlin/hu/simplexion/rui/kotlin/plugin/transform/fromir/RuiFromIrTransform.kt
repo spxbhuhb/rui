@@ -72,7 +72,7 @@ class RuiFromIrTransform(
         irBlock.statements.addAll(statements.subList(ruiClass.boundary, statements.size))
 
         // if this is a single statement, we don't need the surrounding block
-        // TODO think about single statement rendering vs. inner transforms / css
+        // TODO check if this is the right place for the optimization
         ruiClass.rootBlock = transformBlock(irBlock).let {
             if (it.statements.size == 1) {
                 it.statements[0]

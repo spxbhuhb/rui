@@ -25,7 +25,7 @@ class RuiDirtyMaskBuilder(
     val ruiDirtyMask: RuiDirtyMask
 ) : RuiBuilder {
 
-    val propertyBuilder = RuiPropertyBuilder(ruiClassBuilder, ruiDirtyMask.name, irBuiltIns.intType)
+    val propertyBuilder = RuiPropertyBuilder(ruiClassBuilder, ruiDirtyMask.name, irBuiltIns.longType)
     val invalidate: IrSimpleFunctionSymbol
 
     init {
@@ -53,7 +53,7 @@ class RuiDirtyMaskBuilder(
 
                 val mask = function.addValueParameter {
                     name = Name.identifier(RUI_MASK)
-                    type = irBuiltIns.intType
+                    type = irBuiltIns.longType
                 }
 
                 function.body = initInvalidateBody(function, receiver, mask)

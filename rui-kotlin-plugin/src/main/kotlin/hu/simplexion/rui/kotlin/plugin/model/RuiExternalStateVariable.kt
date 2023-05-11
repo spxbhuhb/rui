@@ -3,6 +3,8 @@
  */
 package hu.simplexion.rui.kotlin.plugin.model
 
+import hu.simplexion.rui.kotlin.plugin.RUI_STATE_VARIABLE_LIMIT
+import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui.RUI_IR_TOO_MANY_STATE_VARIABLES
 import hu.simplexion.rui.kotlin.plugin.transform.builders.RuiStateVariableBuilder
 import hu.simplexion.rui.kotlin.plugin.util.RuiElementVisitor
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
@@ -22,5 +24,9 @@ class RuiExternalStateVariable(
         visitor.visitExternalStateVariable(this, data)
 
     override fun <D> acceptChildren(visitor: RuiElementVisitor<Unit, D>, data: D) = Unit
+
+    init {
+        RUI_IR_TOO_MANY_STATE_VARIABLES.check(ruiClass, irValueParameter) { index <= RUI_STATE_VARIABLE_LIMIT }
+    }
 
 }

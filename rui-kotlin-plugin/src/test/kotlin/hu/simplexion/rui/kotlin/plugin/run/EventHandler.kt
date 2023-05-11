@@ -42,7 +42,7 @@ fun eventHandlerTestResult(): String = """
 [ RuiRoot                        ]  mount                 |  
 [ RuiEventHandlerFragment        ]  mount                 |  
 [ RuiEH1A                        ]  mount                 |  bridge: 1
-[ RuiEventHandlerFragment        ]  patch                 |  ruiDirty0: 1
+[ RuiEventHandlerFragment        ]  patch                 |  scopeMask: 1 ruiDirty0: 1
 [ RuiEH1A                        ]  invalidate            |  mask: 1 ruiDirty0: 0
 [ RuiEH1A                        ]  patch                 |  ruiDirty0: 1 p0: 14
 """.trimIndent()
