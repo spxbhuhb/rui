@@ -21,6 +21,7 @@ interface RuiElementVisitor<out R, in D> {
     fun visitStatement(statement: RuiStatement, data: D) = visitElement(statement, data)
     fun visitBlock(statement: RuiBlock, data: D) = visitStatement(statement, data)
     fun visitCall(statement: RuiCall, data: D) = visitStatement(statement, data)
+    fun visitHigherOrderCall(statement: RuiHigherOrderCall, data: D) = visitStatement(statement, data)
     fun visitWhen(statement: RuiWhen, data: D) = visitStatement(statement, data)
     fun visitForLoop(statement: RuiForLoop, data: D) = visitStatement(statement, data)
 

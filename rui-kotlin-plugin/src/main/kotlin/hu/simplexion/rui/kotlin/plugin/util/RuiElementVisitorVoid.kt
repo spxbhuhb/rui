@@ -37,6 +37,9 @@ interface RuiElementVisitorVoid<out R> : RuiElementVisitor<R, Nothing?> {
     fun visitCall(statement: RuiCall) = visitElement(statement)
     override fun visitCall(statement: RuiCall, data: Nothing?) = visitCall(statement)
 
+    fun visitHigherOrderCall(statement: RuiHigherOrderCall) = visitElement(statement)
+    override fun visitHigherOrderCall(statement: RuiHigherOrderCall, data: Nothing?) = visitHigherOrderCall(statement)
+
     fun visitWhen(statement: RuiWhen) = visitElement(statement)
     override fun visitWhen(statement: RuiWhen, data: Nothing?) = visitWhen(statement)
 
