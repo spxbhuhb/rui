@@ -72,6 +72,7 @@ const val RUI_MASK = "mask"
 const val RUI_BLOCK = "ruiBlock"
 const val RUI_BRANCH = "ruiBranch"
 const val RUI_CALL = "ruiCall"
+const val RUI_HIGHER_ORDER_CALL = "ruiHigherOrderCall"
 const val RUI_FOR_LOOP = "ruiForLoop"
 const val RUI_WHEN = "ruiWhen"
 

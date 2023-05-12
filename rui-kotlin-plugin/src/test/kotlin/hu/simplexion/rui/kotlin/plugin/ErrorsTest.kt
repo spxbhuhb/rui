@@ -21,6 +21,7 @@ import com.tschuchort.compiletesting.SourceFile
 import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.Test
+import java.io.ByteArrayOutputStream
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -55,6 +56,7 @@ class ErrorsTest {
                 useIR = true
                 compilerPluginRegistrars = forCompilationError()
                 inheritClassPath = true
+                messageOutputStream = ByteArrayOutputStream()
             }
             .compile()
 

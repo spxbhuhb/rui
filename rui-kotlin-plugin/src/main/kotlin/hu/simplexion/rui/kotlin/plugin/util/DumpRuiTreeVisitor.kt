@@ -68,6 +68,15 @@ class DumpRuiTreeVisitor(
         }
     }
 
+    override fun visitHigherOrderCall(statement: RuiHigherOrderCall) {
+        indented {
+            with(statement) {
+                println { "HIGHER_ORDER_CALL index:$index name:$name type:<$targetRuiClass>" }
+            }
+            super.visitHigherOrderCall(statement)
+        }
+    }
+
     override fun visitWhen(statement: RuiWhen) {
         indented {
             with(statement) {
