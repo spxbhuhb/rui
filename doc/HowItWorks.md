@@ -61,11 +61,11 @@ class RuiHeader<BT>(
         ruiExternalPatch
 ) {
 
-    val ruiFragment: RuiFragment<BT>
+  val ruiFragment: RuiFragment<BT>
 
-    var ruiDirty0 = 0  // this bit mask is used to decide what to update
+  var ruiDirty0 = 0L  // this bit mask is used to decide what to update
 
-    var title: String = title
+  var title: String = title
 
     // the functions below manage the lifecycle of the component
     // in a normal component they are quite simple but structurals
@@ -92,22 +92,22 @@ class RuiHeader<BT>(
         fragment.ruiDispose()
     }
 
-    fun ruiInvalidate0(mask: Int) {
-        ruiDirty0 = ruiDirty0 or mask
+  fun ruiInvalidate0(mask: Long) {
+    ruiDirty0 = ruiDirty0 or mask
     }
 
-    override fun ruiPatch() {
-        ruiDirty0 = 0
-    }
+  override fun ruiPatch() {
+    ruiDirty0 = 0L
+  }
 
     // These "external patch" functions are responsible for updating
     // the children of this component. These are the real trick behind
     // the reactive behaviour.
 
     fun ruiEp344(it: RuiText) {
-        it as RuiText
-        if (ruiDirty0 and 1 != 0) {
-            it.content = title
+      it as RuiText
+      if (ruiDirty0 and 1L != 0:) {
+        it.content = title
             it.ruiInvalidate0(1)
             it.ruiPatch()
         }

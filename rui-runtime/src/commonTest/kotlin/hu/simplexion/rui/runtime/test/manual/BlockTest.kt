@@ -46,9 +46,9 @@ class Block(
 
     var v0 = 1
 
-    var ruiDirty0 = 0
+    var ruiDirty0 = 0L
 
-    fun ruiInvalidate0(mask: Int) {
+    fun ruiInvalidate0(mask: Long) {
         ruiDirty0 = ruiDirty0 or mask
     }
 
@@ -56,7 +56,7 @@ class Block(
         if (scopeMask and 1 != 0L) return 0L
 
         it as RuiT1
-        if (ruiDirty0 and 1 != 0) {
+        if (ruiDirty0 and 1L != 0L) {
             it.p0 = v0
             it.ruiInvalidate0(1)
         }
@@ -67,7 +67,7 @@ class Block(
     override fun ruiPatch(scopeMask: Long) {
         val extendedScopeMask = ruiFragment.ruiExternalPatch(ruiFragment, scopeMask)
         if (extendedScopeMask != 0L) ruiFragment.ruiPatch(extendedScopeMask)
-        ruiDirty0 = 0
+        ruiDirty0 = 0L
     }
 
     init {
