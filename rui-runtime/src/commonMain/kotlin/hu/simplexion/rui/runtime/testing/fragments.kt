@@ -69,10 +69,10 @@ class RuiT1<BT>(
     ruiExternalPatch
 ) {
 
-    var ruiDirty0 = 0
+    var ruiDirty0 = 0L
 
     @Suppress("unused")
-    fun ruiInvalidate0(mask: Int) {
+    fun ruiInvalidate0(mask: Long) {
         ruiAdapter.trace(traceName, "invalidate", "mask:", mask, "ruiDirty0:", ruiDirty0)
         ruiDirty0 = ruiDirty0 or mask
     }
@@ -87,7 +87,7 @@ class RuiT1<BT>(
 
     override fun ruiPatch(scopeMask: Long) {
         ruiAdapter.trace(traceName, "patch", "ruiDirty0:", ruiDirty0, "p0:", p0)
-        ruiDirty0 = 0
+        ruiDirty0 = 0L
     }
 }
 
@@ -177,21 +177,21 @@ class RuiEH1A(
         }
     }
 
-    var ruiDirty0 = 0
+    var ruiDirty0 = 0L
 
     override fun ruiCreate() {
         ruiAdapter.trace(traceName, "create")
     }
 
     @Suppress("unused")
-    fun ruiInvalidate0(mask: Int) {
+    fun ruiInvalidate0(mask: Long) {
         ruiAdapter.trace(traceName, "invalidate", "mask:", mask, "ruiDirty0:", ruiDirty0)
         ruiDirty0 = ruiDirty0 or mask
     }
 
     override fun ruiPatch(scopeMask: Long) {
         ruiAdapter.trace(traceName, "patch", "ruiDirty0:", ruiDirty0, "p0:", p0)
-        ruiDirty0 = 0
+        ruiDirty0 = 0L
     }
 
 }
@@ -221,21 +221,21 @@ class RuiEH1B(
         }
     }
 
-    var ruiDirty0 = 0
+    var ruiDirty0 = 0L
 
     override fun ruiCreate() {
         ruiAdapter.trace(traceName, "create")
     }
 
     @Suppress("unused")
-    fun ruiInvalidate0(mask: Int) {
+    fun ruiInvalidate0(mask: Long) {
         ruiAdapter.trace(traceName, "invalidate", "mask:", mask, "ruiDirty0:", ruiDirty0)
         ruiDirty0 = ruiDirty0 or mask
     }
 
     override fun ruiPatch(scopeMask: Long) {
         ruiAdapter.trace(traceName, "patch", "ruiDirty0:", ruiDirty0, "p0:", p0)
-        ruiDirty0 = 0
+        ruiDirty0 = 0L
     }
 
 }

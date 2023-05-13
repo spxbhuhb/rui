@@ -36,15 +36,15 @@ class RuiText(
     var content: String
 ) : LeafNode(ruiAdapter, ruiExternalPatch) {
 
-    override val receiver = org.w3c.dom.Text()
+  override val receiver = org.w3c.dom.Text()
 
-    var ruiDirty0 = 0
+  var ruiDirty0 = 0L
 
-    override val ruiScope: RuiFragment<Node>
-        get() = TODO("Not yet implemented")
+  override val ruiScope: RuiFragment<Node>
+    get() = TODO("Not yet implemented")
 
-    fun ruiInvalidate0(mask: Int) {
-        ruiDirty0 = ruiDirty0 or mask
+  fun ruiInvalidate0(mask: Long) {
+    ruiDirty0 = ruiDirty0 or mask
     }
 
     override fun ruiCreate() {
@@ -52,7 +52,7 @@ class RuiText(
     }
 
   override fun ruiPatch() {
-    if (ruiDirty0 and 1 != 0) {
+    if (ruiDirty0 and 1L != 0L) {
       receiver.data = content
     }
   }

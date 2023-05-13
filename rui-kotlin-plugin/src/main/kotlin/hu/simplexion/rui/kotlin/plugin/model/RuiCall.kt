@@ -9,7 +9,7 @@ import hu.simplexion.rui.kotlin.plugin.transform.builders.RuiCallBuilder
 import hu.simplexion.rui.kotlin.plugin.util.RuiElementVisitor
 import org.jetbrains.kotlin.ir.expressions.IrCall
 
-class RuiCall(
+open class RuiCall(
     ruiClass: RuiClass,
     index: Int,
     val irCall: IrCall

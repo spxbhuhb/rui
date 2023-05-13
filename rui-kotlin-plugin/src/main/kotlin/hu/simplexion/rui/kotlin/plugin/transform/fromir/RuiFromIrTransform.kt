@@ -23,7 +23,7 @@ import org.jetbrains.kotlin.psi.KtModifierListOwner
  * Calls [RuiStateTransform] to:
  *
  *   - convert function parameters into [RuiExternalStateVariable] instances
- *   - convert function variables are converted into [RuiInternalStateVariable] instances
+ *   - convert function variables are into [RuiInternalStateVariable] instances
  *
  * Transforms IR structures such as loops, branches and calls into [RuiBlock] instances.
  * The type of the block corresponds with the language construct:
@@ -32,6 +32,7 @@ import org.jetbrains.kotlin.psi.KtModifierListOwner
  * - `for` : [RuiForLoop]
  * - `if`, `when`: [RuiWhen]
  * - function call: [RuiCall]
+ * - higher order function call: [RuiHigherOrderCall]
  *
  * Calls [RuiDependencyVisitor] to build dependencies for each block.
  */
@@ -108,6 +109,10 @@ class RuiFromIrTransform(
         return ruiBlock
     }
 
+    // ---------------------------------------------------------------------------
+    // For Loop
+    // ---------------------------------------------------------------------------
+
     fun transformForLoop(statement: IrBlock): RuiForLoop? {
 
         // BLOCK type=kotlin.Unit origin=FOR_LOOP
@@ -164,24 +169,77 @@ class RuiFromIrTransform(
         )
     }
 
+    fun transformDeclaration(declaration: IrDeclaration, origin: RuiDeclarationOrigin): RuiDeclaration? =
+        when (declaration) {
+            is IrValueDeclaration -> RuiDeclaration(ruiClass, declaration, origin, declaration.dependencies())
+            else -> RUI_IR_RENDERING_INVALID_DECLARATION.report(ruiClass, declaration)
+        }
+
+    // ---------------------------------------------------------------------------
+    // Call
+    // ---------------------------------------------------------------------------
+
     fun transformCall(statement: IrCall): RuiCall? {
 
         if (!statement.symbol.owner.isAnnotatedWithRui()) {
             return RIU_IR_RENDERING_NON_RUI_CALL.report(ruiClass, statement)
         }
 
+        return if (statement.isHigherOrder) {
+            transformHigherOrderCall(statement)
+        } else {
+            transformSimpleCall(statement)
+        }
+    }
+
+    fun IrCall.forValueArguments(process: (index: Int, expression: IrExpression) -> Unit) {
+        for (index in 0 until valueArgumentsCount) {
+            val expression = getValueArgument(index)
+            if (expression == null) {
+                RUI_IR_MISSING_EXPRESSION_ARGUMENT.report(ruiClass, this) // I think this should never happen
+            } else {
+                process(index, expression)
+            }
+        }
+    }
+
+    val IrCall.isHigherOrder: Boolean
+        get() {
+            var value = false
+            forValueArguments { _, expression ->
+                if (expression !is IrFunctionExpression) return@forValueArguments
+                value = true
+            }
+            return value
+        }
+
+    fun transformSimpleCall(statement: IrCall): RuiCall? {
         val ruiCall = RuiCall(ruiClass, blockIndex, statement)
 
-        for (index in 0 until statement.valueArgumentsCount) {
-
-            val expression = statement.getValueArgument(index)
-                ?: return RUI_IR_MISSING_EXPRESSION_ARGUMENT.report(ruiClass, statement)
-
+        statement.forValueArguments { index, expression ->
             ruiCall.valueArguments += transformValueArgument(index, expression)
         }
 
         return ruiCall
     }
+
+    fun transformHigherOrderCall(statement: IrCall): RuiHigherOrderCall {
+        val ruiCall = RuiHigherOrderCall(ruiClass, blockIndex, statement)
+
+        statement.forValueArguments { index, expression ->
+            ruiCall.valueArguments += transformValueArgument(index, expression)
+        }
+
+        return ruiCall
+    }
+
+    fun transformValueArgument(index: Int, expression: IrExpression): RuiExpression {
+        return RuiValueArgument(ruiClass, index, expression, expression.dependencies())
+    }
+
+    // ---------------------------------------------------------------------------
+    // When
+    // ---------------------------------------------------------------------------
 
     /**
      * Transforms a `when` with a subject variable like:
@@ -227,10 +285,6 @@ class RuiFromIrTransform(
         )
     }
 
-    fun transformValueArgument(index: Int, expression: IrExpression): RuiExpression {
-        return RuiValueArgument(ruiClass, index, expression, expression.dependencies())
-    }
-
     fun transformExpression(expression: IrExpression, origin: RuiExpressionOrigin): RuiExpression {
         return RuiExpression(ruiClass, expression, origin, expression.dependencies())
     }
@@ -246,11 +300,5 @@ class RuiFromIrTransform(
             }
         }
     }
-
-    fun transformDeclaration(declaration: IrDeclaration, origin: RuiDeclarationOrigin): RuiDeclaration? =
-        when (declaration) {
-            is IrValueDeclaration -> RuiDeclaration(ruiClass, declaration, origin, declaration.dependencies())
-            else -> RUI_IR_RENDERING_INVALID_DECLARATION.report(ruiClass, declaration)
-        }
 
 }

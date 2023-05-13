@@ -12,7 +12,12 @@ class RuiImplicit1<BT, VT>(
     var v0: VT
 ) : RuiGeneratedFragment<BT> {
 
-    // TODO fix RuiImplicit1 dirty mask and patch
+    var ruiDirty0 = 0L
+
+    @Suppress("unused")
+    fun ruiInvalidate0(mask: Long) {
+        ruiDirty0 = ruiDirty0 or mask
+    }
 
     override fun ruiPatch(scopeMask: Long) {
         val extendedScopeMask = ruiFragment.ruiExternalPatch(ruiFragment, scopeMask)

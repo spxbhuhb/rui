@@ -23,13 +23,13 @@ class RuiText(
 
     override val receiver = org.w3c.dom.Text()
 
-    var ruiDirty0 = 0
+    var ruiDirty0 = 0L
 
     override val ruiScope: RuiFragment<Node>
         get() = TODO("Not yet implemented")
 
     @RuiPublicApi
-    fun ruiInvalidate0(mask: Int) {
+    fun ruiInvalidate0(mask: Long) {
         ruiDirty0 = ruiDirty0 or mask
     }
 
@@ -38,7 +38,7 @@ class RuiText(
     }
 
     override fun ruiPatch(scopeMask: Long) {
-        if (ruiDirty0 and 1 != 0) {
+        if (ruiDirty0 and 1L != 0L) {
             receiver.data = content
         }
     }

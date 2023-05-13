@@ -22,10 +22,10 @@ class HigherOrder(
 
     var i = 12
 
-    var ruiDirty0 = 0
+    var ruiDirty0 = 0L
 
     @Suppress("unused")
-    fun ruiInvalidate0(mask: Int) {
+    fun ruiInvalidate0(mask: Long) {
         ruiDirty0 = ruiDirty0 or mask
     }
 
@@ -39,7 +39,7 @@ class HigherOrder(
         if (scopeMask and 1 == 0L) return 0L
 
         it as RuiT1
-        if (ruiDirty0 and 1 != 0) {
+        if (ruiDirty0 and 1L != 0L) {
             it.p0 = i
             it.ruiInvalidate0(1)
         }
@@ -49,7 +49,7 @@ class HigherOrder(
     override fun ruiPatch(scopeMask: Long) {
         val extendedScopeMask = ruiFragment.ruiExternalPatch(ruiFragment, scopeMask)
         if (extendedScopeMask != 0L) ruiFragment.ruiPatch(extendedScopeMask)
-        ruiDirty0 = 0
+        ruiDirty0 = 0L
     }
 
     fun ruiBuilder0(ruiAdapter: RuiAdapter<TestNode>) =
