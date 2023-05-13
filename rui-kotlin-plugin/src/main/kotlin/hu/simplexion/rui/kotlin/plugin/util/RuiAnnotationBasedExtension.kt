@@ -5,6 +5,7 @@ package hu.simplexion.rui.kotlin.plugin.util
 
 import org.jetbrains.kotlin.extensions.AnnotationBasedExtension
 import org.jetbrains.kotlin.ir.declarations.IrFunction
+import org.jetbrains.kotlin.ir.declarations.IrValueParameter
 import org.jetbrains.kotlin.ir.descriptors.toIrBasedDescriptor
 
 interface RuiAnnotationBasedExtension : AnnotationBasedExtension {
@@ -22,8 +23,10 @@ interface RuiAnnotationBasedExtension : AnnotationBasedExtension {
 //    fun IrClass.isAnnotatedWithRui(): Boolean =
 //        toIrBasedDescriptor().hasSpecialAnnotation(null)
 
-    fun IrFunction.isAnnotatedWithRui(): Boolean =
+    fun IrValueParameter.isAnnotatedWithRui(): Boolean =
         toIrBasedDescriptor().hasSpecialAnnotation(null)
 
+    fun IrFunction.isAnnotatedWithRui(): Boolean =
+        toIrBasedDescriptor().hasSpecialAnnotation(null)
 
 }

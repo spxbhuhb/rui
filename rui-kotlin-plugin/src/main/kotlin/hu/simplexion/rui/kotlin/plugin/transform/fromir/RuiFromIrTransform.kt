@@ -45,7 +45,7 @@ class RuiFromIrTransform(
     lateinit var ruiClass: RuiClass
 
     var blockIndex = 0
-        get() = field++
+        get() = field ++
 
     override fun getAnnotationFqNames(modifierListOwner: KtModifierListOwner?): List<String> =
         ruiClass.ruiContext.annotations
@@ -181,7 +181,7 @@ class RuiFromIrTransform(
 
     fun transformCall(statement: IrCall): RuiCall? {
 
-        if (!statement.symbol.owner.isAnnotatedWithRui()) {
+        if (! statement.symbol.owner.isAnnotatedWithRui()) {
             return RIU_IR_RENDERING_NON_RUI_CALL.report(ruiClass, statement)
         }
 
@@ -207,13 +207,17 @@ class RuiFromIrTransform(
         get() {
             var value = false
             forValueArguments { _, expression ->
-                if (expression !is IrFunctionExpression) return@forValueArguments
-                value = true
+                if (expression is IrFunctionExpression) {
+                    if (this.symbol.owner.valueParameters.firstOrNull { it.isAnnotatedWithRui() } != null) {
+                        // TODO check if caching for higher order function symbols has positive impact on compilation performance
+                        value = true
+                    }
+                }
             }
             return value
         }
 
-    fun transformSimpleCall(statement: IrCall): RuiCall? {
+    fun transformSimpleCall(statement: IrCall): RuiCall {
         val ruiCall = RuiCall(ruiClass, blockIndex, statement)
 
         statement.forValueArguments { index, expression ->

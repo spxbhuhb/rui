@@ -3,7 +3,7 @@
  */
 
 plugins {
-    kotlin("multiplatform") version "1.8.20" apply false
+    kotlin("multiplatform") version "1.8.21" apply false
     id("com.github.gmazzo.buildconfig") version "3.0.3" apply false
     id("com.gradle.plugin-publish") version "1.1.0" apply false
     signing
