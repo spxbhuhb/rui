@@ -6,7 +6,6 @@ package hu.simplexion.rui.kotlin.plugin.transform.fromir
 import hu.simplexion.rui.kotlin.plugin.RuiPluginContext
 import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui.RIU_IR_RENDERING_NON_RUI_CALL
 import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui.RUI_IR_INVALID_RENDERING_STATEMENT
-import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui.RUI_IR_MISSING_EXPRESSION_ARGUMENT
 import hu.simplexion.rui.kotlin.plugin.diagnostics.ErrorsRui.RUI_IR_RENDERING_INVALID_DECLARATION
 import hu.simplexion.rui.kotlin.plugin.model.*
 import hu.simplexion.rui.kotlin.plugin.util.RuiAnnotationBasedExtension
@@ -192,45 +191,24 @@ class RuiFromIrTransform(
         }
     }
 
-    fun IrCall.forValueArguments(process: (index: Int, expression: IrExpression) -> Unit) {
-        for (index in 0 until valueArgumentsCount) {
-            val expression = getValueArgument(index)
-            if (expression == null) {
-                RUI_IR_MISSING_EXPRESSION_ARGUMENT.report(ruiClass, this) // I think this should never happen
-            } else {
-                process(index, expression)
-            }
-        }
-    }
-
     val IrCall.isHigherOrder: Boolean
         get() {
-            var value = false
-            forValueArguments { _, expression ->
-                if (expression is IrFunctionExpression) {
-                    if (this.symbol.owner.valueParameters.firstOrNull { it.isAnnotatedWithRui() } != null) {
-                        // TODO check if caching for higher order function symbols has positive impact on compilation performance
-                        value = true
-                    }
-                }
+            // TODO check if caching for higher order function symbols has positive impact on compilation performance
+            // TODO default parameter values for higher order calls
+            for (index in 0 until valueArgumentsCount) {
+                val va = getValueArgument(index) ?: continue
+                if (va !is IrFunctionExpression) continue // this is just a speed to avoid the line below when possible
+                if (this.symbol.owner.valueParameters.firstOrNull { it.isAnnotatedWithRui() } == null) continue
+                return true
             }
-            return value
+            return false
         }
 
     fun transformSimpleCall(statement: IrCall): RuiCall {
         val ruiCall = RuiCall(ruiClass, blockIndex, statement)
 
-        statement.forValueArguments { index, expression ->
-            ruiCall.valueArguments += transformValueArgument(index, expression)
-        }
-
-        return ruiCall
-    }
-
-    fun transformHigherOrderCall(statement: IrCall): RuiHigherOrderCall {
-        val ruiCall = RuiHigherOrderCall(ruiClass, blockIndex, statement)
-
-        statement.forValueArguments { index, expression ->
+        for (index in 0 until statement.valueArgumentsCount) {
+            val expression = statement.getValueArgument(index) ?: continue
             ruiCall.valueArguments += transformValueArgument(index, expression)
         }
 
@@ -238,6 +216,29 @@ class RuiFromIrTransform(
     }
 
     fun transformValueArgument(index: Int, expression: IrExpression): RuiExpression {
+        return RuiValueArgument(ruiClass, index, expression, expression.dependencies())
+    }
+
+    fun transformHigherOrderCall(irCall: IrCall): RuiHigherOrderCall {
+        val ruiHigherOrderCall = RuiHigherOrderCall(ruiClass, blockIndex, irCall)
+
+        val calleeArguments = irCall.symbol.owner.valueParameters // arguments of the higher order function
+
+        for (index in 0 until irCall.valueArgumentsCount) {
+            val expression = irCall.getValueArgument(index) ?: continue // TODO handle parameter default values
+
+            ruiHigherOrderCall.valueArguments +=
+                if (calleeArguments[index].isAnnotatedWithRui()) {
+                    transformParameterFunction(irCall, index, expression)
+                } else {
+                    transformValueArgument(index, expression)
+                }
+        }
+
+        return ruiHigherOrderCall
+    }
+
+    fun transformParameterFunction(irCall: IrCall, index: Int, expression: IrExpression): RuiExpression {
         return RuiValueArgument(ruiClass, index, expression, expression.dependencies())
     }
 

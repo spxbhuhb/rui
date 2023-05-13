@@ -7,7 +7,7 @@ import hu.simplexion.rui.runtime.Rui
 import hu.simplexion.rui.runtime.testing.T0
 
 @Rui
-fun a(@Rui stuff: () -> Unit) {
+fun a(p0: Int = 0, @Rui stuff: () -> Unit) {
     stuff()
 }
 
