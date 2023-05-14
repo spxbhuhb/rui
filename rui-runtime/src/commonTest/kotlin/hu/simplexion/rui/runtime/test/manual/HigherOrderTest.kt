@@ -72,13 +72,17 @@ class HigherOrder(
         ruiDirty0 = ruiDirty0 or mask
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun ruiEp0(it: RuiFragment<TestNode>, scopeMask: Long): Long {
+    fun ruiEpH1(it: RuiFragment<TestNode>, scopeMask: Long): Long {
         ruiAdapter.trace("HigherOrder", "ruiEp0", "ruiDirty0:", ruiDirty0, "i:", i)
         return 0L
     }
 
-    fun ruiEp1(it: RuiFragment<TestNode>, scopeMask: Long): Long {
+    fun ruiEpImplicit(it: RuiFragment<TestNode>, scopeMask: Long): Long {
+        ruiAdapter.trace("HigherOrder", "ruiEp0", "ruiDirty0:", ruiDirty0, "i:", i)
+        return 0L
+    }
+
+    fun ruiEpT1(it: RuiFragment<TestNode>, scopeMask: Long): Long {
         ruiAdapter.trace("HigherOrder", "ruiEp1", "ruiDirty0:", ruiDirty0, "i:", i)
         if (scopeMask and 1 != 0L) return 0L
 
@@ -98,11 +102,11 @@ class HigherOrder(
     }
 
     fun ruiBuilder0(ruiAdapter: RuiAdapter<TestNode>) =
-        RuiImplicit0(ruiAdapter, this, ::ruiEp0).also {
-            it.ruiFragment = RuiT1(ruiAdapter, it, ::ruiEp1, i)
+        RuiImplicit0(ruiAdapter, this, ::ruiEpImplicit).also {
+            it.ruiFragment = RuiT1(ruiAdapter, it, ::ruiEpT1, i)
         }
 
     init {
-        ruiFragment = RuiH1(ruiAdapter, this, ::ruiEp0, ::ruiBuilder0)
+        ruiFragment = RuiH1(ruiAdapter, this, ::ruiEpH1, ::ruiBuilder0)
     }
 }

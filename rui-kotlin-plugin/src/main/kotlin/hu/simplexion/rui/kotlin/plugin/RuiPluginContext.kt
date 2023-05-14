@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.jvm.functionByName
 import org.jetbrains.kotlin.ir.declarations.IrDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.IrMessageLogger
 import org.jetbrains.kotlin.ir.util.fileEntry
@@ -49,16 +50,16 @@ class RuiPluginContext(
     val ruiClasses = mutableMapOf<FqName, RuiClass>()
     val ruiEntryPoints = mutableListOf<RuiEntryPoint>()
 
-    val ruiFragmentClass = requireNotNull(irContext.referenceClass(RUI_FQN_FRAGMENT_CLASS)) { "missing class: ${RUI_FQN_FRAGMENT_CLASS.asString()}" }
+    val ruiFragmentClass = classSymbol(RUI_FQN_FRAGMENT_CLASS)
     val ruiFragmentType = ruiFragmentClass.defaultType
 
-    val ruiGeneratedFragmentClass = requireNotNull(irContext.referenceClass(RUI_FQN_GENERATED_FRAGMENT_CLASS)) { "missing class: ${RUI_FQN_GENERATED_FRAGMENT_CLASS.asString()}" }
+    val ruiGeneratedFragmentClass = classSymbol(RUI_FQN_GENERATED_FRAGMENT_CLASS)
 
-    val ruiAdapterClass = requireNotNull(irContext.referenceClass(RUI_FQN_ADAPTER_CLASS)) { "missing class: ${RUI_FQN_FRAGMENT_CLASS.asString()}" }
+    val ruiAdapterClass = classSymbol(RUI_FQN_ADAPTER_CLASS)
     val ruiAdapterType = ruiAdapterClass.defaultType
     val ruiAdapterTrace = ruiAdapterClass.functionByName(RUI_ADAPTER_TRACE)
 
-    val ruiBridgeClass = requireNotNull(irContext.referenceClass(RUI_FQN_BRIDGE_CLASS)) { "missing class: ${RUI_FQN_BRIDGE_CLASS.asString()}" }
+    val ruiBridgeClass = classSymbol(RUI_FQN_BRIDGE_CLASS)
     val ruiBridgeType = ruiBridgeClass.defaultType
 
     val ruiAdapter = property(RUI_ADAPTER)
@@ -73,6 +74,11 @@ class RuiPluginContext(
     val ruiUnmount = function(RUI_UNMOUNT)
 
     val ruiSymbolMap = RuiSymbolMap(this)
+
+    val implicit0SymbolMap = ruiSymbolMap.getSymbolMap(RUI_FQN_IMPLICIT0_CLASS)
+
+    private fun classSymbol(name: FqName): IrClassSymbol =
+        requireNotNull(irContext.referenceClass(name)) { "missing class: ${name.asString()}" }
 
     private fun property(name: String) =
         ruiGeneratedFragmentClass.owner.properties.filter { it.name.asString() == name }.map { it.symbol }.toList()

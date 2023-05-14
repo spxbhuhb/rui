@@ -121,6 +121,14 @@ class DumpRuiTreeVisitor(
         }
     }
 
+    override fun visitHigherOrderArgument(higherOrderArgument: RuiHigherOrderArgument) {
+        indented {
+            with(higherOrderArgument) {
+                println { "$origin $index ${dependencies.withLabel("dependencies")}" }
+            }
+        }
+    }
+
     override fun visitDeclaration(declaration: RuiDeclaration) {
         indented {
             with(declaration) {

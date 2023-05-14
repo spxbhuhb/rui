@@ -20,10 +20,15 @@ Name of generated external patch functions is `ruiEpX` where `X` is the start of
 of the original function call the external patch belongs to.
 
 ```kotlin
-fun ruiEp543(it: RuiT1, mask0: Long) {
-  if (mask0 and 2 != 0) { // 2 is the mask for `this.value`
-    it.p0 = this.value * 2
-    it.ruiInvalidate(1) // 1 is the mask of `it.p0`
-  }
+fun ruiEp543(it: RuiT1, scopeMask: Long) {
+    if ((scopeMask and 1L) == 0) return 0 // 1L is the call site dependency mask
+
+    it as T1
+    if (scopeMask and 1L == 0) { // 1L is the mask for `this.value`
+        it.p0 = this.value * 2
+        it.ruiInvalidate(1) // 1 is the mask of `it.p0`
+    }
+
+    return scopeMask // this is a bit more complex for higher order function
 }
 ```

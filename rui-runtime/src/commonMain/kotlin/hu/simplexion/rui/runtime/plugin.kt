@@ -34,6 +34,5 @@ object Plugin {
     val RUI_WHEN_CLASS = listOf("hu", "simplexion", "rui", "runtime", "RuiWhen")
     val RUI_FOR_LOOP_CLASS = listOf("hu", "simplexion", "rui", "runtime", "RuiForLoop")
     val RUI_ENTRY_FUNCTION = listOf("hu", "simplexion", "rui", "runtime", "rui")
-
-
+    val RUI_IMPLICIT0_CLASS = listOf("hu", "simplexion", "rui", "runtime", "RuiImplicit0")
 }

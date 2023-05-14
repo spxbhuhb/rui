@@ -27,6 +27,7 @@ interface RuiElementVisitor<out R, in D> {
 
     fun visitExpression(expression: RuiExpression, data: D) = visitElement(expression, data)
     fun visitValueArgument(valueArgument: RuiValueArgument, data: D) = visitElement(valueArgument, data)
+    fun visitHigherOrderArgument(higherOrderArgument: RuiHigherOrderArgument, data: D) = visitElement(higherOrderArgument, data)
 
     fun visitDeclaration(declaration: RuiDeclaration, data: D) = visitElement(declaration, data)
 

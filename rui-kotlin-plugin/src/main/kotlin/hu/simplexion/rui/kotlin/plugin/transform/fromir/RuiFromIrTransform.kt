@@ -44,7 +44,7 @@ class RuiFromIrTransform(
     lateinit var ruiClass: RuiClass
 
     var blockIndex = 0
-        get() = field ++
+        get() = field++
 
     override fun getAnnotationFqNames(modifierListOwner: KtModifierListOwner?): List<String> =
         ruiClass.ruiContext.annotations
@@ -180,7 +180,7 @@ class RuiFromIrTransform(
 
     fun transformCall(statement: IrCall): RuiCall? {
 
-        if (! statement.symbol.owner.isAnnotatedWithRui()) {
+        if (!statement.symbol.owner.isAnnotatedWithRui()) {
             return RIU_IR_RENDERING_NON_RUI_CALL.report(ruiClass, statement)
         }
 
@@ -228,8 +228,8 @@ class RuiFromIrTransform(
             val expression = irCall.getValueArgument(index) ?: continue // TODO handle parameter default values
 
             ruiHigherOrderCall.valueArguments +=
-                if (calleeArguments[index].isAnnotatedWithRui()) {
-                    transformParameterFunction(irCall, index, expression)
+                if (calleeArguments[index].isAnnotatedWithRui() && expression is IrFunctionExpression) {
+                    transformHigherOrderArgument(index, expression)
                 } else {
                     transformValueArgument(index, expression)
                 }
@@ -238,9 +238,18 @@ class RuiFromIrTransform(
         return ruiHigherOrderCall
     }
 
-    fun transformParameterFunction(irCall: IrCall, index: Int, expression: IrExpression): RuiExpression {
-        return RuiValueArgument(ruiClass, index, expression, expression.dependencies())
-    }
+    /**
+     * This is actually a very complicated and costly transformation as it calls [RuiFromIrTransform]
+     * recursively as long as there are higher order function calls inside the higher order function call.
+     */
+    fun transformHigherOrderArgument(index: Int, expression: IrFunctionExpression): RuiExpression =
+        RuiHigherOrderArgument(
+            ruiClass,
+            index,
+            expression,
+            expression.dependencies(),
+            RuiFromIrTransform(ruiContext, expression.function, 0).transform()
+        )
 
     // ---------------------------------------------------------------------------
     // When

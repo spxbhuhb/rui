@@ -33,8 +33,6 @@ annotated with `@Rui`.
 
 A *parameter function* is a function passed as parameter to a *higher-order function*.
 
-#### scope
-
 ### state variable
 
 A *state variable* is a property of a *component*, part of the *component state*.
@@ -55,3 +53,13 @@ The *runtime* is the `hu.simplexion.zakadabar:rui-runime` module. This contains 
 classes and interfaces. It is important that this is a "static" runtime, there is no
 engine running in the background to perform updates.
 
+### call site
+
+A point in the code where an function is called. Call sites identify the exact points
+of function call with the very specific arguments passed to the function at that given call.
+
+### call site dependency mask
+
+A bitmask that contains 1 for each *state variable* the given function call uses in any form: passed
+as is, used in a calculation of an argument value, used in the body of a *parameter function*.
+This mask is used to decide if the *fragment* has to be patched or not.

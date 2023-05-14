@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.ir.expressions.IrExpression
 
 open class RuiExpression(
     val ruiClass: RuiClass,
-    val irExpression: IrExpression,
+    var irExpression: IrExpression,
     val origin: RuiExpressionOrigin,
     val dependencies: List<RuiStateVariable>
 ) : RuiElement {

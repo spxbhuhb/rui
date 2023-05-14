@@ -34,6 +34,11 @@ class RuiEntryPointBuilder(
     val function
         get() = ruiEntryPoint.irFunction
 
+    /**
+     * 1. create the root component with a lambda as external patch
+     * 2. call `ruiCreate`
+     * 3. call `ruiMount`
+     */
     fun build() {
         ruiEntryPoint.irFunction.body = IrBlockBodyImpl(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET).apply {
 

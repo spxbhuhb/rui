@@ -78,6 +78,7 @@ const val RUI_WHEN = "ruiWhen"
 
 const val RUI_SELECT = "ruiSelect"
 const val RUI_EXTERNAL_PATCH_OF_CHILD = "ruiEp"
+const val RUI_BUILDER = "ruiBuilder"
 
 val RUI_FQN_FRAGMENT_CLASS = FqName.fromSegments(Plugin.RUI_FRAGMENT_CLASS)
 val RUI_FQN_GENERATED_FRAGMENT_CLASS = FqName.fromSegments(Plugin.RUI_GENERATED_FRAGMENT_CLASS)
@@ -86,6 +87,7 @@ val RUI_FQN_BRIDGE_CLASS = FqName.fromSegments(Plugin.RUI_BRIDGE_CLASS)
 val RUI_FQN_BLOCK_CLASS = FqName.fromSegments(Plugin.RUI_BLOCK_CLASS)
 val RUI_FQN_WHEN_CLASS = FqName.fromSegments(Plugin.RUI_WHEN_CLASS)
 val RUI_FQN_ENTRY_FUNCTION = FqName.fromSegments(Plugin.RUI_ENTRY_FUNCTION)
+val RUI_FQN_IMPLICIT0_CLASS = FqName.fromSegments(Plugin.RUI_IMPLICIT0_CLASS)
 
 fun IrFunction.toRuiClassFqName(ruiContext: RuiPluginContext): FqName {
     val parent = kotlinFqName.parentOrNull() ?: FqName.ROOT

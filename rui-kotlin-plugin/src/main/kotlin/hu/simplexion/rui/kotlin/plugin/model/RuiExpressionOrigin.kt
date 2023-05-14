@@ -5,9 +5,9 @@ package hu.simplexion.rui.kotlin.plugin.model
 
 enum class RuiExpressionOrigin {
     VALUE_ARGUMENT,
+    HIGHER_ORDER_ARGUMENT,
     BRANCH_CONDITION,
     BRANCH_RESULT,
     FOR_LOOP_CONDITION,
     FOR_LOOP_BODY,
-
 }

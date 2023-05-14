@@ -52,6 +52,9 @@ interface RuiElementVisitorVoid<out R> : RuiElementVisitor<R, Nothing?> {
     fun visitValueArgument(valueArgument: RuiValueArgument) = visitExpression(valueArgument)
     override fun visitValueArgument(valueArgument: RuiValueArgument, data: Nothing?) = visitValueArgument(valueArgument)
 
+    fun visitHigherOrderArgument(higherOrderArgument: RuiHigherOrderArgument) = visitExpression(higherOrderArgument)
+    override fun visitHigherOrderArgument(higherOrderArgument: RuiHigherOrderArgument, data: Nothing?) = visitHigherOrderArgument(higherOrderArgument)
+
     fun visitDeclaration(declaration: RuiDeclaration) = visitElement(declaration)
     override fun visitDeclaration(declaration: RuiDeclaration, data: Nothing?) = visitDeclaration(declaration)
 
