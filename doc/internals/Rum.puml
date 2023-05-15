@@ -1,0 +1,88 @@
+@startuml
+
+left to right direction
+
+class RumClass {
+    stateVariables : RumStateVariable []
+    dirtyMasks : RumDirtyMask []
+    rendering : RumRenderingStatement
+}
+RumElement <|-- RumClass
+
+class RumEntryPoint {
+    root : RumClass
+}
+RumElement <|-- RumEntryPoint
+
+class RumExternalStateVariable
+RumStateVariable <|-- RumExternalStateVariable
+
+class RumInternalStateVariable
+RumStateVariable <|-- RumInternalStateVariable
+
+class RumStateVariable
+RumElement <|-- RumStateVariable
+
+class RumDirtyMask
+RumElement <|-- RumDirtyMask
+
+class RumBlock {
+    statements : RumRenderingStatement []
+}
+RumRenderingStatement <|-- RumBlock
+
+class RumWhen {
+    branches : RumBranch []
+}
+RumRenderingStatement <|-- RumWhen
+
+class RumCall {
+    target : RumClass
+    valueArguments : RumValueArgument []
+}
+RumRenderingStatement <|-- RumCall
+
+class RumForLoop {
+    iterator : RumDeclaration
+    condition : RumExpression
+    loopVariable : RumDeclaration
+    body : RumRenderingStatement
+}
+RumRenderingStatement <|-- RumForLoop
+
+class RumHigherOrderCall {
+    higherOrderArguments : RumHigherOrderArgument []
+}
+RumCall <|-l- RumHigherOrderCall
+
+class RumRenderingStatement
+RumElement <|--- RumRenderingStatement
+
+class RumHigherOrderArgument {
+    stateVariables : RumStateVariable []
+    rendering : RumRenderingStatement
+}
+RumExpression <|-- RumHigherOrderArgument
+
+class RumBranch {
+    condition : RumExpression
+    result : RumRenderingStatement
+}
+RumElement <|-- RumBranch
+
+class RumExpression {
+    dependencies : RumStateVariable []
+}
+RumElement <|-- RumExpression
+
+class RumDeclaration {
+    dependencies : RumStateVariable []
+}
+RumElement <|-- RumDeclaration
+
+class RumValueArgument
+RumExpression <|-- RumValueArgument
+
+class RumElement
+
+@enduml

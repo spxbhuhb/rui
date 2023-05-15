@@ -1,0 +1,21 @@
+@startuml
+
+class AirClass {
+    stateVariables : AirStateVariable []
+    dirtyMasks : AirDirtyMask []
+    externalPatches: AirExternalPatch []
+    initializer : AirInitializer
+}
+
+class AirStateVariable
+
+class AirDirtyMask
+
+class AirExternalPatch
+
+class AirInitializer
+
+class AirBlock {
+    newInstance : IrExpression
+}
+@enduml
