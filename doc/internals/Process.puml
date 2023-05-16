@@ -11,6 +11,7 @@ end note
 note right
 Almost-IR
 - The RUM transformed into particles which are then used to build the result IR.
+- IR declarations are present but function bodies are empty.
 end note
 --> [ air2ir]"Result IR"
 note right

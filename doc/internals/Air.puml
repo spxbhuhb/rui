@@ -1,21 +1,91 @@
 @startuml
 
+left to right direction
+
 class AirClass {
+    originalFunction : IrSimpleFunction
+
+    irClass : IrClass
+
+    adapter : IrProperty
+    scope : IrProperty
+    externalPatch : IrProperty
+    fragment : IrProperty
+
+    patch : IrSimpleFunction
+
+    constructor : IrSimpleFunction
+    initializer : IrSimpleFunction
+
     stateVariables : AirStateVariable []
     dirtyMasks : AirDirtyMask []
-    externalPatches: AirExternalPatch []
-    initializer : AirInitializer
+
+    rendering: AirRenderingStatement
 }
+AirElement <|-- AirClass
 
-class AirStateVariable
+class AirEntryPoint {
+    originalFunction : IrSimpleFunction
+    externalPatch : IrSimpleFunction
+}
+AirElement <|-- AirEntryPoint
 
-class AirDirtyMask
+class AirStateVariable {
+    property : IrProperty
+}
+AirElement <|-- AirStateVariable
 
-class AirExternalPatch
+class AirDirtyMask {
+    property : IrProperty
+    invalidate : IrSimpleFunction
+}
+AirElement <|-- AirDirtyMask
 
-class AirInitializer
+class AirRenderingStatement {
+    externalPatch : IrSimpleFunction
+    newInstance : IrConstructorCall
+}
+AirElement <|-- AirRenderingStatement
 
 class AirBlock {
-    newInstance : IrExpression
+    statements : AirRenderingStatement []
+}
+AirRenderingStatement <|-- AirBlock
+
+class AirCall {
+    callSiteDependencyMask : Long
+}
+AirRenderingStatement <|-- AirCall
+
+class AirWhen {
+    select : IrSimpleFunction
+    branches : IrSimpleFunction []
+}
+AirRenderingStatement <|-- AirWhen
+
+class AirForLoop {
+    iterator : IrExpression
+    loopVariable : IrDeclaration
+    externalPatch : IrSimpleFunction
+    builder : IrSimpleFunction
+}
+AirRenderingStatement <|-- AirForLoop
+
+class AirHigherOrderCall {
+    externalPatch : IrSimpleFunction
+    newInstance : IrConstructorCall
+    higherOrderArguments : AirHigherOrderArgument []
+}
+AirRenderingStatement <|-- AirHigherOrderCall
+
+class AirHigherOrderArgument {
+    builder : IrSimpleFunction
+    externalPatch : IrSimpleFunction
+    rendering : AirRenderingStatement
+}
+AirElement <|-- AirHigherOrderArgument
+
+class AirElement {
+    parent : AirElement
 }
 @enduml

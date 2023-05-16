@@ -8,6 +8,12 @@ class RumClass {
     rendering : RumRenderingStatement
 }
 RumElement <|-- RumClass
+RumScope <|-u- RumClass
+
+class RumExpression {
+    dependencies : RumStateVariable []
+}
+RumElement <|-- RumExpression
 
 class RumEntryPoint {
     root : RumClass
@@ -53,7 +59,7 @@ RumRenderingStatement <|-- RumForLoop
 class RumHigherOrderCall {
     higherOrderArguments : RumHigherOrderArgument []
 }
-RumCall <|-l- RumHigherOrderCall
+RumCall <|-- RumHigherOrderCall
 
 class RumRenderingStatement
 RumElement <|--- RumRenderingStatement
@@ -63,17 +69,13 @@ class RumHigherOrderArgument {
     rendering : RumRenderingStatement
 }
 RumExpression <|-- RumHigherOrderArgument
+RumScope <|-r- RumHigherOrderArgument
 
 class RumBranch {
     condition : RumExpression
     result : RumRenderingStatement
 }
 RumElement <|-- RumBranch
-
-class RumExpression {
-    dependencies : RumStateVariable []
-}
-RumElement <|-- RumExpression
 
 class RumDeclaration {
     dependencies : RumStateVariable []
@@ -83,6 +85,12 @@ RumElement <|-- RumDeclaration
 class RumValueArgument
 RumExpression <|-- RumValueArgument
 
-class RumElement
+interface RumScope {
+    stateSize : Int
+}
+
+class RumElement {
+    parent : RumElement ?
+}
 
 @enduml
