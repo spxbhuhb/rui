@@ -3,6 +3,7 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir
 
+import hu.simplexion.rui.kotlin.plugin.ir.plugin.RuiRootNameStrategy
 import hu.simplexion.rui.kotlin.plugin.ir.util.capitalizeFirstChar
 import hu.simplexion.rui.runtime.Plugin
 import org.jetbrains.kotlin.ir.declarations.IrFunction
@@ -71,7 +72,7 @@ const val RUI_MASK = "mask"
 
 const val RUI_BLOCK = "ruiBlock"
 const val RUI_BRANCH = "ruiBranch"
-const val RUI_CALL = "ruiCall"
+const val RUI_CALL = "rumCall"
 const val RUI_HIGHER_ORDER_CALL = "ruiHigherOrderCall"
 const val RUI_FOR_LOOP = "ruiForLoop"
 const val RUI_WHEN = "ruiWhen"

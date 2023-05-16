@@ -5,7 +5,7 @@ package hu.simplexion.rui.kotlin.plugin.ir.diagnostics
 
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_STATE_VARIABLE_LIMIT
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiClass
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.diagnostics.DiagnosticFactory0
 import org.jetbrains.kotlin.diagnostics.Errors
@@ -46,9 +46,9 @@ object ErrorsRui {
             return "${id.toString().padStart(4, '0')}  $message"
         }
 
-        fun check(ruiClass: RuiClass, element: IrElement, check: () -> Boolean) {
+        fun check(rumClass: RumClass, element: IrElement, check: () -> Boolean) {
             if (check()) return
-            report(ruiClass.ruiContext, ruiClass.irFunction.file.fileEntry, element.startOffset)
+            report(rumClass.ruiContext, rumClass.irFunction.file.fileEntry, element.startOffset)
         }
 
         fun report(ruiContext: RuiPluginContext, declaration: IrFunction, additionalInfo: String = "") {
@@ -56,12 +56,12 @@ object ErrorsRui {
         }
 
 //        fun report(ruiClassBuilder: RuiClassBuilder, element: IrElement, additionalInfo: String = ""): Nothing? {
-//            report(ruiClassBuilder.ruiContext, ruiClassBuilder.ruiClass.irFunction.file.fileEntry, element.startOffset, additionalInfo)
+//            report(ruiClassBuilder.ruiContext, ruiClassBuilder.rumClass.irFunction.file.fileEntry, element.startOffset, additionalInfo)
 //            return null
 //        }
 
-        fun report(ruiClass: RuiClass, element: IrElement, additionalInfo: String = ""): Nothing? {
-            report(ruiClass.ruiContext, ruiClass.irFunction.file.fileEntry, element.startOffset, additionalInfo)
+        fun report(rumClass: RumClass, element: IrElement, additionalInfo: String = ""): Nothing? {
+            report(rumClass.ruiContext, rumClass.irFunction.file.fileEntry, element.startOffset, additionalInfo)
             return null
         }
 

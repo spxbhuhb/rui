@@ -4,8 +4,8 @@
 package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
 import hu.simplexion.rui.kotlin.plugin.ir.*
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiBranch
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiWhen
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumBranch
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumWhen
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.Modality
@@ -26,11 +26,11 @@ import org.jetbrains.kotlin.name.Name
 
 class RuiWhenBuilder(
     override val ruiClassBuilder: RuiClassBuilder,
-    val ruiWhen: RuiWhen
+    val ruiWhen: RumWhen
 ) : RuiFragmentBuilder {
 
     // we have to initialize this in build, after all other classes in the module are registered
-    override lateinit var symbolMap: hu.simplexion.rui.kotlin.plugin.ir.transform.RuiClassSymbols
+    override lateinit var symbolMap: RuiClassSymbols
 
     private lateinit var select: IrSimpleFunction
     private var branches = mutableListOf<IrSimpleFunction>()
@@ -102,7 +102,7 @@ class RuiWhenBuilder(
         }
     }
 
-    private fun irBranch(branch: RuiBranch): IrSimpleFunction =
+    private fun irBranch(branch: RumBranch): IrSimpleFunction =
         irFactory.buildFun {
             name = Name.identifier("$RUI_BRANCH${branch.irBranch.result.startOffset}")
             modality = Modality.FINAL

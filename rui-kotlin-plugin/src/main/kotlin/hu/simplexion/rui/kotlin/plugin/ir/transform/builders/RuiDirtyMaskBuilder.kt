@@ -5,7 +5,7 @@ package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_INVALIDATE
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_MASK
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiDirtyMask
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumDirtyMask
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.Modality
@@ -22,10 +22,10 @@ import org.jetbrains.kotlin.name.Name
 
 class RuiDirtyMaskBuilder(
     override val ruiClassBuilder: RuiClassBuilder,
-    val ruiDirtyMask: RuiDirtyMask
+    val rumDirtyMask: RumDirtyMask
 ) : RuiBuilder {
 
-    val propertyBuilder = RuiPropertyBuilder(ruiClassBuilder, ruiDirtyMask.name, irBuiltIns.longType)
+    val propertyBuilder = RuiPropertyBuilder(ruiClassBuilder, rumDirtyMask.name, irBuiltIns.longType)
     val invalidate: IrSimpleFunctionSymbol
 
     init {
@@ -40,7 +40,7 @@ class RuiDirtyMaskBuilder(
     fun initInvalidate(): IrSimpleFunctionSymbol {
         return irFactory
             .buildFun {
-                name = Name.identifier(RUI_INVALIDATE + ruiDirtyMask.index)
+                name = Name.identifier(RUI_INVALIDATE + rumDirtyMask.index)
                 returnType = irBuiltIns.unitType
                 modality = Modality.OPEN
             }.also { function ->

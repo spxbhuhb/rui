@@ -3,8 +3,9 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir
 
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiClass
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiEntryPoint
+import hu.simplexion.rui.kotlin.plugin.ir.plugin.RuiOptions
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumEntryPoint
 import org.jetbrains.kotlin.backend.common.extensions.FirIncompatiblePluginAPI
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.jvm.functionByName
@@ -46,8 +47,8 @@ class RuiPluginContext(
 
     var compilationError = false
 
-    val ruiClasses = mutableMapOf<FqName, RuiClass>()
-    val ruiEntryPoints = mutableListOf<RuiEntryPoint>()
+    val rumClasses = mutableMapOf<FqName, RumClass>()
+    val ruiEntryPoints = mutableListOf<RumEntryPoint>()
 
     val ruiFragmentClass = classSymbol(RUI_FQN_FRAGMENT_CLASS)
     val ruiFragmentType = ruiFragmentClass.defaultType
@@ -72,7 +73,7 @@ class RuiPluginContext(
     val ruiDispose = function(RUI_DISPOSE)
     val ruiUnmount = function(RUI_UNMOUNT)
 
-    val ruiSymbolMap = hu.simplexion.rui.kotlin.plugin.ir.transform.RuiSymbolMap(this)
+    val ruiSymbolMap = RuiSymbolMap(this)
 
     val implicit0SymbolMap = ruiSymbolMap.getSymbolMap(RUI_FQN_IMPLICIT0_CLASS)
 

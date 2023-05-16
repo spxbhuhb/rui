@@ -3,6 +3,7 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
+import hu.simplexion.rui.kotlin.plugin.ir.RuiClassSymbols
 import org.jetbrains.kotlin.ir.builders.IrBlockBuilder
 import org.jetbrains.kotlin.ir.builders.irGetField
 import org.jetbrains.kotlin.ir.builders.irString
@@ -10,7 +11,7 @@ import org.jetbrains.kotlin.ir.expressions.IrExpression
 
 interface RuiBuilderWithSymbolMap : RuiBuilder {
 
-    val symbolMap: hu.simplexion.rui.kotlin.plugin.ir.transform.RuiClassSymbols
+    val symbolMap: RuiClassSymbols
         get() = throw IllegalStateException()
 
     fun IrBlockBuilder.irTraceGet(index: Int, receiver: IrExpression): IrExpression =

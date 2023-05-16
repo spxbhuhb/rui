@@ -4,9 +4,9 @@
 package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_STATE_VARIABLE_LIMIT
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiExternalStateVariable
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiInternalStateVariable
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiStateVariable
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumExternalStateVariable
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumInternalStateVariable
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumStateVariable
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrStatementOrigin
@@ -17,13 +17,13 @@ import org.jetbrains.kotlin.name.Name
 
 class RuiStateVariableBuilder private constructor(
     ruiClassBuilder: RuiClassBuilder,
-    val ruiStateVariable: RuiStateVariable,
+    val ruiStateVariable: RumStateVariable,
     name: Name,
     type: IrType
 ) : RuiPropertyBuilder(ruiClassBuilder, name, type) {
 
     companion object {
-        fun builderFor(ruiClassBuilder: RuiClassBuilder, ruiStateVariable: RuiExternalStateVariable) =
+        fun builderFor(ruiClassBuilder: RuiClassBuilder, ruiStateVariable: RumExternalStateVariable) =
             RuiStateVariableBuilder(
                 ruiClassBuilder,
                 ruiStateVariable,
@@ -34,7 +34,7 @@ class RuiStateVariableBuilder private constructor(
             }
 
 
-        fun builderFor(ruiClassBuilder: RuiClassBuilder, ruiStateVariable: RuiInternalStateVariable) =
+        fun builderFor(ruiClassBuilder: RuiClassBuilder, ruiStateVariable: RumInternalStateVariable) =
             RuiStateVariableBuilder(
                 ruiClassBuilder,
                 ruiStateVariable,
@@ -45,7 +45,7 @@ class RuiStateVariableBuilder private constructor(
             }
     }
 
-    fun initExternal(ruiStateVariable: RuiExternalStateVariable) {
+    fun initExternal(ruiStateVariable: RumExternalStateVariable) {
 
         val constructorParameter = ruiClassBuilder.constructor.addValueParameter {
             name = this@RuiStateVariableBuilder.name
@@ -63,7 +63,7 @@ class RuiStateVariableBuilder private constructor(
 
     }
 
-    fun initInternal(ruiStateVariable: RuiInternalStateVariable) {
+    fun initInternal(ruiStateVariable: RumInternalStateVariable) {
 
         ruiStateVariable.irVariable.initializer?.let { initializer ->
             irField.initializer = irFactory.createExpressionBody(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET, initializer)
@@ -76,7 +76,7 @@ class RuiStateVariableBuilder private constructor(
         val maskIndex = variableIndex / RUI_STATE_VARIABLE_LIMIT
         val bitIndex = variableIndex % RUI_STATE_VARIABLE_LIMIT
 
-        val mask = ruiClassBuilder.ruiClass.dirtyMasks[maskIndex]
+        val mask = ruiClassBuilder.rumClass.dirtyMasks[maskIndex]
 
         return irNotEqual(
             irAnd(mask.builder.propertyBuilder.irGetValue(receiver), irConst(1L shl bitIndex)),

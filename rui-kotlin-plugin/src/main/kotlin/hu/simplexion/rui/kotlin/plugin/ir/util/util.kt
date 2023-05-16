@@ -4,7 +4,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.util
 
 import hu.simplexion.rui.kotlin.plugin.ir.diagnostics.ErrorsRui
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiClass
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.name.Name
 import java.util.*
@@ -15,7 +15,7 @@ fun String.capitalizeFirstChar() = replaceFirstChar { if (it.isLowerCase()) it.t
 
 class RuiCompilationException(
     val error: ErrorsRui.RuiIrError,
-    var ruiClass: RuiClass? = null,
+    var rumClass: RumClass? = null,
     var irElement: IrElement? = null,
     val additionalInfo: String = ""
 ) : Exception() {
@@ -28,7 +28,7 @@ class RuiCompilationException(
 
     fun report() {
         if (reported) return
-        ruiClass?.let { c ->
+        rumClass?.let { c ->
             irElement?.let { e ->
                 error.report(c, e, additionalInfo)
                 reported = true

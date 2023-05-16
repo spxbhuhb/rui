@@ -17,8 +17,8 @@ interface RuiFragmentBuilder : RuiBuilderWithSymbolMap {
     }
 
     /**
-     * Create a new instance of the fragment. Called from `RuiClass.build` after
-     * all classes in the IR ModuleFragment are transformed into RuiClass. This
+     * Create a new instance of the fragment. Called from `RumClass.build` after
+     * all classes in the IR ModuleFragment are transformed into RumClass. This
      * ensures that references to other Rui classes can be resolved properly.
      */
     fun irNewInstance(): IrExpression {

@@ -4,7 +4,8 @@
 package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
 import hu.simplexion.rui.kotlin.plugin.ir.*
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiClass
+import hu.simplexion.rui.kotlin.plugin.ir.plugin.RuiDumpPoint
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.ClassKind
@@ -33,16 +34,16 @@ import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.types.Variance
 
 class RuiClassBuilder(
-    override val ruiClass: RuiClass
+    override val rumClass: RumClass
 ) : RuiBuilder {
 
     override val ruiClassBuilder: RuiClassBuilder
         get() = this
 
     override val ruiContext: RuiPluginContext
-        get() = ruiClass.ruiContext
+        get() = rumClass.ruiContext
 
-    val irFunction = ruiClass.irFunction
+    val irFunction = rumClass.irFunction
 
     val name: String
     val fqName: FqName
@@ -70,7 +71,7 @@ class RuiClassBuilder(
         startOffset = irFunction.startOffset
         endOffset = irFunction.endOffset
         origin = IrDeclarationOrigin.DEFINED
-        name = ruiClass.name
+        name = rumClass.name
         kind = ClassKind.CLASS
         visibility = irFunction.visibility
         modality = Modality.OPEN
@@ -276,7 +277,7 @@ class RuiClassBuilder(
 
     fun build() {
 
-        val rootBuilder = ruiClass.rootBlock.builder
+        val rootBuilder = rumClass.rootBlock.builder
 
         rootBuilder.buildDeclarations()
 
@@ -302,7 +303,7 @@ class RuiClassBuilder(
 
         traceInit()
 
-        initializer.body.statements += ruiClass.initializerStatements
+        initializer.body.statements += rumClass.initializerStatements
         initializer.body.statements += fragmentPropertyBuilder.irSetField(rootBuilder.irNewInstance())
 
         // The initializer has to be the last, so it will be able to access all properties
@@ -367,7 +368,7 @@ class RuiClassBuilder(
                 args += irConst("scopeMask:")
                 args += irGet(function.valueParameters[0])
 
-                ruiClass.dirtyMasks.forEach {
+                rumClass.dirtyMasks.forEach {
                     args += irString("${it.name}:")
                     args += it.builder.propertyBuilder.irGetValue(irGet(function.dispatchReceiverParameter!!))
                 }
@@ -428,7 +429,7 @@ class RuiClassBuilder(
     // Patch
     // ------------------------------------------------------------------------------
 
-    private fun IrBlockBodyBuilder.buildRuiPatch(symbolMap: hu.simplexion.rui.kotlin.plugin.ir.transform.RuiClassSymbols, function: IrSimpleFunction) {
+    private fun IrBlockBodyBuilder.buildRuiPatch(symbolMap: RuiClassSymbols, function: IrSimpleFunction) {
         // SOURCE  val extendedScopeMask = ruiFragment.ruiExternalPatch(ruiFragment, scopeMask)
         val extendedScopeMask = irCallExternalPatch(function)
 
@@ -447,7 +448,7 @@ class RuiClassBuilder(
         )
 
         // SOURCE  ruiDirty0 = 0L
-        ruiClass.dirtyMasks.forEach { +it.builder.irClear(function.dispatchReceiverParameter!!) }
+        rumClass.dirtyMasks.forEach { +it.builder.irClear(function.dispatchReceiverParameter!!) }
     }
 
     /**
@@ -473,7 +474,7 @@ class RuiClassBuilder(
         val invoke = function2Type.functions.first { it.name.identifier == "invoke" }.symbol
 
         val fragment = irTemporary(irGetFragment(function))
-        val rootBuilder = ruiClass.rootBlock.builder
+        val rootBuilder = rumClass.rootBlock.builder
 
         // returns with the extended scope mask
         return irTemporary(
@@ -519,7 +520,7 @@ class RuiClassBuilder(
             RUI_TRACE_ARGUMENT_COUNT,
         ).also {
             it.dispatchReceiver = dispatchReceiver
-            it.putValueArgument(RUI_TRACE_ARGUMENT_NAME, irConst(ruiClass.name.identifier))
+            it.putValueArgument(RUI_TRACE_ARGUMENT_NAME, irConst(rumClass.name.identifier))
             it.putValueArgument(RUI_TRACE_ARGUMENT_POINT, irConst(point))
             it.putValueArgument(RUI_TRACE_ARGUMENT_DATA, buildTraceVarArg(parameters))
         }

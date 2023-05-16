@@ -66,14 +66,12 @@ AirRenderingStatement <|-- AirWhen
 class AirForLoop {
     iterator : IrExpression
     loopVariable : IrDeclaration
-    externalPatch : IrSimpleFunction
+    implicitExternalPatch : IrSimpleFunction
     builder : IrSimpleFunction
 }
 AirRenderingStatement <|-- AirForLoop
 
 class AirHigherOrderCall {
-    externalPatch : IrSimpleFunction
-    newInstance : IrConstructorCall
     higherOrderArguments : AirHigherOrderArgument []
 }
 AirRenderingStatement <|-- AirHigherOrderCall

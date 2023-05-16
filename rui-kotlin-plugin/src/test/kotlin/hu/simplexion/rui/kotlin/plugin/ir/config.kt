@@ -1,6 +1,8 @@
 package hu.simplexion.rui.kotlin.plugin.ir
 
 import hu.simplexion.rui.kotlin.plugin.RuiCompilerPluginRegistrar
+import hu.simplexion.rui.kotlin.plugin.ir.plugin.RuiDumpPoint
+import hu.simplexion.rui.kotlin.plugin.ir.plugin.RuiRootNameStrategy
 
 /**
  * For plugin debugging when the developer runs unit tests manually. Should not be committed.

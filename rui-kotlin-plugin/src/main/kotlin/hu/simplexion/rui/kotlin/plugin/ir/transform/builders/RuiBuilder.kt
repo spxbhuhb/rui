@@ -5,7 +5,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiClass
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
 import hu.simplexion.rui.kotlin.plugin.ir.util.RuiCompilationException
 import org.jetbrains.kotlin.backend.common.extensions.FirIncompatiblePluginAPI
 import org.jetbrains.kotlin.ir.IrElement
@@ -40,8 +40,8 @@ interface RuiBuilder {
 
     val ruiClassBuilder: RuiClassBuilder
 
-    val ruiClass: RuiClass
-        get() = ruiClassBuilder.ruiClass
+    val rumClass: RumClass
+        get() = ruiClassBuilder.rumClass
 
     val ruiContext: RuiPluginContext
         get() = ruiClassBuilder.ruiContext
@@ -77,7 +77,7 @@ interface RuiBuilder {
         try {
             block()
         } catch (ex: RuiCompilationException) {
-            if (ex.ruiClass == null) ex.ruiClass = ruiClass
+            if (ex.rumClass == null) ex.rumClass = rumClass
             if (ex.irElement == null) ex.irElement = source
             throw ex
         }

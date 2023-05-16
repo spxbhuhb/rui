@@ -3,11 +3,8 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
-import hu.simplexion.rui.kotlin.plugin.ir.RUI_BLOCK_ARGUMENT_COUNT
-import hu.simplexion.rui.kotlin.plugin.ir.RUI_BLOCK_ARGUMENT_INDEX_FRAGMENTS
-import hu.simplexion.rui.kotlin.plugin.ir.RUI_FQN_BLOCK_CLASS
-import hu.simplexion.rui.kotlin.plugin.ir.RUI_FRAGMENT_ARGUMENT_INDEX_ADAPTER
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiBlock
+import hu.simplexion.rui.kotlin.plugin.ir.*
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumBlock
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.addElement
 import org.jetbrains.kotlin.ir.expressions.impl.IrConstructorCallImpl
@@ -17,17 +14,17 @@ import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 
 class RuiBlockBuilder(
     override val ruiClassBuilder: RuiClassBuilder,
-    val ruiBlock: RuiBlock
+    val rumBlock: RumBlock
 ) : RuiFragmentBuilder {
 
     // we have to initialize this in build, after all other classes in the module are registered
-    override lateinit var symbolMap: hu.simplexion.rui.kotlin.plugin.ir.transform.RuiClassSymbols
+    override lateinit var symbolMap: RuiClassSymbols
 
     override fun buildDeclarations() {
-        tryBuild(ruiBlock.irBlock) {
+        tryBuild(rumBlock.irBlock) {
             symbolMap = ruiContext.ruiSymbolMap.getSymbolMap(RUI_FQN_BLOCK_CLASS)
 
-            ruiBlock.statements.forEach {
+            rumBlock.statements.forEach {
                 it.builder.buildDeclarations()
             }
         }
@@ -54,7 +51,7 @@ class RuiBlockBuilder(
             irBuiltIns.arrayClass.typeWith(ruiContext.ruiFragmentType),
             ruiContext.ruiFragmentType,
         ).also { vararg ->
-            ruiBlock.statements.forEach { statement ->
+            rumBlock.statements.forEach { statement ->
                 vararg.addElement(statement.builder.irNewInstance())
             }
         }

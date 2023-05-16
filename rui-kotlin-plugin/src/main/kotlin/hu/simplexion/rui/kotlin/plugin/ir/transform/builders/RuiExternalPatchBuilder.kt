@@ -1,8 +1,9 @@
 package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_EXTERNAL_PATCH_OF_CHILD
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiExpression
-import hu.simplexion.rui.kotlin.plugin.ir.transform.util.RuiScopeTransform
+import hu.simplexion.rui.kotlin.plugin.ir.RuiClassSymbols
+import hu.simplexion.rui.kotlin.plugin.ir.air2ir.ScopeTransform
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumExpression
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.Modality
@@ -51,9 +52,9 @@ import org.jetbrains.kotlin.name.Name
 class RuiExternalPatchBuilder(
     override val ruiClassBuilder: RuiClassBuilder,
     val callSiteOffset: Int,
-    val arguments: List<RuiExpression>,
+    val arguments: List<RumExpression>,
     val callSiteDependencyMask: Long,
-    override val symbolMap: hu.simplexion.rui.kotlin.plugin.ir.transform.RuiClassSymbols
+    override val symbolMap: RuiClassSymbols
 ) : RuiBuilderWithSymbolMap {
 
     lateinit var externalPatch: IrSimpleFunction
@@ -120,7 +121,7 @@ class RuiExternalPatchBuilder(
 
         val args = mutableListOf<IrExpression>()
 
-        ruiClass.dirtyMasks.forEach {
+        rumClass.dirtyMasks.forEach {
             args += irString("${it.name}:")
             args += it.builder.propertyBuilder.irGetValue(irGet(dispatchReceiver))
         }
@@ -129,7 +130,7 @@ class RuiExternalPatchBuilder(
 
     }
 
-    private fun IrBlockBodyBuilder.irVariablePatch(externalPatchIt: IrValueDeclaration, index: Int, ruiExpression: RuiExpression) {
+    private fun IrBlockBodyBuilder.irVariablePatch(externalPatchIt: IrValueDeclaration, index: Int, ruiExpression: RumExpression) {
         // constants, globals, etc. have no dependencies, no need to patch them
         if (ruiExpression.dependencies.isEmpty()) return
 
@@ -143,7 +144,7 @@ class RuiExternalPatchBuilder(
         )
     }
 
-    private fun irVariablePatchCondition(ruiExpression: RuiExpression): IrExpression {
+    private fun irVariablePatchCondition(ruiExpression: RumExpression): IrExpression {
         val dependencies = ruiExpression.dependencies
         var result = dependencies[0].builder.irIsDirty(irGet(dispatchReceiver))
         for (i in 1 until dependencies.size) {
@@ -152,12 +153,12 @@ class RuiExternalPatchBuilder(
         return result
     }
 
-    private fun IrBlockBodyBuilder.irVariableSetAndInvalidate(externalPatchIt: IrValueDeclaration, index: Int, ruiExpression: RuiExpression): IrExpression {
+    private fun IrBlockBodyBuilder.irVariableSetAndInvalidate(externalPatchIt: IrValueDeclaration, index: Int, ruiExpression: RumExpression): IrExpression {
         return irBlock {
             val traceData = traceStateChangeBefore(externalPatchIt, index)
 
             val newValue = irTemporary(
-                RuiScopeTransform(ruiClassBuilder.ruiClass, dispatchReceiver.symbol)
+                ScopeTransform(ruiClassBuilder.rumClass, dispatchReceiver.symbol)
                     .visitExpression(
                         ruiExpression.irExpression.deepCopyWithVariables()
                     )

@@ -18,6 +18,7 @@ package hu.simplexion.rui.kotlin.plugin.ir
 
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
+import hu.simplexion.rui.kotlin.plugin.ir.plugin.RuiCommandLineProcessor
 import hu.simplexion.rui.runtime.RuiAdapterRegistry
 import hu.simplexion.rui.runtime.testing.RuiTestAdapter
 import hu.simplexion.rui.runtime.testing.RuiTestAdapterFactory

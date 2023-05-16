@@ -3,12 +3,12 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiHigherOrderArgument
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiHigherOrderCall
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumHigherOrderArgument
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumHigherOrderCall
 
 class RuiHigherOrderCallBuilder(
     ruiClassBuilder: RuiClassBuilder,
-    ruiHigherOrderCall: RuiHigherOrderCall
+    ruiHigherOrderCall: RumHigherOrderCall
 ) : RuiCallBuilder(
     ruiClassBuilder,
     ruiHigherOrderCall
@@ -16,9 +16,9 @@ class RuiHigherOrderCallBuilder(
     var callSiteDependencyMask = 0L
 
     override fun buildDeclarations() {
-        tryBuild(ruiCall.irCall) {
+        tryBuild(rumCall.irCall) {
 
-            symbolMap = ruiContext.ruiSymbolMap.getSymbolMap(ruiCall.targetRuiClass)
+            symbolMap = ruiContext.ruiSymbolMap.getSymbolMap(rumCall.target)
 
             callSiteDependencyMask = calcCallSiteDependencyMask() // dependency mask for the original call site
 
@@ -28,8 +28,8 @@ class RuiHigherOrderCallBuilder(
     }
 
     fun buildHigherOrderArguments() {
-        for (argument in ruiCall.valueArguments) {
-            if (argument is RuiHigherOrderArgument) {
+        for (argument in rumCall.valueArguments) {
+            if (argument is RumHigherOrderArgument) {
                 argument.builder.buildDeclarations()
             }
         }

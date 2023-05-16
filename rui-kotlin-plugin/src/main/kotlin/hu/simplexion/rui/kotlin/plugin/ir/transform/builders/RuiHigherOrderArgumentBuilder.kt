@@ -4,7 +4,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
 import hu.simplexion.rui.kotlin.plugin.ir.*
-import hu.simplexion.rui.kotlin.plugin.ir.model.RuiHigherOrderArgument
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumHigherOrderArgument
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.Modality
@@ -23,10 +23,10 @@ import org.jetbrains.kotlin.name.Name
 
 class RuiHigherOrderArgumentBuilder(
     override val ruiClassBuilder: RuiClassBuilder,
-    val ruiHigherOrderArgument: RuiHigherOrderArgument
+    val ruiHigherOrderArgument: RumHigherOrderArgument
 ) : RuiBuilderWithSymbolMap {
 
-    override lateinit var symbolMap: hu.simplexion.rui.kotlin.plugin.ir.transform.RuiClassSymbols
+    override lateinit var symbolMap: RuiClassSymbols
 
     lateinit var implicitComponentBuilderFunction: IrSimpleFunction
     lateinit var implicitComponentExternalPatchBuilder: RuiExternalPatchBuilder
