@@ -4,14 +4,15 @@
 package hu.simplexion.rui.kotlin.plugin
 
 import com.google.auto.service.AutoService
-import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.ANNOTATION
-import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.DUMP
-import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.EXPORT_STATE
-import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.IMPORT_STATE
-import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.PLUGIN_LOG_DIR
-import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.PRINT_DUMPS
-import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.ROOT_NAME_STRATEGY
-import hu.simplexion.rui.kotlin.plugin.RuiConfigurationKeys.TRACE
+import hu.simplexion.rui.kotlin.plugin.ir.*
+import hu.simplexion.rui.kotlin.plugin.ir.RuiConfigurationKeys.ANNOTATION
+import hu.simplexion.rui.kotlin.plugin.ir.RuiConfigurationKeys.DUMP
+import hu.simplexion.rui.kotlin.plugin.ir.RuiConfigurationKeys.EXPORT_STATE
+import hu.simplexion.rui.kotlin.plugin.ir.RuiConfigurationKeys.IMPORT_STATE
+import hu.simplexion.rui.kotlin.plugin.ir.RuiConfigurationKeys.PLUGIN_LOG_DIR
+import hu.simplexion.rui.kotlin.plugin.ir.RuiConfigurationKeys.PRINT_DUMPS
+import hu.simplexion.rui.kotlin.plugin.ir.RuiConfigurationKeys.ROOT_NAME_STRATEGY
+import hu.simplexion.rui.kotlin.plugin.ir.RuiConfigurationKeys.TRACE
 import hu.simplexion.rui.runtime.Plugin.RUI_ANNOTATION
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
