@@ -3,7 +3,7 @@
 left to right direction
 
 class AirClass {
-    originalFunction : IrSimpleFunction
+    originalFunction : IrFunction
 
     irClass : IrClass
 
@@ -14,8 +14,8 @@ class AirClass {
 
     patch : IrSimpleFunction
 
-    constructor : IrSimpleFunction
-    initializer : IrSimpleFunction
+    constructor : IrConstructor
+    initializer : IrAnonymousInitializer
 
     stateVariables : AirStateVariable []
     dirtyMasks : AirDirtyMask []
@@ -32,6 +32,7 @@ AirElement <|-- AirEntryPoint
 
 class AirStateVariable {
     property : IrProperty
+    isDirty :
 }
 AirElement <|-- AirStateVariable
 

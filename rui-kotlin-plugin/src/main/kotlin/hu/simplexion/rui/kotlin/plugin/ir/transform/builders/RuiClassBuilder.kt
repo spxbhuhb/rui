@@ -43,7 +43,7 @@ class RuiClassBuilder(
     override val ruiContext: RuiPluginContext
         get() = rumClass.ruiContext
 
-    val irFunction = rumClass.irFunction
+    val irFunction = rumClass.originalFunction
 
     val name: String
     val fqName: FqName

@@ -15,14 +15,14 @@ import org.jetbrains.kotlin.ir.util.statements
 
 class RumClass(
     val ruiContext: RuiPluginContext,
-    val irFunction: IrFunction,
+    val originalFunction: IrFunction,
 ) : RumElement {
 
-    val name = irFunction.toRuiClassFqName(ruiContext).shortName()
+    val name = originalFunction.toRuiClassFqName(ruiContext).shortName()
 
-    val boundary = BoundaryVisitor(ruiContext).findBoundary(irFunction)
+    val boundary = BoundaryVisitor(ruiContext).findBoundary(originalFunction)
 
-    val originalStatements = checkNotNull(irFunction.body?.statements) { "missing function body" }
+    val originalStatements = checkNotNull(originalFunction.body?.statements) { "missing function body" }
 
     val initializerStatements = mutableListOf<IrStatement>()
     val renderingStatements = mutableListOf<IrStatement>()

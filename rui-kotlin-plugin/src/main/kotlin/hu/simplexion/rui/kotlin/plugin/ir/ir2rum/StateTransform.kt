@@ -99,7 +99,7 @@ class StateTransform(
 
     fun transform() {
 
-        rumClass.irFunction.valueParameters.forEachIndexed { index, valueParameter ->
+        rumClass.originalFunction.valueParameters.forEachIndexed { index, valueParameter ->
 
             if (index < skipParameters) return@forEachIndexed
 
@@ -239,7 +239,7 @@ class StateTransform(
 
         return rumClass.stateVariables[name]
             ?.builder?.irGetValue()
-            ?: throw IllegalStateException("missing state variable $name in ${rumClass.irFunction.name}")
+            ?: throw IllegalStateException("missing state variable $name in ${rumClass.originalFunction.name}")
     }
 
     /**
@@ -267,7 +267,7 @@ class StateTransform(
 
         return DeclarationIrBuilder(irContext, currentScope!!.scope.scopeOwnerSymbol).irComposite {
             val stateVariable = rumClass.stateVariables[name]
-                ?: throw IllegalStateException("missing state variable $name in ${rumClass.irFunction.name}")
+                ?: throw IllegalStateException("missing state variable $name in ${rumClass.originalFunction.name}")
 
             val traceData = traceStateChangeBefore(stateVariable)
 

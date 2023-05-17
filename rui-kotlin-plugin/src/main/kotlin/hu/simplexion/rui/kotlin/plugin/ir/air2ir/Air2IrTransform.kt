@@ -28,9 +28,9 @@ class Air2IrTransform(
             try {
                 it.builder.build()
             } catch (ex: Exception) {
-                RUI_IR_INTERNAL_PLUGIN_ERROR.report(ruiContext, it.irFunction, ex.stackTraceToString())
+                RUI_IR_INTERNAL_PLUGIN_ERROR.report(ruiContext, it.originalFunction, ex.stackTraceToString())
             }
-            it.irFunction.file.addChild(it.irClass)
+            it.originalFunction.file.addChild(it.irClass)
         }
 
         ruiEntryPoints.forEach {

@@ -48,7 +48,7 @@ object ErrorsRui {
 
         fun check(rumClass: RumClass, element: IrElement, check: () -> Boolean) {
             if (check()) return
-            report(rumClass.ruiContext, rumClass.irFunction.file.fileEntry, element.startOffset)
+            report(rumClass.ruiContext, rumClass.originalFunction.file.fileEntry, element.startOffset)
         }
 
         fun report(ruiContext: RuiPluginContext, declaration: IrFunction, additionalInfo: String = "") {
@@ -61,7 +61,7 @@ object ErrorsRui {
 //        }
 
         fun report(rumClass: RumClass, element: IrElement, additionalInfo: String = ""): Nothing? {
-            report(rumClass.ruiContext, rumClass.irFunction.file.fileEntry, element.startOffset, additionalInfo)
+            report(rumClass.ruiContext, rumClass.originalFunction.file.fileEntry, element.startOffset, additionalInfo)
             return null
         }
 

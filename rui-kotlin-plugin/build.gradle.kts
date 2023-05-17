@@ -43,6 +43,7 @@ tasks.test {
 tasks.withType<KotlinCompile> {
     kotlinOptions.freeCompilerArgs += listOf(
         "-opt-in=org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi",
+        "-Xcontext-receivers"
     )
 }
 
