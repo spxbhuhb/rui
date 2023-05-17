@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.name.Name
 context(ClassBoundIrBuilder)
 fun RumDirtyMask.toAir(): AirDirtyMask {
 
-    val property = irClass.addProperty(name, irBuiltIns.longType, true, irConst(0))
+    val property = addProperty(name, irBuiltIns.longType, true, irConst(0))
 
     return AirDirtyMask(
         property,

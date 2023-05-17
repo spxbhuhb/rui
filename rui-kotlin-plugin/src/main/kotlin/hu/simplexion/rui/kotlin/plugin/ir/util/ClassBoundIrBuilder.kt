@@ -1,6 +1,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.util
 
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirClass
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
@@ -33,6 +34,8 @@ class ClassBoundIrBuilder(
     val context: RuiPluginContext,
     val irClass: IrClass
 ) {
+
+    lateinit var airClass: AirClass
 
     val irContext
         get() = context.irContext
@@ -90,17 +93,18 @@ class ClassBoundIrBuilder(
         null
     )
 
-    fun irGet(type: IrType, symbol: IrValueSymbol): IrExpression {
+    fun irGet(type: IrType, symbol: IrValueSymbol, origin: IrStatementOrigin?): IrExpression {
         return IrGetValueImpl(
             UNDEFINED_OFFSET,
             UNDEFINED_OFFSET,
             type,
-            symbol
+            symbol,
+            origin
         )
     }
 
-    fun irGet(variable: IrValueDeclaration): IrExpression {
-        return irGet(variable.type, variable.symbol)
+    fun irGet(variable: IrValueDeclaration, origin: IrStatementOrigin? = null): IrExpression {
+        return irGet(variable.type, variable.symbol, origin)
     }
 
     // --------------------------------------------------------------------------------------------------------
@@ -108,25 +112,25 @@ class ClassBoundIrBuilder(
     // --------------------------------------------------------------------------------------------------------
 
     fun addProperty(
-        propertyName: Name,
-        propertyType: IrType,
-        propertyIsVar: Boolean,
-        fieldInitializer: IrExpression? = null,
+        inName: Name,
+        inType: IrType,
+        inIsVar: Boolean,
+        inInitializer: IrExpression? = null,
         overridden: List<IrPropertySymbol>? = null
     ): IrProperty {
 
         val irField = irFactory.buildField {
-            name = propertyName
-            type = propertyType
+            name = inName
+            type = inType
             origin = IrDeclarationOrigin.PROPERTY_BACKING_FIELD
             visibility = DescriptorVisibilities.PRIVATE
         }.apply {
             parent = irClass
-            initializer = fieldInitializer?.let { irFactory.createExpressionBody(it) }
+            initializer = inInitializer?.let { irFactory.createExpressionBody(it) }
         }
 
         val irProperty = irClass.addProperty {
-            name = propertyName
+            name = inName
             isVar = true
         }.apply {
             parent = irClass
@@ -135,7 +139,7 @@ class ClassBoundIrBuilder(
             addDefaultGetter(irClass, irBuiltIns)
         }
 
-        if (propertyIsVar) {
+        if (inIsVar) {
             irProperty.addDefaultSetter(irField)
         }
 
@@ -214,6 +218,16 @@ class ClassBoundIrBuilder(
     // Logic
     // --------------------------------------------------------------------------------------------------------
 
+    fun irAnd(lhs: IrExpression, rhs: IrExpression): IrCallImpl {
+        return irCall(
+            lhs.type.binaryOperator(OperatorNameConventions.AND, rhs.type),
+            null,
+            lhs,
+            null,
+            rhs
+        )
+    }
+
     fun irOr(lhs: IrExpression, rhs: IrExpression): IrCallImpl {
         val int = irContext.irBuiltIns.intType
         return irCall(
@@ -223,6 +237,28 @@ class ClassBoundIrBuilder(
             null,
             rhs
         )
+    }
+
+    fun irEqual(lhs: IrExpression, rhs: IrExpression): IrExpression {
+        return irCall(
+            this.irContext.irBuiltIns.eqeqSymbol,
+            null,
+            null,
+            null,
+            lhs,
+            rhs
+        )
+    }
+
+    fun irNot(value: IrExpression): IrExpression {
+        return irCall(
+            irContext.irBuiltIns.booleanNotSymbol,
+            dispatchReceiver = value
+        )
+    }
+
+    fun irNotEqual(lhs: IrExpression, rhs: IrExpression): IrExpression {
+        return irNot(irEqual(lhs, rhs))
     }
 
     // --------------------------------------------------------------------------------------------------------

@@ -12,15 +12,14 @@ class AirClass {
     externalPatch : IrProperty
     fragment : IrProperty
 
-    patch : IrSimpleFunction
-
     constructor : IrConstructor
     initializer : IrAnonymousInitializer
 
     stateVariables : AirStateVariable []
     dirtyMasks : AirDirtyMask []
 
-    rendering: AirRenderingStatement
+    builder: IrSimpleFunction
+    patch : IrSimpleFunction
 }
 AirElement <|-- AirClass
 
