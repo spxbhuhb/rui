@@ -1,27 +1,27 @@
-package hu.simplexion.rui.kotlin.plugin.ir.rum2air
+package hu.simplexion.rui.kotlin.plugin.ir.rum2sir
 
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirStateVariable
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumExternalStateVariable
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumInternalStateVariable
+import hu.simplexion.rui.kotlin.plugin.ir.sir.SirStateVariable
 import hu.simplexion.rui.kotlin.plugin.ir.util.ClassBoundIrBuilder
 
 context(ClassBoundIrBuilder)
-fun RumExternalStateVariable.toAir(): AirStateVariable {
+fun RumExternalStateVariable.toSir(): SirStateVariable {
 
-    val property = airClass.constructor.addPropertyParameter(
+    val property = sirClass.constructor.addPropertyParameter(
         name,
         irValueParameter.type,
         inIsVar = true,
         inVarargElementType = irValueParameter.varargElementType
     )
 
-    return AirStateVariable(
+    return SirStateVariable(
         property
     )
 }
 
 context(ClassBoundIrBuilder)
-fun RumInternalStateVariable.toAir(): AirStateVariable {
+fun RumInternalStateVariable.toSir(): SirStateVariable {
 
     val property = addProperty(
         name,
@@ -30,7 +30,7 @@ fun RumInternalStateVariable.toAir(): AirStateVariable {
         inInitializer = irVariable.initializer
     )
 
-    return AirStateVariable(
+    return SirStateVariable(
         property
     )
 }

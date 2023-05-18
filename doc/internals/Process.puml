@@ -7,13 +7,15 @@ Rui Model
 - Built from the original IR by the plugin.
 - Contains parts of the original IR, such as calculations.
 end note
---> [ rum2air]"AIR"
+--> [ rum2air] "SIR"
 note right
-Almost-IR
-- The RUM transformed into particles which are then used to build the result IR.
-- IR declarations are present but function bodies are empty.
+Structural IR
+All result classes created but not finalized:
+- all state variable properties added (with initializers)
+- all dirty mask properties added
+- all function declarations added, bodies are empty, vararg parameters not added
 end note
---> [ air2ir]"Result IR"
+--> [ sir2ir] "Result IR"
 note right
 Output of the compiler plugin:
 - body of original functions replaced with an empty one

@@ -2,7 +2,7 @@
 
 left to right direction
 
-class AirClass {
+class SirClass {
     originalFunction : IrFunction
 
     irClass : IrClass
@@ -15,75 +15,75 @@ class AirClass {
     constructor : IrConstructor
     initializer : IrAnonymousInitializer
 
-    stateVariables : AirStateVariable []
-    dirtyMasks : AirDirtyMask []
+    stateVariables : SirStateVariable []
+    dirtyMasks : SirDirtyMask []
 
     builder: IrSimpleFunction
     patch : IrSimpleFunction
 }
-AirElement <|-- AirClass
+SirElement <|-- SirClass
 
-class AirEntryPoint {
+class SirEntryPoint {
     originalFunction : IrSimpleFunction
     externalPatch : IrSimpleFunction
 }
-AirElement <|-- AirEntryPoint
+SirElement <|-- SirEntryPoint
 
-class AirStateVariable {
+class SirStateVariable {
     property : IrProperty
     isDirty :
 }
-AirElement <|-- AirStateVariable
+SirElement <|-- SirStateVariable
 
-class AirDirtyMask {
+class SirDirtyMask {
     property : IrProperty
     invalidate : IrSimpleFunction
 }
-AirElement <|-- AirDirtyMask
+SirElement <|-- SirDirtyMask
 
-class AirRenderingStatement {
-    externalPatch : IrSimpleFunction
+class SirRenderingStatement {
     newInstance : IrConstructorCall
 }
-AirElement <|-- AirRenderingStatement
+SirElement <|-- SirRenderingStatement
 
-class AirBlock {
-    statements : AirRenderingStatement []
+class SirBlock {
+    statements : SirRenderingStatement []
 }
-AirRenderingStatement <|-- AirBlock
+SirRenderingStatement <|-- SirBlock
 
-class AirCall {
+class SirCall {
+    externalPatch : IrSimpleFunction
     callSiteDependencyMask : Long
 }
-AirRenderingStatement <|-- AirCall
+SirRenderingStatement <|-- SirCall
 
-class AirWhen {
+class SirWhen {
     select : IrSimpleFunction
     branches : IrSimpleFunction []
 }
-AirRenderingStatement <|-- AirWhen
+SirRenderingStatement <|-- SirWhen
 
-class AirForLoop {
+class SirForLoop {
     iterator : IrExpression
     loopVariable : IrDeclaration
     implicitExternalPatch : IrSimpleFunction
     builder : IrSimpleFunction
 }
-AirRenderingStatement <|-- AirForLoop
+SirRenderingStatement <|-- SirForLoop
 
-class AirHigherOrderCall {
-    higherOrderArguments : AirHigherOrderArgument []
+class SirHigherOrderCall {
+    higherOrderArguments : SirHigherOrderArgument []
 }
-AirRenderingStatement <|-- AirHigherOrderCall
+SirRenderingStatement <|-- SirHigherOrderCall
 
-class AirHigherOrderArgument {
+class SirHigherOrderArgument {
     builder : IrSimpleFunction
     externalPatch : IrSimpleFunction
-    rendering : AirRenderingStatement
+    rendering : SirRenderingStatement
 }
-AirElement <|-- AirHigherOrderArgument
+SirElement <|-- SirHigherOrderArgument
 
-class AirElement {
-    parent : AirElement
+class SirElement {
+    parent : SirElement
 }
 @enduml

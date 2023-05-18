@@ -1,7 +1,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.util
 
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirClass
+import hu.simplexion.rui.kotlin.plugin.ir.sir.SirClass
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
@@ -35,7 +35,7 @@ class ClassBoundIrBuilder(
     val irClass: IrClass
 ) {
 
-    lateinit var airClass: AirClass
+    lateinit var sirClass: SirClass
 
     val irContext
         get() = context.irContext

@@ -1,9 +1,9 @@
-package hu.simplexion.rui.kotlin.plugin.ir.air
+package hu.simplexion.rui.kotlin.plugin.ir.sir
 
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 
-class AirEntryPoint(
+class SirEntryPoint(
     val originalFunction: IrSimpleFunction,
     val externalPatch: IrSimpleFunction
-) : AirElement {
+) : SirElement {
 }

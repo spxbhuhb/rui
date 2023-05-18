@@ -1,9 +1,9 @@
-package hu.simplexion.rui.kotlin.plugin.ir.air
+package hu.simplexion.rui.kotlin.plugin.ir.sir
 
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
 import org.jetbrains.kotlin.ir.declarations.*
 
-class AirClass(
+class SirClass(
     val originalFunction: IrFunction,
     val rumClass: RumClass,
 
@@ -17,10 +17,10 @@ class AirClass(
     val constructor: IrConstructor,
     val initializer: IrAnonymousInitializer,
 
-    val stateVariables: List<AirStateVariable>,
-    val dirtyMasks: List<AirDirtyMask>,
+    val stateVariables: List<SirStateVariable>,
+    val dirtyMasks: List<SirDirtyMask>,
 
     val patch: IrSimpleFunction,
     val builder: IrSimpleFunction
 
-) : AirElement
+) : SirElement

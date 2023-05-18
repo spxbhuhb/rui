@@ -1,8 +1,8 @@
-package hu.simplexion.rui.kotlin.plugin.ir.rum2air
+package hu.simplexion.rui.kotlin.plugin.ir.rum2sir
 
 import hu.simplexion.rui.kotlin.plugin.ir.*
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirClass
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
+import hu.simplexion.rui.kotlin.plugin.ir.sir.SirClass
 import hu.simplexion.rui.kotlin.plugin.ir.util.ClassBoundIrBuilder
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.descriptors.ClassKind
@@ -13,8 +13,6 @@ import org.jetbrains.kotlin.ir.builders.declarations.buildClass
 import org.jetbrains.kotlin.ir.builders.declarations.buildFun
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.IrStatementOrigin
-import org.jetbrains.kotlin.ir.expressions.impl.IrDelegatingConstructorCallImpl
-import org.jetbrains.kotlin.ir.expressions.impl.IrInstanceInitializerCallImpl
 import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.impl.IrAnonymousInitializerSymbolImpl
 import org.jetbrains.kotlin.ir.types.IrType
@@ -22,16 +20,15 @@ import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
-import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.name.Name
 
-fun RumClass.toAir(context: RuiPluginContext): AirClass {
+fun RumClass.toSir(context: RuiPluginContext): SirClass {
 
     val irClass = context.irContext.irFactory.buildClass {
         startOffset = originalFunction.startOffset
         endOffset = originalFunction.endOffset
         origin = IrDeclarationOrigin.DEFINED
-        name = this@toAir.name
+        name = this@toSir.name
         kind = ClassKind.CLASS
         visibility = originalFunction.visibility
         modality = Modality.OPEN
@@ -43,7 +40,7 @@ fun RumClass.toAir(context: RuiPluginContext): AirClass {
 }
 
 context(ClassBoundIrBuilder)
-fun RumClass.toAir(): AirClass {
+private fun RumClass.toAir(): SirClass {
 
     val constructor = addConstructor()
 
@@ -53,7 +50,7 @@ fun RumClass.toAir(): AirClass {
 
     val fragment = addProperty(RUI_FRAGMENT.name, context.ruiFragmentType, inIsVar = false, overridden = context.ruiFragment)
 
-    airClass = AirClass(
+    sirClass = SirClass(
         originalFunction,
         this,
         irClass,
@@ -69,36 +66,16 @@ fun RumClass.toAir(): AirClass {
         addBuilder()
     )
 
-    return airClass
+    return sirClass
 }
 
 context(ClassBoundIrBuilder)
 private fun addConstructor(): IrConstructor =
     irClass.addConstructor {
-
         isPrimary = true
         returnType = irClass.typeWith()
-
     }.apply {
-
-        body = irFactory.createBlockBody(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET).apply {
-
-            statements += IrDelegatingConstructorCallImpl.fromSymbolOwner(
-                SYNTHETIC_OFFSET,
-                SYNTHETIC_OFFSET,
-                irBuiltIns.anyType,
-                irBuiltIns.anyClass.constructors.first(),
-                typeArgumentsCount = 0,
-                valueArgumentsCount = 0
-            )
-
-            statements += IrInstanceInitializerCallImpl(
-                SYNTHETIC_OFFSET,
-                SYNTHETIC_OFFSET,
-                irClass.symbol,
-                irBuiltIns.unitType
-            )
-        }
+        parent = irClass
     }
 
 context(ClassBoundIrBuilder)
@@ -132,7 +109,9 @@ private fun addInitializer(): IrAnonymousInitializer =
         isStatic = false
     ).apply {
         parent = irClass
-        body = irFactory.createBlockBody(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET)
+        // we should not add the initializer here as it should be the last
+        // declaration of the class to be able to access all properties
+        // it is added in finalize
     }
 
 context(ClassBoundIrBuilder)

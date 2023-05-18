@@ -1,9 +1,9 @@
-package hu.simplexion.rui.kotlin.plugin.ir.rum2air
+package hu.simplexion.rui.kotlin.plugin.ir.rum2sir
 
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_INVALIDATE
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_MASK
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirDirtyMask
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumDirtyMask
+import hu.simplexion.rui.kotlin.plugin.ir.sir.SirDirtyMask
 import hu.simplexion.rui.kotlin.plugin.ir.util.ClassBoundIrBuilder
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
@@ -19,11 +19,11 @@ import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.name.Name
 
 context(ClassBoundIrBuilder)
-fun RumDirtyMask.toAir(): AirDirtyMask {
+fun RumDirtyMask.toSir(): SirDirtyMask {
 
     val property = addProperty(name, irBuiltIns.longType, true, irConst(0))
 
-    return AirDirtyMask(
+    return SirDirtyMask(
         property,
         irInvalidate(property),
     )

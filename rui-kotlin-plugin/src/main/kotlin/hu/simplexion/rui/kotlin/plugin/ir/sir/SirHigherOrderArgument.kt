@@ -1,10 +1,10 @@
-package hu.simplexion.rui.kotlin.plugin.ir.air
+package hu.simplexion.rui.kotlin.plugin.ir.sir
 
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 
-class AirHigherOrderArgument(
+class SirHigherOrderArgument(
     val builder: IrSimpleFunction,
     val externalPatch: IrSimpleFunction,
-    val rendering: AirRenderingStatement
-) : AirElement {
+    val rendering: SirRenderingStatement
+) : SirElement {
 }

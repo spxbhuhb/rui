@@ -1,8 +1,8 @@
-package hu.simplexion.rui.kotlin.plugin.ir.air
+package hu.simplexion.rui.kotlin.plugin.ir.sir
 
 import org.jetbrains.kotlin.ir.declarations.IrProperty
 
-class AirStateVariable(
+class SirStateVariable(
     val property: IrProperty,
-) : AirElement {
+) : SirElement {
 }

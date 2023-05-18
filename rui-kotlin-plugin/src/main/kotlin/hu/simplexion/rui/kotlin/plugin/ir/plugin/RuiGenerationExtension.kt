@@ -4,8 +4,8 @@
 package hu.simplexion.rui.kotlin.plugin.ir.plugin
 
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
-import hu.simplexion.rui.kotlin.plugin.ir.air2ir.Air2IrTransform
 import hu.simplexion.rui.kotlin.plugin.ir.ir2rum.OriginalFunctionTransform
+import hu.simplexion.rui.kotlin.plugin.ir.sir2ir.Sir2IrTransform
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_ID
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
@@ -43,7 +43,7 @@ internal class RuiGenerationExtension(
                 // this check prevents the plugin to go on if there is an error that would prevent
                 // generation of a correct IR tree
                 if (!compilationError) {
-                    Air2IrTransform(this, it.rumClasses, it.ruiEntryPoints).transform()
+                    Sir2IrTransform(this, it.rumClasses, it.ruiEntryPoints).transform()
                 }
             }
 

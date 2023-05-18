@@ -1,7 +1,7 @@
 /*
  * Copyright © 2020-2021, Simplexion, Hungary and contributors. Use of this source code is governed by the Apache 2.0 license.
  */
-package hu.simplexion.rui.kotlin.plugin.ir.air2ir
+package hu.simplexion.rui.kotlin.plugin.ir.sir2ir
 
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
 import hu.simplexion.rui.kotlin.plugin.ir.diagnostics.ErrorsRui.RUI_IR_INTERNAL_PLUGIN_ERROR
@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.ir.util.addChild
 import org.jetbrains.kotlin.ir.util.file
 import org.jetbrains.kotlin.psi.KtModifierListOwner
 
-class Air2IrTransform(
+class Sir2IrTransform(
     private val ruiContext: RuiPluginContext,
     val rumClasses: List<RumClass>,
     val ruiEntryPoints: List<RumEntryPoint>
