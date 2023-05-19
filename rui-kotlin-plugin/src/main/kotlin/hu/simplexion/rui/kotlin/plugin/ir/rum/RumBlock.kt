@@ -12,11 +12,11 @@ class RumBlock(
     rumClass: RumClass,
     index: Int,
     val irBlock: IrBlock
-) : RumStatement(rumClass, index) {
+) : RumRenderingStatement(rumClass, index) {
 
     override val name = "$RUI_BLOCK$index"
 
-    val statements = mutableListOf<RumStatement>()
+    val statements = mutableListOf<RumRenderingStatement>()
 
     override val builder = RuiBlockBuilder(rumClass.builder, this)
 

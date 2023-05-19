@@ -4,8 +4,9 @@ import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
 import org.jetbrains.kotlin.ir.declarations.*
 
 class SirClass(
+
     val originalFunction: IrFunction,
-    val rumClass: RumClass,
+    override val rumElement: RumClass,
 
     val irClass: IrClass,
 

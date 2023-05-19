@@ -12,14 +12,10 @@ import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 context(ClassBoundIrBuilder)
 fun RumCall.toSir(): SirCall {
 
-    val symbolMap = context.ruiSymbolMap.getSymbolMap(target)
-
-    val callSiteDependencyMask = 0L
-
     return SirCall(
-        newCallInstance(symbolMap),
-        externalPatch(irCall.startOffset.toString()),
-        callSiteDependencyMask
+        this,
+        externalPatch(irCall.startOffset),
+        builder(irCall.startOffset)
     )
 }
 

@@ -2,8 +2,17 @@ package hu.simplexion.rui.kotlin.plugin.ir.rum2sir
 
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumExternalStateVariable
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumInternalStateVariable
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumStateVariable
 import hu.simplexion.rui.kotlin.plugin.ir.sir.SirStateVariable
 import hu.simplexion.rui.kotlin.plugin.ir.util.ClassBoundIrBuilder
+
+context(ClassBoundIrBuilder)
+fun RumStateVariable.toSir(): SirStateVariable =
+    when (this) {
+        is RumExternalStateVariable -> toSir()
+        is RumInternalStateVariable -> toSir()
+        else -> throw IllegalStateException()
+    }
 
 context(ClassBoundIrBuilder)
 fun RumExternalStateVariable.toSir(): SirStateVariable {
@@ -16,6 +25,7 @@ fun RumExternalStateVariable.toSir(): SirStateVariable {
     )
 
     return SirStateVariable(
+        this,
         property
     )
 }
@@ -31,6 +41,7 @@ fun RumInternalStateVariable.toSir(): SirStateVariable {
     )
 
     return SirStateVariable(
+        this,
         property
     )
 }

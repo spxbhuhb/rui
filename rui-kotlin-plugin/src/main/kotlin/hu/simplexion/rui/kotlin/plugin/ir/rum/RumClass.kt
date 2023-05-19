@@ -30,7 +30,7 @@ class RumClass(
     val stateVariables = mutableMapOf<String, RumStateVariable>()
     val dirtyMasks = mutableListOf<RumDirtyMask>()
 
-    lateinit var rootBlock: RumStatement
+    lateinit var rootBlock: RumRenderingStatement
 
     val symbolMap = mutableMapOf<IrSymbol, RumElement>()
 

@@ -15,9 +15,6 @@ class SirClass {
     constructor : IrConstructor
     initializer : IrAnonymousInitializer
 
-    stateVariables : SirStateVariable []
-    dirtyMasks : SirDirtyMask []
-
     builder: IrSimpleFunction
     patch : IrSimpleFunction
 }
@@ -31,7 +28,6 @@ SirElement <|-- SirEntryPoint
 
 class SirStateVariable {
     property : IrProperty
-    isDirty :
 }
 SirElement <|-- SirStateVariable
 
@@ -42,7 +38,8 @@ class SirDirtyMask {
 SirElement <|-- SirDirtyMask
 
 class SirRenderingStatement {
-    newInstance : IrConstructorCall
+    externalPatch : IrSimpleFunction
+    builder : IrSimpleFunction
 }
 SirElement <|-- SirRenderingStatement
 
@@ -52,7 +49,6 @@ class SirBlock {
 SirRenderingStatement <|-- SirBlock
 
 class SirCall {
-    externalPatch : IrSimpleFunction
     callSiteDependencyMask : Long
 }
 SirRenderingStatement <|-- SirCall
@@ -67,7 +63,7 @@ class SirForLoop {
     iterator : IrExpression
     loopVariable : IrDeclaration
     implicitExternalPatch : IrSimpleFunction
-    builder : IrSimpleFunction
+    implicitBuilder : IrSimpleFunction
 }
 SirRenderingStatement <|-- SirForLoop
 
@@ -84,6 +80,6 @@ class SirHigherOrderArgument {
 SirElement <|-- SirHigherOrderArgument
 
 class SirElement {
-    parent : SirElement
+    rumElement : RumElement
 }
 @enduml

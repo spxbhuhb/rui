@@ -5,7 +5,7 @@ package hu.simplexion.rui.kotlin.plugin.ir.rum
 
 import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiFragmentBuilder
 
-abstract class RumStatement(
+abstract class RumRenderingStatement(
     val rumClass: RumClass,
     val index: Int,
 ) : RumElement {

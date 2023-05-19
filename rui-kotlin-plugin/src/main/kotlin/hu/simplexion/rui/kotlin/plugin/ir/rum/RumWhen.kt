@@ -14,7 +14,7 @@ class RumWhen(
     index: Int,
     val irSubject: IrVariable?,
     val irWhen: IrWhen
-) : RumStatement(rumClass, index) {
+) : RumRenderingStatement(rumClass, index) {
 
     override val name = "$RUI_WHEN$index"
 

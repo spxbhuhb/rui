@@ -1,9 +1,11 @@
 package hu.simplexion.rui.kotlin.plugin.ir.sir
 
-import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumHigherOrderCall
+import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 
 class SirHigherOrderCall(
-    newInstance: IrConstructorCall,
-    higherOrderArguments: List<SirHigherOrderArgument>
-) : SirRenderingStatement(newInstance) {
-}
+    override val rumElement: RumHigherOrderCall,
+    override val externalPatch: IrSimpleFunction,
+    override val builder: IrSimpleFunction,
+    val higherOrderArguments: List<SirHigherOrderArgument>
+) : SirRenderingStatement

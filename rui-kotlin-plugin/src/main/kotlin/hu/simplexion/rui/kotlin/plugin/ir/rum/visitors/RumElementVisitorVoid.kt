@@ -28,8 +28,8 @@ interface RumElementVisitorVoid<out R> : RumElementVisitor<R, Nothing?> {
     fun visitDirtyMask(dirtyMask: RumDirtyMask) = visitElement(dirtyMask)
     override fun visitDirtyMask(dirtyMask: RumDirtyMask, data: Nothing?) = visitDirtyMask(dirtyMask)
 
-    fun visitStatement(statement: RumStatement) = visitElement(statement)
-    override fun visitStatement(statement: RumStatement, data: Nothing?) = visitStatement(statement)
+    fun visitStatement(statement: RumRenderingStatement) = visitElement(statement)
+    override fun visitStatement(statement: RumRenderingStatement, data: Nothing?) = visitStatement(statement)
 
     fun visitBlock(statement: RumBlock) = visitElement(statement)
     override fun visitBlock(statement: RumBlock, data: Nothing?) = visitBlock(statement)

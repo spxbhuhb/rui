@@ -1,9 +1,10 @@
 package hu.simplexion.rui.kotlin.plugin.ir.sir
 
-import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumBlock
+import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 
 class SirBlock(
-    newInstance: IrConstructorCall,
-    val statements: List<SirRenderingStatement>
-) : SirRenderingStatement(newInstance) {
-}
+    override val rumElement: RumBlock,
+    override val externalPatch: IrSimpleFunction,
+    override val builder: IrSimpleFunction,
+) : SirRenderingStatement

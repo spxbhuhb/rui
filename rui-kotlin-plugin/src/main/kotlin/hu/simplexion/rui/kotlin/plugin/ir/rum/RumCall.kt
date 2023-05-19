@@ -13,7 +13,7 @@ open class RumCall(
     rumClass: RumClass,
     index: Int,
     val irCall: IrCall
-) : RumStatement(rumClass, index) {
+) : RumRenderingStatement(rumClass, index) {
 
     override val name = "$RUI_CALL$index"
 

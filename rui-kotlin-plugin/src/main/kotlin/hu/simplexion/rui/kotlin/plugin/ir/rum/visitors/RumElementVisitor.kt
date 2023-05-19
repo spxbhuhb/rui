@@ -18,7 +18,7 @@ interface RumElementVisitor<out R, in D> {
 
     fun visitDirtyMask(dirtyMask: RumDirtyMask, data: D) = visitElement(dirtyMask, data)
 
-    fun visitStatement(statement: RumStatement, data: D) = visitElement(statement, data)
+    fun visitStatement(statement: RumRenderingStatement, data: D) = visitElement(statement, data)
     fun visitBlock(statement: RumBlock, data: D) = visitStatement(statement, data)
     fun visitCall(statement: RumCall, data: D) = visitStatement(statement, data)
     fun visitHigherOrderCall(statement: RumHigherOrderCall, data: D) = visitStatement(statement, data)

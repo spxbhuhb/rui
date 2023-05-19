@@ -78,7 +78,7 @@ const val RUI_FOR_LOOP = "ruiForLoop"
 const val RUI_WHEN = "ruiWhen"
 
 const val RUI_SELECT = "ruiSelect"
-const val RUI_EXTERNAL_PATCH_OF_CHILD = "ruiEp"
+const val RUI_EXTERNAL_PATCH_OF_CHILD = "ruiExternalPatch"
 const val RUI_BUILDER = "ruiBuilder"
 
 val RUI_FQN_FRAGMENT_CLASS = FqName.fromSegments(Plugin.RUI_FRAGMENT_CLASS)

@@ -303,7 +303,7 @@ class Ir2RumTransform(
         return RumExpression(rumClass, expression, origin, expression.dependencies())
     }
 
-    fun transformRenderingExpression(expression: IrExpression): RumStatement? {
+    fun transformRenderingExpression(expression: IrExpression): RumRenderingStatement? {
         return when (expression) {
             is IrCall -> transformCall(expression)
             is IrBlock -> transformBlock(expression)

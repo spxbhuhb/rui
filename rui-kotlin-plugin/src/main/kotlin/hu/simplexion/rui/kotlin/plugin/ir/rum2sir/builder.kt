@@ -1,6 +1,6 @@
 package hu.simplexion.rui.kotlin.plugin.ir.rum2sir
 
-import hu.simplexion.rui.kotlin.plugin.ir.RUI_EXTERNAL_PATCH_OF_CHILD
+import hu.simplexion.rui.kotlin.plugin.ir.RUI_BUILDER
 import hu.simplexion.rui.kotlin.plugin.ir.util.ClassBoundIrBuilder
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.descriptors.Modality
@@ -15,15 +15,15 @@ import org.jetbrains.kotlin.name.Name
  * Defines a function (NNN = [startOffset]):
  *
  * ```kotlin
- * ruiExternalPatchNNN(it : RuiFragment<BT>, scopeMask:Long) {
+ * fun ruiBuilderNNN(startScope : RuiFragment<BT>) : RuiFragment<BT> {
  * }
  * ```
  */
 context(ClassBoundIrBuilder)
-fun externalPatch(startOffset: Int): IrSimpleFunction =
+fun builder(startOffset: Int): IrSimpleFunction =
     irFactory.buildFun {
-        name = Name.identifier("$RUI_EXTERNAL_PATCH_OF_CHILD$startOffset")
-        returnType = irBuiltIns.longType
+        name = Name.identifier("$RUI_BUILDER$startOffset")
+        returnType = classBoundFragmentType
         modality = Modality.OPEN
     }.also { function ->
 
@@ -32,13 +32,8 @@ fun externalPatch(startOffset: Int): IrSimpleFunction =
         }
 
         function.addValueParameter {
-            name = Name.identifier("it")
+            name = Name.identifier("startScope")
             type = classBoundFragmentType
-        }
-
-        function.addValueParameter {
-            name = Name.identifier("scopeMask")
-            type = irBuiltIns.longType
         }
 
         function.parent = irClass

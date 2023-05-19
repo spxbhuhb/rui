@@ -15,8 +15,8 @@ class RumForLoop(
     var iterator: RumDeclaration,
     val condition: RumExpression,
     val loopVariable: RumDeclaration,
-    val body: RumStatement,
-) : RumStatement(rumClass, index) {
+    val body: RumRenderingStatement,
+) : RumRenderingStatement(rumClass, index) {
 
     override val name = "$RUI_FOR_LOOP$index"
 

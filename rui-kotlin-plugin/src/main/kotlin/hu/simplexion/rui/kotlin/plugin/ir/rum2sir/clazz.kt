@@ -60,10 +60,10 @@ private fun RumClass.toAir(): SirClass {
         fragment,
         constructor,
         addInitializer(),
-        stateVariables = mutableListOf(),
-        dirtyMasks = mutableListOf(),
+        stateVariables.values.map { it.toSir() },
+        dirtyMasks.map { it.toSir() },
         addPatch(),
-        addBuilder()
+        builder(irClass.startOffset) // TODO boundary as start of the builder might be better conceptually
     )
 
     return sirClass
@@ -132,23 +132,6 @@ private fun addPatch(): IrSimpleFunction =
         function.addValueParameter {
             name = Name.identifier("scopeMask")
             type = irBuiltIns.longType
-        }
-
-        irClass.declarations += function
-    }
-
-context(ClassBoundIrBuilder)
-private fun addBuilder(): IrSimpleFunction =
-    irFactory.buildFun {
-        name = RUI_BUILDER.name
-        returnType = classBoundFragmentType
-        modality = Modality.OPEN
-    }.also { function ->
-
-        function.parent = irClass
-
-        function.addDispatchReceiver {
-            type = irClass.typeWith(irClass.typeParameters.first().defaultType)
         }
 
         irClass.declarations += function

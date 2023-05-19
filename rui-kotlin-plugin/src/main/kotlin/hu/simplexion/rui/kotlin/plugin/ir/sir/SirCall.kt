@@ -1,11 +1,11 @@
 package hu.simplexion.rui.kotlin.plugin.ir.sir
 
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumCall
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
-import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 
 class SirCall(
-    newInstance: IrConstructorCall,
-    val externalPatch: IrSimpleFunction,
-    val callSiteDependencyMask: Long
-) : SirRenderingStatement(newInstance) {
+    override val rumElement: RumCall,
+    override val externalPatch: IrSimpleFunction,
+    override val builder: IrSimpleFunction
+) : SirRenderingStatement {
 }

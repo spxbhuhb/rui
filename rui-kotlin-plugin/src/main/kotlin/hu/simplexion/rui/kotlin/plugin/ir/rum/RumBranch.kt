@@ -12,7 +12,7 @@ class RumBranch(
     val index: Int,
     val irBranch: IrBranch,
     val condition: RumExpression,
-    val result: RumStatement
+    val result: RumRenderingStatement
 ) : RumElement {
 
     val name = "$RUI_BRANCH$index"
