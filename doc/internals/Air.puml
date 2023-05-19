@@ -1,0 +1,70 @@
+@startuml
+
+left to right direction
+
+class AirClass {
+    originalFunction : IrFunction
+    rumElement : RumClass
+
+    irClass : IrClass
+
+    adapter : IrProperty
+    scope : IrProperty
+    externalPatch : IrProperty
+    fragment : IrProperty
+
+    constructor : IrConstructor
+    initializer : IrAnonymousInitializer
+
+    builder: AirBuilder
+    patch : IrSimpleFunction
+
+    properties : AirProperty []
+    functions : AirFunction []
+}
+AirElement <|-- AirClass
+
+class AirEntryPoint {
+    airClass : AirClass
+}
+AirElement <|-- AirEntryPoint
+
+class AirBuilder {
+    externalPatch : AirExternalPatch
+    subBuilders : AirBuilder
+}
+AirFunction <|-- AirBuilder
+
+class AirExternalPatch
+AirFunction <|-- AirExternalPatch
+
+class AirSelect {
+    rumElement : RumWhen
+}
+AirFunction <|-- AirSelect
+
+interface AirFunction {
+    rumElement: RumRenderingStatement
+    irFunction : IrSimpleFunction
+}
+AirElement <|-- AirFunction
+
+class AirStateVariable
+AirProperty <|-- AirStateVariable
+
+class AirDirtyMask {
+    invalidate : AirFunction
+}
+AirProperty <|-- AirDirtyMask
+
+interface AirProperty {
+    rumElement: RumElement
+    irProperty : IrProperty
+}
+AirElement <|-- AirProperty
+
+interface AirElement {
+    rumElement : RumElement
+}
+
+@enduml

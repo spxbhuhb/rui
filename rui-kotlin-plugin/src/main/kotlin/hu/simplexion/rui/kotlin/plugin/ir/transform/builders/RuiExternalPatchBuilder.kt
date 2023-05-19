@@ -2,8 +2,8 @@ package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_EXTERNAL_PATCH_OF_CHILD
 import hu.simplexion.rui.kotlin.plugin.ir.RuiClassSymbols
+import hu.simplexion.rui.kotlin.plugin.ir.air2ir.ScopeTransform
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumExpression
-import hu.simplexion.rui.kotlin.plugin.ir.sir2ir.ScopeTransform
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.Modality

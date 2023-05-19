@@ -3,15 +3,17 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir.adhoc
 
+import hu.simplexion.rui.runtime.Rui
+
 //@Rui
 //fun a(p0: Int = 0, @Rui stuff: () -> Unit) {
 //    stuff()
 //}
 //
-//@Rui
-//fun b() {
-//    a { T0() }
-//}
+@Rui
+fun a() {
+
+}
 
 //
 //class HigherOrder(

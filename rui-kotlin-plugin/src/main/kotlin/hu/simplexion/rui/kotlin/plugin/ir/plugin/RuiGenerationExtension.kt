@@ -4,14 +4,17 @@
 package hu.simplexion.rui.kotlin.plugin.ir.plugin
 
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
+import hu.simplexion.rui.kotlin.plugin.ir.air2ir.toRir
 import hu.simplexion.rui.kotlin.plugin.ir.ir2rum.OriginalFunctionTransform
-import hu.simplexion.rui.kotlin.plugin.ir.sir2ir.Sir2IrTransform
+import hu.simplexion.rui.kotlin.plugin.ir.rum2air.toAir
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_ID
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import org.jetbrains.kotlin.ir.util.IrMessageLogger
+import org.jetbrains.kotlin.ir.util.addChild
 import org.jetbrains.kotlin.ir.util.dump
+import org.jetbrains.kotlin.ir.util.file
 
 internal class RuiGenerationExtension(
     val options: RuiOptions
@@ -26,6 +29,8 @@ internal class RuiGenerationExtension(
             moduleFragment
         ).apply {
 
+            // --------  preparations  --------
+
             pluginLogDir?.let {
                 diagnosticReporter.report(
                     IrMessageLogger.Severity.WARNING,
@@ -38,18 +43,29 @@ internal class RuiGenerationExtension(
                 output("DUMP BEFORE", moduleFragment.dump())
             }
 
-            OriginalFunctionTransform(this).also {
-                moduleFragment.accept(it, null)
-                // this check prevents the plugin to go on if there is an error that would prevent
-                // generation of a correct IR tree
-                if (!compilationError) {
-                    Sir2IrTransform(this, it.rumClasses, it.ruiEntryPoints).transform()
-                }
-            }
+            // --------  IR to RUM  --------
+
+            val ir2Rum = OriginalFunctionTransform(this)
+
+            moduleFragment.accept(ir2Rum, null)
+
+            if (compilationError) return // prevent the plugin to go on if there is an error that would result in an incorrect IR tree
 
             RuiDumpPoint.RuiTree.dump(this) {
-                output("RUI CLASSES", rumClasses.values.joinToString("\n\n") { it.dump() })
+                output("RUI CLASSES", ir2Rum.rumClasses.joinToString("\n\n") { it.dump() })
             }
+
+            // --------  RUM to AIR  --------
+
+            val airClasses = ir2Rum.rumClasses.map { it.toAir(this) }
+            val airEntryPoints = ir2Rum.rumEntryPoints.map { it.toAir(this) }
+
+            // --------  AIR to IR  --------
+
+            airClasses.forEach { it.rumElement.originalFunction.file.addChild(it.toRir(this)) }
+            airEntryPoints.forEach { it.toRir(this) }
+
+            // --------  finishing up  --------
 
             RuiDumpPoint.After.dump(this) {
                 output("DUMP AFTER", moduleFragment.dump())

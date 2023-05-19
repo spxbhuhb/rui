@@ -1,7 +1,6 @@
-package hu.simplexion.rui.kotlin.plugin.ir.util
+package hu.simplexion.rui.kotlin.plugin.ir
 
-import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
-import hu.simplexion.rui.kotlin.plugin.ir.sir.SirClass
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirClass
 import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
@@ -27,15 +26,18 @@ import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.ir.util.parentAsClass
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.util.OperatorNameConventions
 
-class ClassBoundIrBuilder(
-    val context: RuiPluginContext,
-    val irClass: IrClass
-) {
+interface ClassBoundIrBuilder {
 
-    lateinit var sirClass: SirClass
+    val context: RuiPluginContext
+
+    val irClass: IrClass
+        get() = airClass.irClass
+
+    val airClass: AirClass
 
     val irContext
         get() = context.irContext
@@ -61,55 +63,41 @@ class ClassBoundIrBuilder(
     val classBoundAdapterType: IrType
         get() = context.ruiAdapterClass.typeWith(classBoundBridgeType.defaultType)
 
-    fun irConst(value: Long): IrConst<Long> = IrConstImpl(
-        UNDEFINED_OFFSET,
-        UNDEFINED_OFFSET,
-        irContext.irBuiltIns.longType,
-        IrConstKind.Long,
-        value
-    )
-
-    fun irConst(value: String): IrConst<String> = IrConstImpl(
-        UNDEFINED_OFFSET,
-        UNDEFINED_OFFSET,
-        irContext.irBuiltIns.stringType,
-        IrConstKind.String,
-        value
-    )
-
-    fun irConst(value: Boolean) = IrConstImpl(
-        UNDEFINED_OFFSET,
-        UNDEFINED_OFFSET,
-        irContext.irBuiltIns.booleanType,
-        IrConstKind.Boolean,
-        value
-    )
-
-    fun irNull() = IrConstImpl(
-        UNDEFINED_OFFSET,
-        UNDEFINED_OFFSET,
-        irContext.irBuiltIns.anyNType,
-        IrConstKind.Null,
-        null
-    )
-
-    fun irGet(type: IrType, symbol: IrValueSymbol, origin: IrStatementOrigin?): IrExpression {
-        return IrGetValueImpl(
-            UNDEFINED_OFFSET,
-            UNDEFINED_OFFSET,
-            type,
-            symbol,
-            origin
-        )
-    }
-
-    fun irGet(variable: IrValueDeclaration, origin: IrStatementOrigin? = null): IrExpression {
-        return irGet(variable.type, variable.symbol, origin)
-    }
+    val FqName.symbolMap: RuiClassSymbols
+        get() = context.ruiSymbolMap.getSymbolMap(this)
 
     // --------------------------------------------------------------------------------------------------------
-    // Property
+    // Properties
     // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * Adds a constructor parameter and a property with the same name. The property
+     * is initialized from the constructor parameter.
+     */
+    fun addParameterProperty(
+        inName: Name,
+        inType: IrType,
+        inIsVar: Boolean = false,
+        overridden: List<IrPropertySymbol>? = null,
+        inVarargElementType: IrType? = null
+    ): IrProperty =
+
+        with(airClass.constructor) {
+
+            addValueParameter {
+                name = inName
+                type = inType
+                varargElementType = inVarargElementType
+            }.let {
+                addProperty(
+                    inName,
+                    inType,
+                    inIsVar,
+                    irGet(it, origin = IrStatementOrigin.INITIALIZE_PROPERTY_FROM_PARAMETER),
+                    overridden
+                )
+            }
+        }
 
     fun addProperty(
         inName: Name,
@@ -212,6 +200,112 @@ class ClassBoundIrBuilder(
             dispatchReceiver = receiver
             putValueArgument(0, value)
         }
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // Functions
+    // --------------------------------------------------------------------------------------------------------
+
+    /**
+     * Defines a `fun ruiBuilderNNN(startScope : RuiFragment<BT>) : RuiFragment<BT>` function (NNN = [startOffset])
+     */
+    fun builder(startOffset: Int): IrSimpleFunction =
+        irFactory.buildFun {
+            name = Name.identifier("$RUI_BUILDER$startOffset")
+            returnType = classBoundFragmentType
+            modality = Modality.OPEN
+        }.also { function ->
+
+            function.addDispatchReceiver {
+                type = irClass.typeWith(irClass.typeParameters.first().defaultType)
+            }
+
+            function.addValueParameter {
+                name = Name.identifier("startScope")
+                type = classBoundFragmentType
+            }
+
+            function.parent = irClass
+            irClass.declarations += function
+
+        }
+
+    /**
+     * Defines a `ruiExternalPatchNNN(it : RuiFragment<BT>, scopeMask:Long)` function (NNN = [startOffset])
+     */
+    fun externalPatch(startOffset: Int): IrSimpleFunction =
+        irFactory.buildFun {
+            name = Name.identifier("$RUI_EXTERNAL_PATCH_OF_CHILD$startOffset")
+            returnType = irBuiltIns.longType
+            modality = Modality.OPEN
+        }.also { function ->
+
+            function.addDispatchReceiver {
+                type = irClass.typeWith(irClass.typeParameters.first().defaultType)
+            }
+
+            function.addValueParameter {
+                name = Name.identifier("it")
+                type = classBoundFragmentType
+            }
+
+            function.addValueParameter {
+                name = Name.identifier("scopeMask")
+                type = irBuiltIns.longType
+            }
+
+            function.parent = irClass
+            irClass.declarations += function
+        }
+
+    // --------------------------------------------------------------------------------------------------------
+    // IR Basics
+    // --------------------------------------------------------------------------------------------------------
+
+    fun irConst(value: Long): IrConst<Long> = IrConstImpl(
+        UNDEFINED_OFFSET,
+        UNDEFINED_OFFSET,
+        irContext.irBuiltIns.longType,
+        IrConstKind.Long,
+        value
+    )
+
+    fun irConst(value: String): IrConst<String> = IrConstImpl(
+        UNDEFINED_OFFSET,
+        UNDEFINED_OFFSET,
+        irContext.irBuiltIns.stringType,
+        IrConstKind.String,
+        value
+    )
+
+    fun irConst(value: Boolean) = IrConstImpl(
+        UNDEFINED_OFFSET,
+        UNDEFINED_OFFSET,
+        irContext.irBuiltIns.booleanType,
+        IrConstKind.Boolean,
+        value
+    )
+
+    fun irNull() = IrConstImpl(
+        UNDEFINED_OFFSET,
+        UNDEFINED_OFFSET,
+        irContext.irBuiltIns.anyNType,
+        IrConstKind.Null,
+        null
+    )
+
+    fun irGet(type: IrType, symbol: IrValueSymbol, origin: IrStatementOrigin?): IrExpression {
+        return IrGetValueImpl(
+            UNDEFINED_OFFSET,
+            UNDEFINED_OFFSET,
+            type,
+            symbol,
+            origin
+        )
+    }
+
+    fun irGet(variable: IrValueDeclaration, origin: IrStatementOrigin? = null): IrExpression {
+        return irGet(variable.type, variable.symbol, origin)
     }
 
     // --------------------------------------------------------------------------------------------------------

@@ -33,7 +33,7 @@ class OriginalFunctionTransform(
 ) : IrElementTransformerVoidWithContext(), RuiAnnotationBasedExtension {
 
     val rumClasses = mutableListOf<RumClass>()
-    val ruiEntryPoints = mutableListOf<RumEntryPoint>()
+    val rumEntryPoints = mutableListOf<RumEntryPoint>()
 
     val irBuiltIns = ruiContext.irContext.irBuiltIns
 
@@ -116,7 +116,7 @@ class OriginalFunctionTransform(
         }
 
         RumEntryPoint(rumClass, function).also {
-            ruiEntryPoints += it
+            rumEntryPoints += it
             ruiContext.ruiEntryPoints += it
         }
 

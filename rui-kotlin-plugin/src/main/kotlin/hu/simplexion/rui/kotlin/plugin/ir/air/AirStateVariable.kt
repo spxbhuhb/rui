@@ -1,10 +1,9 @@
-package hu.simplexion.rui.kotlin.plugin.ir.sir
+package hu.simplexion.rui.kotlin.plugin.ir.air
 
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumStateVariable
 import org.jetbrains.kotlin.ir.declarations.IrProperty
 
-class SirStateVariable(
+class AirStateVariable(
     override val rumElement: RumStateVariable,
-    val property: IrProperty,
-) : SirElement {
-}
+    override val irProperty: IrProperty
+) : AirProperty
