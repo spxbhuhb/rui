@@ -395,7 +395,7 @@ class RuiClassBuilder(
     }
 
     /**
-     * Call a Rui function of this fragment.
+     * RumCall2Air a Rui function of this fragment.
      *
      * @param scope The function we call from.
      */
@@ -410,7 +410,7 @@ class RuiClassBuilder(
     }
 
     /**
-     * Call a Rui function of this fragment.
+     * RumCall2Air a Rui function of this fragment.
      *
      * @param scope The function we call from.
      */
@@ -452,7 +452,7 @@ class RuiClassBuilder(
     }
 
     /**
-     * Call the external patch of the child fragment. This is somewhat complex because the function
+     * RumCall2Air the external patch of the child fragment. This is somewhat complex because the function
      * is stored in a variable.
      *
      * ```kotlin
@@ -462,10 +462,10 @@ class RuiClassBuilder(
      * ```text
      * CALL 'public abstract fun invoke (p1: P1 of kotlin.Function1): R of kotlin.Function1 [operator] declared in kotlin.Function1' type=kotlin.Unit origin=INVOKE
      *   $this: CALL 'public abstract fun <get-ruiExternalPatch> (): kotlin.Function1<@[ParameterName(name = 'it')] hu.simplexion.rui.runtime.RuiFragment<BT of hu.simplexion.rui.runtime.RuiFragment>, kotlin.Unit> declared in hu.simplexion.rui.runtime.RuiFragment' type=kotlin.Function1<@[ParameterName(name = 'it')] hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode>, kotlin.Unit> origin=GET_PROPERTY
-     *     $this: CALL 'public open fun <get-fragment> (): hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> declared in hu.simplexion.rui.kotlin.plugin.adhoc.Block' type=hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> origin=GET_PROPERTY
-     *       $this: GET_VAR '<this>: hu.simplexion.rui.kotlin.plugin.adhoc.Block declared in hu.simplexion.rui.kotlin.plugin.adhoc.Block.ruiPatch' type=hu.simplexion.rui.kotlin.plugin.adhoc.Block origin=null
-     *   p1: CALL 'public open fun <get-fragment> (): hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> declared in hu.simplexion.rui.kotlin.plugin.adhoc.Block' type=hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> origin=GET_PROPERTY
-     *     $this: GET_VAR '<this>: hu.simplexion.rui.kotlin.plugin.adhoc.Block declared in hu.simplexion.rui.kotlin.plugin.adhoc.Block.ruiPatch' type=hu.simplexion.rui.kotlin.plugin.adhoc.Block origin=null
+     *     $this: CALL 'public open fun <get-fragment> (): hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> declared in hu.simplexion.rui.kotlin.plugin.adhoc.RumBlock2Air' type=hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> origin=GET_PROPERTY
+     *       $this: GET_VAR '<this>: hu.simplexion.rui.kotlin.plugin.adhoc.RumBlock2Air declared in hu.simplexion.rui.kotlin.plugin.adhoc.RumBlock2Air.ruiPatch' type=hu.simplexion.rui.kotlin.plugin.adhoc.RumBlock2Air origin=null
+     *   p1: CALL 'public open fun <get-fragment> (): hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> declared in hu.simplexion.rui.kotlin.plugin.adhoc.RumBlock2Air' type=hu.simplexion.rui.runtime.RuiFragment<hu.simplexion.rui.runtime.testing.TestNode> origin=GET_PROPERTY
+     *     $this: GET_VAR '<this>: hu.simplexion.rui.kotlin.plugin.adhoc.RumBlock2Air declared in hu.simplexion.rui.kotlin.plugin.adhoc.RumBlock2Air.ruiPatch' type=hu.simplexion.rui.kotlin.plugin.adhoc.RumBlock2Air origin=null
      * ```
      */
     fun IrBlockBodyBuilder.irCallExternalPatch(function: IrSimpleFunction): IrVariable {

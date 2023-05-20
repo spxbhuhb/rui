@@ -4,9 +4,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.plugin
 
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
-import hu.simplexion.rui.kotlin.plugin.ir.air2ir.toRir
 import hu.simplexion.rui.kotlin.plugin.ir.ir2rum.OriginalFunctionTransform
-import hu.simplexion.rui.kotlin.plugin.ir.rum2air.toAir
 import hu.simplexion.rui.runtime.Plugin.PLUGIN_ID
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
@@ -62,8 +60,8 @@ internal class RuiGenerationExtension(
 
             // --------  AIR to IR  --------
 
-            airClasses.forEach { it.rumElement.originalFunction.file.addChild(it.toRir(this)) }
-            airEntryPoints.forEach { it.toRir(this) }
+            airClasses.forEach { it.rumElement.originalFunction.file.addChild(it.toIr(this)) }
+            airEntryPoints.forEach { it.toIr(this) }
 
             // --------  finishing up  --------
 

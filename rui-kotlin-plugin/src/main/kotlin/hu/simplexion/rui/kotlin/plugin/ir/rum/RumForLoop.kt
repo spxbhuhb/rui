@@ -3,7 +3,9 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir.rum
 
+import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_FOR_LOOP
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilder
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
 import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiFragmentBuilder
 import org.jetbrains.kotlin.ir.expressions.IrBlock
@@ -22,6 +24,10 @@ class RumForLoop(
 
     override val builder: RuiFragmentBuilder
         get() = TODO("Not yet implemented")
+
+    override fun toAir(parent: ClassBoundIrBuilder): AirBuilder {
+        TODO("Not yet implemented")
+    }
 
     override fun <R, D> accept(visitor: RumElementVisitor<R, D>, data: D): R =
         visitor.visitForLoop(this, data)

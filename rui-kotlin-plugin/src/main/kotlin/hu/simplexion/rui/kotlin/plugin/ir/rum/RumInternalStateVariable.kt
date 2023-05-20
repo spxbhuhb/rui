@@ -3,9 +3,11 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir.rum
 
+import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_STATE_VARIABLE_LIMIT
 import hu.simplexion.rui.kotlin.plugin.ir.diagnostics.ErrorsRui
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
+import hu.simplexion.rui.kotlin.plugin.ir.rum2air.RumInternalStateVariable2Air
 import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiStateVariableBuilder
 import org.jetbrains.kotlin.ir.declarations.IrVariable
 
@@ -19,6 +21,8 @@ class RumInternalStateVariable(
     override val name = irVariable.name
 
     override val builder = RuiStateVariableBuilder.builderFor(rumClass.builder, this)
+
+    override fun toAir(parent: ClassBoundIrBuilder) = RumInternalStateVariable2Air(parent, this).toAir()
 
     override fun <R, D> accept(visitor: RumElementVisitor<R, D>, data: D): R =
         visitor.visitInternalStateVariable(this, data)

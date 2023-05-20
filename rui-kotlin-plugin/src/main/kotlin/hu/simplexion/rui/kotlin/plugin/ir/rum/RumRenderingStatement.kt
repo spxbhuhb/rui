@@ -3,6 +3,8 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir.rum
 
+import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilder
 import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiFragmentBuilder
 
 abstract class RumRenderingStatement(
@@ -13,5 +15,7 @@ abstract class RumRenderingStatement(
     abstract val name: String
 
     abstract val builder: RuiFragmentBuilder
+
+    abstract fun toAir(parent: ClassBoundIrBuilder): AirBuilder
 
 }

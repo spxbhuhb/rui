@@ -59,6 +59,15 @@ class DumpRumTreeVisitor(
         }
     }
 
+    override fun visitBlock(statement: RumBlock) {
+        indented {
+            with(statement) {
+                println { "BLOCK index:$index name:$name" }
+            }
+            super.visitBlock(statement)
+        }
+    }
+
     override fun visitCall(statement: RumCall) {
         indented {
             with(statement) {

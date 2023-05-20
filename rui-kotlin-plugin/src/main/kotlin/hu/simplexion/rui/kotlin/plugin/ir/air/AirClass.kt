@@ -1,5 +1,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.air
 
+import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
+import hu.simplexion.rui.kotlin.plugin.ir.air2ir.AirClass2Ir
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
 import org.jetbrains.kotlin.ir.declarations.*
 
@@ -18,10 +20,15 @@ class AirClass(
     val constructor: IrConstructor,
     val initializer: IrAnonymousInitializer,
 
-    val builder: IrSimpleFunction,
     val patch: IrSimpleFunction,
 
-    val properties: MutableList<AirProperty>,
-    val functions: MutableList<AirFunction>
+    val stateVariables: List<AirStateVariable>,
+    val dirtyMasks: List<AirDirtyMask>
 
-) : AirElement
+) : AirElement {
+
+    lateinit var builder: AirBuilder
+
+    fun toIr(context: RuiPluginContext): IrClass = AirClass2Ir(context, this).toIr()
+
+}

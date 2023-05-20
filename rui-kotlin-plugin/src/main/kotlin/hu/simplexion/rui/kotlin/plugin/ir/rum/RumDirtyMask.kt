@@ -3,8 +3,10 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir.rum
 
+import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_DIRTY
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
+import hu.simplexion.rui.kotlin.plugin.ir.rum2air.RumDirtyMask2Air
 import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiDirtyMaskBuilder
 import org.jetbrains.kotlin.name.Name
 
@@ -16,6 +18,8 @@ class RumDirtyMask(
     val name = Name.identifier("$RUI_DIRTY$index")
 
     val builder = RuiDirtyMaskBuilder(rumClass.builder, this)
+
+    fun toAir(parent: ClassBoundIrBuilder) = RumDirtyMask2Air(parent, this).toAir()
 
     override fun <R, D> accept(visitor: RumElementVisitor<R, D>, data: D): R =
         visitor.visitDirtyMask(this, data)

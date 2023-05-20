@@ -29,7 +29,14 @@ class AirEntryPoint {
 }
 AirElement <|-- AirEntryPoint
 
+class AirBlock
+AirBuilder <|-- AirBlock
+
+class AirCall
+AirBuilder <|-- AirCall
+
 class AirBuilder {
+    symbolMap : RuiClassSymbols
     externalPatch : AirExternalPatch
     subBuilders : AirBuilder
 }

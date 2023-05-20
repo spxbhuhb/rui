@@ -9,6 +9,8 @@ import org.jetbrains.kotlin.descriptors.Modality
 import org.jetbrains.kotlin.ir.builders.declarations.*
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.declarations.impl.IrTypeParameterImpl
+import org.jetbrains.kotlin.ir.expressions.impl.IrDelegatingConstructorCallImpl
+import org.jetbrains.kotlin.ir.expressions.impl.IrInstanceInitializerCallImpl
 import org.jetbrains.kotlin.ir.symbols.impl.IrAnonymousInitializerSymbolImpl
 import org.jetbrains.kotlin.ir.symbols.impl.IrTypeParameterSymbolImpl
 import org.jetbrains.kotlin.ir.symbols.impl.IrValueParameterSymbolImpl
@@ -17,18 +19,17 @@ import org.jetbrains.kotlin.ir.types.impl.IrSimpleTypeImpl
 import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
+import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.types.Variance
 
-class Class2Air(
-    override val context: RuiPluginContext,
-) : ClassBoundIrBuilder {
+class RumClass2Air(
+    context: RuiPluginContext,
+    val rumClass: RumClass
+) : ClassBoundIrBuilder(context) {
 
-    override lateinit var irClass: IrClass
-    override lateinit var airClass: AirClass
-
-    fun toAir(rumClass: RumClass): AirClass {
+    fun toAir(): AirClass {
 
         val originalFunction = rumClass.originalFunction
 
@@ -44,21 +45,16 @@ class Class2Air(
             it.parent = originalFunction.parent
         }
 
-        return rumClass.toAir()
-    }
-
-    private fun RumClass.toAir(): AirClass {
-
         typeParameters()
         thisReceiver()
 
         val constructor = constructor()
 
-        val adapter = addParameterProperty(RUI_ADAPTER.name, classBoundAdapterType, overridden = context.ruiAdapter)
-        val scope = addParameterProperty(RUI_SCOPE.name, classBoundFragmentType.makeNullable(), overridden = context.ruiScope)
-        val externalPatch = addParameterProperty(RUI_EXTERNAL_PATCH.name, classBoundExternalPatchType, overridden = context.ruiExternalPatch)
+        val adapter = addIrParameterProperty(RUI_ADAPTER.name, classBoundAdapterType, overridden = context.ruiAdapter)
+        val scope = addIrParameterProperty(RUI_SCOPE.name, classBoundFragmentType.makeNullable(), overridden = context.ruiScope)
+        val externalPatch = addIrParameterProperty(RUI_EXTERNAL_PATCH.name, classBoundExternalPatchType, overridden = context.ruiExternalPatch)
 
-        val fragment = addProperty(RUI_FRAGMENT.name, context.ruiFragmentType, inIsVar = false, overridden = context.ruiFragment)
+        val fragment = addIrProperty(RUI_FRAGMENT.name, context.ruiFragmentType, inIsVar = false, overridden = context.ruiFragment)
 
         create()
         mount()
@@ -67,7 +63,7 @@ class Class2Air(
 
         airClass = AirClass(
             originalFunction,
-            this,
+            rumClass,
             irClass,
             adapter,
             scope,
@@ -75,14 +71,12 @@ class Class2Air(
             fragment,
             constructor,
             initializer(),
-            builder(irClass.startOffset), // TODO boundary as start of the builder might be better conceptually
             patch(),
-            mutableListOf(),
-            mutableListOf()
+            rumClass.stateVariables.values.map { it.toAir(this@RumClass2Air) },
+            rumClass.dirtyMasks.map { it.toAir(this@RumClass2Air) }
         )
 
-        stateVariables.values.mapTo(airClass.properties) { StateVariable.toAir(it) }
-        dirtyMasks.mapTo(airClass.properties) { DirtyMask.toAir(it) }
+        airClass.builder = rumClass.rootBlock.toAir(this)
 
         return airClass
     }
@@ -133,6 +127,25 @@ class Class2Air(
             returnType = irClass.typeWith()
         }.apply {
             parent = irClass
+
+            body = irFactory.createBlockBody(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET).apply {
+
+                statements += IrDelegatingConstructorCallImpl.fromSymbolOwner(
+                    SYNTHETIC_OFFSET,
+                    SYNTHETIC_OFFSET,
+                    irBuiltIns.anyType,
+                    irBuiltIns.anyClass.constructors.first(),
+                    typeArgumentsCount = 0,
+                    valueArgumentsCount = 0
+                )
+
+                statements += IrInstanceInitializerCallImpl(
+                    SYNTHETIC_OFFSET,
+                    SYNTHETIC_OFFSET,
+                    irClass.symbol,
+                    irBuiltIns.unitType
+                )
+            }
         }
 
     private fun initializer(): IrAnonymousInitializer =
@@ -214,6 +227,7 @@ class Class2Air(
             }
 
             irClass.declarations += function
+
         }
 
     @Suppress("DuplicatedCode")  // I don't want to merge mount and unmount

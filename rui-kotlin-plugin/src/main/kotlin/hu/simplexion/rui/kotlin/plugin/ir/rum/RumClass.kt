@@ -4,8 +4,10 @@
 package hu.simplexion.rui.kotlin.plugin.ir.rum
 
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirClass
 import hu.simplexion.rui.kotlin.plugin.ir.ir2rum.BoundaryVisitor
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
+import hu.simplexion.rui.kotlin.plugin.ir.rum2air.RumClass2Air
 import hu.simplexion.rui.kotlin.plugin.ir.toRuiClassFqName
 import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiClassBuilder
 import org.jetbrains.kotlin.ir.IrStatement
@@ -35,6 +37,8 @@ class RumClass(
     val symbolMap = mutableMapOf<IrSymbol, RumElement>()
 
     val builder = RuiClassBuilder(this)
+
+    fun toAir(context: RuiPluginContext): AirClass = RumClass2Air(context, this).toAir()
 
     val irClass
         get() = builder.irClass

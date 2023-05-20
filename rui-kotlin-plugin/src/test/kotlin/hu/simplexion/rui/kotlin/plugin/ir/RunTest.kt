@@ -39,7 +39,7 @@ class RunTest {
     val sourceDir = "src/test/kotlin/hu/simplexion/rui/kotlin/plugin/ir/run"
 
     @Test
-    fun block() = compile("Block.kt")
+    fun block() = compile("RumBlock2Air.kt")
 
     @Test
     fun eventHandler() = compile("EventHandler.kt")

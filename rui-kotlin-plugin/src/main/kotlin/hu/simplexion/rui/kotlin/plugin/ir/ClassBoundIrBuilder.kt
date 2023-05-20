@@ -12,10 +12,7 @@ import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irSetField
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.*
-import org.jetbrains.kotlin.ir.expressions.impl.IrCallImpl
-import org.jetbrains.kotlin.ir.expressions.impl.IrConstImpl
-import org.jetbrains.kotlin.ir.expressions.impl.IrGetValueImpl
-import org.jetbrains.kotlin.ir.expressions.impl.IrSetFieldImpl
+import org.jetbrains.kotlin.ir.expressions.impl.*
 import org.jetbrains.kotlin.ir.symbols.IrFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.IrPropertySymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
@@ -24,20 +21,30 @@ import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
+import org.jetbrains.kotlin.ir.util.constructors
 import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.ir.util.parentAsClass
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.util.OperatorNameConventions
 
-interface ClassBoundIrBuilder {
-
+open class ClassBoundIrBuilder(
     val context: RuiPluginContext
+) {
 
-    val irClass: IrClass
-        get() = airClass.irClass
+    constructor(parent: ClassBoundIrBuilder) : this(parent.context) {
+        this.irClass = parent.irClass
+        this.airClass = parent.airClass
+    }
 
-    val airClass: AirClass
+    constructor(context: RuiPluginContext, airClass: AirClass) : this(context) {
+        this.irClass = airClass.irClass
+        this.airClass = airClass
+    }
+
+    lateinit var irClass: IrClass
+
+    lateinit var airClass: AirClass
 
     val irContext
         get() = context.irContext
@@ -74,7 +81,7 @@ interface ClassBoundIrBuilder {
      * Adds a constructor parameter and a property with the same name. The property
      * is initialized from the constructor parameter.
      */
-    fun addParameterProperty(
+    fun addIrParameterProperty(
         inName: Name,
         inType: IrType,
         inIsVar: Boolean = false,
@@ -82,14 +89,14 @@ interface ClassBoundIrBuilder {
         inVarargElementType: IrType? = null
     ): IrProperty =
 
-        with(airClass.constructor) {
+        with(irClass.constructors.first()) {
 
             addValueParameter {
                 name = inName
                 type = inType
                 varargElementType = inVarargElementType
             }.let {
-                addProperty(
+                addIrProperty(
                     inName,
                     inType,
                     inIsVar,
@@ -99,7 +106,10 @@ interface ClassBoundIrBuilder {
             }
         }
 
-    fun addProperty(
+    /**
+     * Adds a property to [irClass].
+     */
+    fun addIrProperty(
         inName: Name,
         inType: IrType,
         inIsVar: Boolean,
@@ -306,6 +316,19 @@ interface ClassBoundIrBuilder {
 
     fun irGet(variable: IrValueDeclaration, origin: IrStatementOrigin? = null): IrExpression {
         return irGet(variable.type, variable.symbol, origin)
+    }
+
+    fun irIf(condition: IrExpression, body: IrExpression): IrExpression {
+        return IrIfThenElseImpl(
+            UNDEFINED_OFFSET,
+            UNDEFINED_OFFSET,
+            irContext.irBuiltIns.unitType,
+            origin = IrStatementOrigin.IF
+        ).also {
+            it.branches.add(
+                IrBranchImpl(condition, body)
+            )
+        }
     }
 
     // --------------------------------------------------------------------------------------------------------

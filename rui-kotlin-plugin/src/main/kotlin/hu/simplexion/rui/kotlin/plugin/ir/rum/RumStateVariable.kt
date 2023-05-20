@@ -3,6 +3,8 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir.rum
 
+import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirStateVariable
 import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiStateVariableBuilder
 import org.jetbrains.kotlin.name.Name
 
@@ -14,5 +16,7 @@ interface RumStateVariable : RumElement {
     val name: Name
 
     val builder: RuiStateVariableBuilder
+
+    fun toAir(parent: ClassBoundIrBuilder): AirStateVariable
 
 }

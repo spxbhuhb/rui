@@ -18,22 +18,22 @@ import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.name.Name
 
-context(ClassBoundIrBuilder)
-object DirtyMask {
+class RumDirtyMask2Air(
+    parent: ClassBoundIrBuilder,
+    val dirtyMask: RumDirtyMask
+) : ClassBoundIrBuilder(parent) {
 
-    fun toAir(dirtyMask: RumDirtyMask): AirDirtyMask {
-        with(dirtyMask) {
-            val property = addProperty(name, irBuiltIns.longType, true, irConst(0))
+    fun toAir(): AirDirtyMask = with(dirtyMask) {
+        val property = addIrProperty(name, irBuiltIns.longType, true, irConst(0))
 
-            return AirDirtyMask(
-                this,
-                property,
-                irInvalidate(property),
-            )
-        }
+        return AirDirtyMask(
+            dirtyMask,
+            property,
+            invalidate(property),
+        )
     }
 
-    private fun RumDirtyMask.irInvalidate(property: IrProperty): IrSimpleFunction =
+    private fun RumDirtyMask.invalidate(property: IrProperty): IrSimpleFunction =
         irFactory
             .buildFun {
                 name = Name.identifier(RUI_INVALIDATE + index)
@@ -52,12 +52,12 @@ object DirtyMask {
                     type = irBuiltIns.longType
                 }
 
-                function.body = initInvalidateBody(function, property, receiver, mask)
+                function.body = invalidateBody(function, property, receiver, mask)
 
                 irClass.declarations += function
             }
 
-    private fun initInvalidateBody(function: IrSimpleFunction, property: IrProperty, receiver: IrValueParameter, mask: IrValueParameter): IrBody =
+    private fun invalidateBody(function: IrSimpleFunction, property: IrProperty, receiver: IrValueParameter, mask: IrValueParameter): IrBody =
         DeclarationIrBuilder(irContext, function.symbol).irBlockBody {
             +property.irSetValue(
                 irOr(

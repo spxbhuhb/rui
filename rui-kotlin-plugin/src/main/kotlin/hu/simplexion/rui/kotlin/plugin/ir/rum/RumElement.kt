@@ -7,6 +7,7 @@ import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.DumpRumTreeVisitor
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
 
 interface RumElement {
+
     fun <R, D> accept(visitor: RumElementVisitor<R, D>, data: D): R
 
     fun <D> acceptChildren(visitor: RumElementVisitor<Unit, D>, data: D)
