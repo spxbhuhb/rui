@@ -7,8 +7,7 @@ import org.jetbrains.kotlin.ir.declarations.*
 
 class AirClass(
 
-    val originalFunction: IrFunction,
-    override val rumElement: RumClass,
+    val rumClass: RumClass,
 
     val irClass: IrClass,
 
@@ -20,14 +19,20 @@ class AirClass(
     val constructor: IrConstructor,
     val initializer: IrAnonymousInitializer,
 
-    val patch: IrSimpleFunction,
-
-    val stateVariables: List<AirStateVariable>,
-    val dirtyMasks: List<AirDirtyMask>
-
+    val patch: IrSimpleFunction
 ) : AirElement {
 
+    override val rumElement
+        get() = rumClass
+
+    lateinit var stateVariableMap: Map<String, AirStateVariable>
+    lateinit var stateVariableList: List<AirStateVariable>
+
+    lateinit var dirtyMasks: List<AirDirtyMask>
+
     lateinit var builder: AirBuilder
+
+    val functions = mutableListOf<AirFunction>()
 
     fun toIr(context: RuiPluginContext): IrClass = AirClass2Ir(context, this).toIr()
 

@@ -21,7 +21,6 @@ import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.ir.util.superTypes
 import org.jetbrains.kotlin.psi.KtModifierListOwner
-import kotlin.collections.set
 
 /**
  * - creates a [RumClass] for each original function (a function annotated with `@Rui`)
@@ -55,7 +54,6 @@ class OriginalFunctionTransform(
 
         Ir2RumTransform(ruiContext, declaration, 0).transform().also {
             rumClasses += it
-            ruiContext.rumClasses[it.irClass.kotlinFqName] = it
         }
 
         // replace the body of the original function with an empty one
@@ -111,13 +109,12 @@ class OriginalFunctionTransform(
         // skip the ruiAdapter function parameter
         Ir2RumTransform(ruiContext, function, skipParameters = 1).transform().also {
             rumClasses += it
-            ruiContext.rumClasses[it.irClass.kotlinFqName] = it
             rumClass = it
         }
 
         RumEntryPoint(rumClass, function).also {
             rumEntryPoints += it
-            ruiContext.ruiEntryPoints += it
+            ruiContext.rumEntryPoints += it
         }
 
         return expression

@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.ir.builders.irGetField
 import org.jetbrains.kotlin.ir.builders.irString
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 
+@Deprecated("move to IR-RUM-AIR-IR")
 interface RuiBuilderWithSymbolMap : RuiBuilder {
 
     val symbolMap: RuiClassSymbols

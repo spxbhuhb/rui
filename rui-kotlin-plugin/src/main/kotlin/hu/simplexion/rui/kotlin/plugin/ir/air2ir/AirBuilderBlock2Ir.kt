@@ -1,8 +1,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.air2ir
 
 import hu.simplexion.rui.kotlin.plugin.ir.*
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirBlock
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilder
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilderBlock
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
@@ -14,9 +13,9 @@ import org.jetbrains.kotlin.ir.expressions.impl.IrVarargImpl
 import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 
-class AirBlock2Ir(
+class AirBuilderBlock2Ir(
     parent: ClassBoundIrBuilder,
-    val builder: AirBlock
+    val builder: AirBuilderBlock
 ) : ClassBoundIrBuilder(parent) {
 
     fun toIr() = with(builder) {
@@ -36,7 +35,7 @@ class AirBlock2Ir(
 
                 constructorCall.putValueArgument(
                     RUI_FRAGMENT_ARGUMENT_INDEX_ADAPTER,
-                    airClass.adapter.irGetValue(irGet(startScope))
+                    irGetValue(airClass.adapter, irGet(startScope))
                 )
 
                 constructorCall.putValueArgument(
@@ -46,11 +45,9 @@ class AirBlock2Ir(
 
             }
         }
-
-        externalPatch.irFunction.body = DeclarationIrBuilder(irContext, irFunction.symbol).irBlockBody { }
     }
 
-    fun AirBuilder.buildFragmentVarArg(startScope: IrValueParameter): IrExpression {
+    fun AirBuilderBlock.buildFragmentVarArg(startScope: IrValueParameter): IrExpression {
         return IrVarargImpl(
             SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
             irBuiltIns.arrayClass.typeWith(context.ruiFragmentType),
@@ -72,6 +69,5 @@ class AirBlock2Ir(
             }
         }
     }
-
 
 }

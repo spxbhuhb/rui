@@ -3,8 +3,8 @@
  */
 package hu.simplexion.rui.kotlin.plugin.ir
 
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirClass
 import hu.simplexion.rui.kotlin.plugin.ir.plugin.RuiOptions
-import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumEntryPoint
 import org.jetbrains.kotlin.backend.common.extensions.FirIncompatiblePluginAPI
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
@@ -47,8 +47,9 @@ class RuiPluginContext(
 
     var compilationError = false
 
-    val rumClasses = mutableMapOf<FqName, RumClass>()
-    val ruiEntryPoints = mutableListOf<RumEntryPoint>()
+    val rumEntryPoints = mutableListOf<RumEntryPoint>()
+
+    var airClasses = mutableMapOf<FqName, AirClass>()
 
     val ruiFragmentClass = classSymbol(RUI_FQN_FRAGMENT_CLASS)
     val ruiFragmentType = ruiFragmentClass.defaultType

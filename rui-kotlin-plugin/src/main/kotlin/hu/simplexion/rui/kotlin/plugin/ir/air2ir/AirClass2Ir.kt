@@ -5,6 +5,7 @@ import hu.simplexion.rui.kotlin.plugin.ir.RUI_PATCH_ARGUMENT_INDEX_SCOPE_MASK
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
 import hu.simplexion.rui.kotlin.plugin.ir.air.AirClass
 import hu.simplexion.rui.kotlin.plugin.ir.air.AirDirtyMask
+import hu.simplexion.rui.kotlin.plugin.ir.air2ir.StateAccessTransform.Companion.transformStateAccess
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.builders.*
@@ -23,23 +24,35 @@ class AirClass2Ir(
 
     fun toIr(): IrClass {
         airClass.initializer.toIr()
-        airClass.builder.toIr(this)
+        airClass.functions.forEach { it.toIr(this) }
 
-        patch()
+        patchBody()
 
         return irClass
     }
 
     fun IrAnonymousInitializer.toIr() {
-        body = irFactory.createBlockBody(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET)
-        body.statements += airClass.rumElement.initializerStatements
-        //body.statements += fragment.irSetField(<ircall builder>, <this>)
+        body = DeclarationIrBuilder(irContext, irClass.symbol).irBlockBody {
+
+            airClass.rumElement.initializerStatements.forEach {
+                +transformStateAccess(it, airClass.irClass.thisReceiver!!.symbol)
+            }
+
+            val builderCall = irCallOp(
+                airClass.builder.irFunction.symbol,
+                type = classBoundFragmentType,
+                dispatchReceiver = irThisReceiver(),
+                argument = irThisReceiver()
+            )
+
+            +airClass.fragment.irSetField(builderCall, irThisReceiver())
+        }
 
         // The initializer has to be the last, so it will be able to access all properties
         irClass.declarations += this
     }
 
-    fun patch() {
+    fun patchBody() {
         val patch = airClass.patch
 
         patch.body = DeclarationIrBuilder(irContext, patch.symbol).irBlockBody {
@@ -124,7 +137,8 @@ class AirClass2Ir(
     }
 
     fun AirDirtyMask.irClear(receiver: IrValueParameter): IrStatement =
-        irProperty.irSetValue(
+        irSetValue(
+            irProperty,
             irConst(0L),
             receiver = irGet(receiver)
         )

@@ -31,19 +31,16 @@ class ErrorsTest {
     val sourceDir = "src/test/kotlin/hu/simplexion/rui/kotlin/plugin/ir/errors"
 
     @Test
-    fun variableInRendering() {
-        compile("VariableInRendering.kt", ErrorsRui.RUI_IR_RENDERING_VARIABLE, true)
-    }
+    fun innerVariableShadow() = compile("InnerVariableShadow.kt", ErrorsRui.RUI_IR_STATE_VARIABLE_SHADOW)
 
     @Test
-    fun stateVariableShadow() {
-        compile("StateVariableShadow.kt", ErrorsRui.RUI_IR_STATE_VARIABLE_SHADOW, true)
-    }
+    fun variableInRendering() = compile("VariableInRendering.kt", ErrorsRui.RUI_IR_RENDERING_VARIABLE)
 
     @Test
-    fun externalFunction() {
-        compile("ExternalFunction.kt", ErrorsRui.RUI_IR_MISSING_FUNCTION_BODY, true)
-    }
+    fun stateVariableShadow() = compile("StateVariableShadow.kt", ErrorsRui.RUI_IR_STATE_VARIABLE_SHADOW)
+
+    @Test
+    fun externalFunction() = compile("ExternalFunction.kt", ErrorsRui.RUI_IR_MISSING_FUNCTION_BODY)
 
     @OptIn(ExperimentalCompilerApi::class)
     fun compile(fileName: String, expectedError: ErrorsRui.RuiIrError, dumpResult: Boolean = false) {

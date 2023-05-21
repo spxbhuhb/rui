@@ -2,9 +2,8 @@ package hu.simplexion.rui.kotlin.plugin.ir.rum2air
 
 import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_FQN_BLOCK_CLASS
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirBlock
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilder
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirExternalPatch
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilderBlock
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirExternalPatchBlock
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumBlock
 
 class RumBlock2Air(
@@ -12,20 +11,27 @@ class RumBlock2Air(
     val rumBlock: RumBlock
 ) : ClassBoundIrBuilder(parent) {
 
-    fun toAir(): AirBuilder = with(rumBlock) {
+    fun toAir(): AirBuilderBlock = with(rumBlock) {
 
-        val externalPatch = AirExternalPatch(
+        val symbolMap = context.ruiSymbolMap.getSymbolMap(RUI_FQN_BLOCK_CLASS)
+
+        val externalPatch = AirExternalPatchBlock(
             rumBlock,
-            externalPatch(irBlock.startOffset)
+            externalPatch(irBlock.startOffset),
+            symbolMap
         )
+        airClass.functions += externalPatch
 
-        return AirBlock(
+        val builder = AirBuilderBlock(
             rumBlock,
+            symbolMap,
             builder(irBlock.startOffset),
-            context.ruiSymbolMap.getSymbolMap(RUI_FQN_BLOCK_CLASS),
-            externalPatch,
+            externalPatch.irFunction.symbol,
             statements.map { it.toAir(this@RumBlock2Air) }
         )
+        airClass.functions += builder
+
+        return builder
     }
 
 }

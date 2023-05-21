@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.name.Name
 
+@Deprecated("move to IR-RUM-AIR-IR")
 class RuiHigherOrderArgumentBuilder(
     override val ruiClassBuilder: RuiClassBuilder,
     val ruiHigherOrderArgument: RumHigherOrderArgument
@@ -122,10 +123,10 @@ class RuiHigherOrderArgumentBuilder(
                     RUI_FRAGMENT_ARGUMENT_INDEX_SCOPE,
                     ruiClassBuilder.scopePropertyBuilder.irGetValue()
                 )
-                constructorCall.putValueArgument(
-                    RUI_FRAGMENT_ARGUMENT_INDEX_EXTERNAL_PATCH,
-                    implicitComponentExternalPatchBuilder.irExternalPatchReference()
-                )
+//                constructorCall.putValueArgument(
+//                    RUI_FRAGMENT_ARGUMENT_INDEX_EXTERNAL_PATCH,
+//                    implicitComponentExternalPatchBuilder.irExternalPatchReference()
+//                )
             }
 
             val instance = irTemporary(call)

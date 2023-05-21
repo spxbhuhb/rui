@@ -13,13 +13,12 @@ import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.*
 import org.jetbrains.kotlin.ir.expressions.*
 import org.jetbrains.kotlin.ir.expressions.impl.IrBlockImpl
-import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.psi.KtModifierListOwner
 
 /**
  * Transforms an original function into a [RumClass]. This is a somewhat complex transformation.
  *
- * Calls [StateTransform] to:
+ * Calls [StateDefinitionTransform] to:
  *
  *   - convert function parameters into [RumExternalStateVariable] instances
  *   - convert function variables are into [RumInternalStateVariable] instances
@@ -49,7 +48,7 @@ class Ir2RumTransform(
     override fun getAnnotationFqNames(modifierListOwner: KtModifierListOwner?): List<String> =
         rumClass.ruiContext.annotations
 
-    fun IrElement.dependencies(): List<RumStateVariable> {
+    fun IrElement.dependencies(): List<Int> {
         val visitor = DependencyVisitor(rumClass)
         accept(visitor, null)
         return visitor.dependencies
@@ -58,7 +57,7 @@ class Ir2RumTransform(
     fun transform(): RumClass {
         rumClass = RumClass(ruiContext, irFunction)
 
-        StateTransform(ruiContext, rumClass, skipParameters).transform()
+        StateDefinitionTransform(rumClass, skipParameters).transform()
 
         transformRoot()
 
@@ -68,12 +67,15 @@ class Ir2RumTransform(
     fun transformRoot() {
         val statements = rumClass.originalStatements
 
-        val irBlock = IrBlockImpl(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET, ruiContext.irContext.irBuiltIns.unitType)
-        irBlock.statements.addAll(statements.subList(rumClass.boundary, statements.size))
+        val startOffset = rumClass.originalFunction.startOffset
+        val endOffset = rumClass.originalFunction.endOffset
+
+        val irBlock = IrBlockImpl(startOffset, endOffset, ruiContext.irContext.irBuiltIns.unitType)
+        irBlock.statements.addAll(statements.subList(rumClass.boundary.statementIndex, statements.size))
 
         // if this is a single statement, we don't need the surrounding block
         // TODO check if this is the right place for the optimization
-        rumClass.rootBlock = transformBlock(irBlock).let {
+        rumClass.rendering = transformBlock(irBlock).let {
             if (it.statements.size == 1) {
                 it.statements[0]
             } else {
@@ -175,7 +177,7 @@ class Ir2RumTransform(
         }
 
     // ---------------------------------------------------------------------------
-    // RumCall2Air
+    // Call
     // ---------------------------------------------------------------------------
 
     fun transformCall(statement: IrCall): RumCall? {
@@ -248,7 +250,7 @@ class Ir2RumTransform(
             index,
             expression,
             expression.dependencies(),
-            Ir2RumTransform(ruiContext, expression.function, 0).transform()
+            // this was the implicit class, Ir2RumTransform(ruiContext, expression.function, 0).transform()
         )
 
     // ---------------------------------------------------------------------------

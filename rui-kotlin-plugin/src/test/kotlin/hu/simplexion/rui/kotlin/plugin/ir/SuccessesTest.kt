@@ -28,10 +28,22 @@ class SuccessesTest {
     val sourceDir = "src/test/kotlin/hu/simplexion/rui/kotlin/plugin/ir/successes"
 
     @Test
-    fun sequence() = compile("Sequence.kt")
+    fun empty() = compile("Empty.kt")
 
     @Test
-    fun innerVariableShadow() = compile("InnerVariableShadow.kt")
+    fun onlyInternal() = compile("OnlyInternal.kt")
+
+    @Test
+    fun onlyExternal() = compile("OnlyExternal.kt")
+
+    @Test
+    fun oneCallNoArguments() = compile("OneCallNoArguments.kt")
+
+    @Test
+    fun oneCallConstArgument() = compile("OneCallConstArgument.kt")
+
+    @Test
+    fun sequence() = compile("Sequence.kt")
 
     @Test
     fun variables() = compile("Variables.kt")

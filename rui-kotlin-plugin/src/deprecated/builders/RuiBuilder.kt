@@ -36,6 +36,7 @@ import org.jetbrains.kotlin.util.OperatorNameConventions
  * androidx.compose.compiler.plugins.kotlin.lower.AbstractComposeLowering.
  */
 @OptIn(FirIncompatiblePluginAPI::class)
+@Deprecated("move to IR-RUM-AIR-IR")
 interface RuiBuilder {
 
     val ruiClassBuilder: RuiClassBuilder

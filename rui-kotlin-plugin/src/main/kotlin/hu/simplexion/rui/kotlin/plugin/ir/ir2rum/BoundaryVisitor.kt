@@ -4,6 +4,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.ir2rum
 
 import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumBoundary
 import hu.simplexion.rui.kotlin.plugin.ir.util.RuiAnnotationBasedExtension
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.declarations.IrFunction
@@ -15,6 +16,7 @@ import org.jetbrains.kotlin.psi.KtModifierListOwner
 
 /**
  * Finds the boundary between state definition and rendering parts of a RUI function.
+ * The boundary is the `startOffset` of the first rendering statement.
  * Entry point is [findBoundary].
  */
 class BoundaryVisitor(
@@ -26,22 +28,16 @@ class BoundaryVisitor(
     override fun getAnnotationFqNames(modifierListOwner: KtModifierListOwner?): List<String> =
         ruiContext.annotations
 
-    /**
-     * Finds the boundary between state definition and rendering parts of a RUI function.
-     *
-     * @return  Index of the first rendering statement in the function's
-     *          statement list or the size of the list if there is no rendering part.
-     */
-    fun findBoundary(declaration: IrFunction): Int {
+    fun findBoundary(declaration: IrFunction): RumBoundary {
 
         declaration.body?.statements?.let { statements ->
 
             statements.forEachIndexed { index, irStatement ->
                 irStatement.acceptVoid(this)
-                if (found) return index
+                if (found) return RumBoundary(irStatement.startOffset, index)
             }
 
-            return statements.size
+            return RumBoundary(declaration.endOffset, statements.size)
         }
 
         throw IllegalStateException("function has no body (maybe it's an expression function)")

@@ -1,9 +1,8 @@
 package hu.simplexion.rui.kotlin.plugin.ir.rum2air
 
 import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilder
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirCall
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirExternalPatch
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilderCall
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirExternalPatchCall
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumCall
 
 class RumCall2Air(
@@ -11,20 +10,27 @@ class RumCall2Air(
     val rumCall: RumCall
 ) : ClassBoundIrBuilder(parent) {
 
-    fun toAir(): AirBuilder = with(rumCall) {
+    fun toAir(): AirBuilderCall = with(rumCall) {
 
-        val externalPatch = AirExternalPatch(
+        val symbolMap = context.ruiSymbolMap.getSymbolMap(rumCall.target)
+
+        val externalPatch = AirExternalPatchCall(
             rumCall,
-            externalPatch(irCall.startOffset)
+            externalPatch(irCall.startOffset),
+            symbolMap
         )
+        airClass.functions += externalPatch
 
-        return AirCall(
+        val builder = AirBuilderCall(
             rumCall,
+            symbolMap,
             builder(irCall.startOffset),
-            context.ruiSymbolMap.getSymbolMap(rumCall.target),
-            externalPatch,
+            externalPatch.irFunction.symbol,
             emptyList()
         )
+        airClass.functions += builder
+
+        return builder
     }
 
 }

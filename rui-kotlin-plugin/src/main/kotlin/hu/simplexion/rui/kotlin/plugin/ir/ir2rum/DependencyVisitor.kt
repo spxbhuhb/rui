@@ -4,7 +4,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.ir2rum
 
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumClass
-import hu.simplexion.rui.kotlin.plugin.ir.rum.RumStateVariable
+import hu.simplexion.rui.kotlin.plugin.ir.rum.RumDependencies
 import hu.simplexion.rui.kotlin.plugin.ir.util.RuiAnnotationBasedExtension
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.expressions.IrCall
@@ -15,7 +15,7 @@ class DependencyVisitor(
     private val rumClass: RumClass
 ) : RuiAnnotationBasedExtension, IrElementVisitorVoid {
 
-    var dependencies = mutableListOf<RumStateVariable>()
+    var dependencies: RumDependencies = mutableListOf()
 
     override fun getAnnotationFqNames(modifierListOwner: KtModifierListOwner?): List<String> =
         rumClass.ruiContext.annotations
@@ -28,8 +28,8 @@ class DependencyVisitor(
      * State variable reads are calls to the getter.
      */
     override fun visitCall(expression: IrCall) {
-        rumClass.stateVariableByGetterOrNull(expression.symbol)?.let {
-            dependencies += it
+        rumClass.stateVariables.firstOrNull { it.matches(expression.symbol) }?.let {
+            dependencies += it.index
         }
         super.visitCall(expression)
     }

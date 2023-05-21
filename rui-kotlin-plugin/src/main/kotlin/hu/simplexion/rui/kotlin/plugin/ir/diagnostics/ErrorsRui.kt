@@ -48,6 +48,7 @@ object ErrorsRui {
 
         fun check(rumClass: RumClass, element: IrElement, check: () -> Boolean) {
             if (check()) return
+            rumClass.compilationError = true
             report(rumClass.ruiContext, rumClass.originalFunction.file.fileEntry, element.startOffset)
         }
 
@@ -61,6 +62,7 @@ object ErrorsRui {
 //        }
 
         fun report(rumClass: RumClass, element: IrElement, additionalInfo: String = ""): Nothing? {
+            rumClass.compilationError = true
             report(rumClass.ruiContext, rumClass.originalFunction.file.fileEntry, element.startOffset, additionalInfo)
             return null
         }

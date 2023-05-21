@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.file
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.types.Variance
@@ -41,20 +42,25 @@ class RumClass2Air(
             kind = ClassKind.CLASS
             visibility = originalFunction.visibility
             modality = Modality.OPEN
-        }.also {
-            it.parent = originalFunction.parent
         }
 
         typeParameters()
+
+        irClass.parent = originalFunction.file
+        irClass.superTypes = listOf(context.ruiGeneratedFragmentClass.typeWith(irClass.typeParameters.first().defaultType))
+        irClass.metadata = rumClass.originalFunction.metadata
+
         thisReceiver()
-
         val constructor = constructor()
+        val patch = patch()
 
-        val adapter = addIrParameterProperty(RUI_ADAPTER.name, classBoundAdapterType, overridden = context.ruiAdapter)
-        val scope = addIrParameterProperty(RUI_SCOPE.name, classBoundFragmentType.makeNullable(), overridden = context.ruiScope)
-        val externalPatch = addIrParameterProperty(RUI_EXTERNAL_PATCH.name, classBoundExternalPatchType, overridden = context.ruiExternalPatch)
+        val adapter = addPropertyWitConstructorParameter(RUI_ADAPTER.name, classBoundAdapterType, overridden = context.ruiAdapter)
+        val scope = addPropertyWitConstructorParameter(RUI_SCOPE.name, classBoundFragmentType.makeNullable(), overridden = context.ruiScope)
+        val externalPatch = addPropertyWitConstructorParameter(RUI_EXTERNAL_PATCH.name, classBoundExternalPatchType, overridden = context.ruiExternalPatch)
 
         val fragment = addIrProperty(RUI_FRAGMENT.name, context.ruiFragmentType, inIsVar = false, overridden = context.ruiFragment)
+
+        val initializer = initializer()
 
         create()
         mount()
@@ -62,7 +68,6 @@ class RumClass2Air(
         dispose()
 
         airClass = AirClass(
-            originalFunction,
             rumClass,
             irClass,
             adapter,
@@ -70,13 +75,14 @@ class RumClass2Air(
             externalPatch,
             fragment,
             constructor,
-            initializer(),
-            patch(),
-            rumClass.stateVariables.values.map { it.toAir(this@RumClass2Air) },
-            rumClass.dirtyMasks.map { it.toAir(this@RumClass2Air) }
+            initializer,
+            patch
         )
 
-        airClass.builder = rumClass.rootBlock.toAir(this)
+        airClass.builder = rumClass.rendering.toAir(this)
+        airClass.stateVariableList = rumClass.stateVariables.map { it.toAir(this@RumClass2Air) }
+        airClass.stateVariableMap = airClass.stateVariableList.associateBy { it.rumElement.originalName }
+        airClass.dirtyMasks = rumClass.dirtyMasks.map { it.toAir(this@RumClass2Air) }
 
         return airClass
     }

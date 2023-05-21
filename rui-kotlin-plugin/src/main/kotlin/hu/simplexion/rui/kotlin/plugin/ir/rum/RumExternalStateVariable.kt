@@ -8,8 +8,8 @@ import hu.simplexion.rui.kotlin.plugin.ir.RUI_STATE_VARIABLE_LIMIT
 import hu.simplexion.rui.kotlin.plugin.ir.diagnostics.ErrorsRui.RUI_IR_TOO_MANY_STATE_VARIABLES
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
 import hu.simplexion.rui.kotlin.plugin.ir.rum2air.RumExternalStateVariable2Air
-import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiStateVariableBuilder
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
+import org.jetbrains.kotlin.ir.symbols.IrSymbol
 
 class RumExternalStateVariable(
     override val rumClass: RumClass,
@@ -20,7 +20,7 @@ class RumExternalStateVariable(
     override val originalName = irValueParameter.name.identifier
     override val name = irValueParameter.name
 
-    override val builder = RuiStateVariableBuilder.builderFor(rumClass.builder, this)
+    override fun matches(symbol: IrSymbol): Boolean = (symbol == irValueParameter.symbol)
 
     override fun toAir(parent: ClassBoundIrBuilder) = RumExternalStateVariable2Air(parent, this).toAir()
 

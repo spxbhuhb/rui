@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.ir.expressions.impl.IrConstructorCallImpl
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 
+@Deprecated("move to IR-RUM-AIR-IR")
 open class RuiCallBuilder(
     override val ruiClassBuilder: RuiClassBuilder,
     val rumCall: RumCall
@@ -43,8 +44,8 @@ open class RuiCallBuilder(
     protected fun calcCallSiteDependencyMask(): Long {
         var mask = 0L
         for (argument in rumCall.valueArguments) {
-            for (stateVariable in argument.dependencies) {
-                mask = mask or (1L shl stateVariable.index)
+            for (index in argument.dependencies) {
+                mask = mask or (1L shl index)
             }
         }
         return mask
@@ -64,7 +65,7 @@ open class RuiCallBuilder(
 
             constructorCall.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_ADAPTER, ruiClassBuilder.adapterPropertyBuilder.irGetValue())
             constructorCall.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_SCOPE, ruiClassBuilder.scopePropertyBuilder.irGetValue())
-            constructorCall.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_EXTERNAL_PATCH, externalPatchBuilder.irExternalPatchReference())
+            //constructorCall.putValueArgument(RUI_FRAGMENT_ARGUMENT_INDEX_EXTERNAL_PATCH, externalPatchBuilder.irExternalPatchReference())
 
             rumCall.valueArguments.forEachIndexed { index, ruiExpression ->
                 constructorCall.putValueArgument(index + RUI_FRAGMENT_ARGUMENT_COUNT, ruiExpression.irExpression)

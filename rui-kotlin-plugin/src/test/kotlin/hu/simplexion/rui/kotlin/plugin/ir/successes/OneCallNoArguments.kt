@@ -9,7 +9,6 @@ import hu.simplexion.rui.runtime.testing.T0
 
 @Rui
 @RuiTestFunction
-fun Sequence() {
-    T0()
+fun OneCallNoArguments() {
     T0()
 }

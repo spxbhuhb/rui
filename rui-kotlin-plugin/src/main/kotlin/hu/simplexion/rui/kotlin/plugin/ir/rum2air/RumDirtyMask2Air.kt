@@ -59,9 +59,10 @@ class RumDirtyMask2Air(
 
     private fun invalidateBody(function: IrSimpleFunction, property: IrProperty, receiver: IrValueParameter, mask: IrValueParameter): IrBody =
         DeclarationIrBuilder(irContext, function.symbol).irBlockBody {
-            +property.irSetValue(
+            +irSetValue(
+                property,
                 irOr(
-                    property.irGetValue(irGet(receiver)),
+                    irGetValue(property, irGet(receiver)),
                     irGet(mask)
                 ),
                 receiver = irGet(receiver)

@@ -3,6 +3,7 @@
 left to right direction
 
 class RumClass {
+    boundary : RumBoundary
     stateVariables : RumStateVariable []
     dirtyMasks : RumDirtyMask []
     rendering : RumRenderingStatement
@@ -11,7 +12,7 @@ RumElement <|-- RumClass
 RumScope <|-u- RumClass
 
 class RumExpression {
-    dependencies : RumStateVariable []
+    dependencies : RumDependencies
 }
 RumElement <|-- RumExpression
 
@@ -26,7 +27,9 @@ RumStateVariable <|-- RumExternalStateVariable
 class RumInternalStateVariable
 RumStateVariable <|-- RumInternalStateVariable
 
-class RumStateVariable
+class RumStateVariable {
+    index : Int
+}
 RumElement <|-- RumStateVariable
 
 class RumDirtyMask
@@ -78,7 +81,7 @@ class RumBranch {
 RumElement <|-- RumBranch
 
 class RumDeclaration {
-    dependencies : RumStateVariable []
+    dependencies : RumDependencies
 }
 RumElement <|-- RumDeclaration
 

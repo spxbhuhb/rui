@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.name.Name
 
+@Deprecated("move to IR-RUM-AIR-IR")
 class RuiWhenBuilder(
     override val ruiClassBuilder: RuiClassBuilder,
     val ruiWhen: RumWhen
@@ -42,7 +43,7 @@ class RuiWhenBuilder(
             irClass.declarations += irSelect()
 
             ruiWhen.branches.forEach { branch ->
-                branch.result.builder.buildDeclarations()
+                //               branch.result.builder.buildDeclarations()
                 irClass.declarations += irBranch(branch)
             }
         }
@@ -114,7 +115,7 @@ class RuiWhenBuilder(
             function.dispatchReceiverParameter = irClass.thisReceiver
 
             function.body = DeclarationIrBuilder(ruiContext.irContext, function.symbol).irBlockBody {
-                +irReturn(branch.result.builder.irNewInstance())
+//                +irReturn(branch.result.builder.irNewInstance())
             }
 
             branches += function

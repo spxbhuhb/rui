@@ -8,7 +8,6 @@ import hu.simplexion.rui.kotlin.plugin.ir.RUI_CALL
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
 import hu.simplexion.rui.kotlin.plugin.ir.rum2air.RumCall2Air
 import hu.simplexion.rui.kotlin.plugin.ir.toRuiClassFqName
-import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiCallBuilder
 import org.jetbrains.kotlin.ir.expressions.IrCall
 
 open class RumCall(
@@ -22,8 +21,6 @@ open class RumCall(
     val target = irCall.symbol.owner.toRuiClassFqName(rumClass.ruiContext)
 
     val valueArguments = mutableListOf<RumExpression>()
-
-    override val builder = RuiCallBuilder(rumClass.builder, this)
 
     override fun toAir(parent: ClassBoundIrBuilder) = RumCall2Air(parent, this).toAir()
 

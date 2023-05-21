@@ -1,7 +1,8 @@
 These documents describe some of the internal mechanisms and ideas of the plugin.
 
-**NOTE** The PlantUML diagrams show the next stage of the plugin development. Those classes and processes are not
-implemented yet.
+Compilation process overview:
+
+![Process](process.png)
 
 * [Definitions](Definitions.md)
 * [External Patch](ExternalPatch.md)
@@ -9,3 +10,11 @@ implemented yet.
 * [Bridge](Bridge.md)
 * [Placeholder](Placeholder.md)
 * [Coding Conventions](CodingConventions.md)
+
+RUM (Rui Model) overview:
+
+![Rum](rum.png)
+
+AIR (Almost IR) overview:
+
+![Air](air.png)

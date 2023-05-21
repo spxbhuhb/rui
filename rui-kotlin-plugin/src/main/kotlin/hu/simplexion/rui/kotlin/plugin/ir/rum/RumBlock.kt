@@ -7,7 +7,6 @@ import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_BLOCK
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
 import hu.simplexion.rui.kotlin.plugin.ir.rum2air.RumBlock2Air
-import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiBlockBuilder
 import org.jetbrains.kotlin.ir.expressions.IrBlock
 
 class RumBlock(
@@ -19,8 +18,6 @@ class RumBlock(
     override val name = "$RUI_BLOCK$index"
 
     val statements = mutableListOf<RumRenderingStatement>()
-
-    override val builder = RuiBlockBuilder(rumClass.builder, this)
 
     override fun toAir(parent: ClassBoundIrBuilder) = RumBlock2Air(parent, this).toAir()
 

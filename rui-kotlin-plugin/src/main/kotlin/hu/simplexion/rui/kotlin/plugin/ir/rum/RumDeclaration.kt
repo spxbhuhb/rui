@@ -10,7 +10,7 @@ class RumDeclaration(
     val rumClass: RumClass,
     val irDeclaration: IrDeclaration,
     val origin: RumDeclarationOrigin,
-    val dependencies: List<RumStateVariable>
+    val dependencies: RumDependencies
 ) : RumElement {
 
     override fun <R, D> accept(visitor: RumElementVisitor<R, D>, data: D): R =

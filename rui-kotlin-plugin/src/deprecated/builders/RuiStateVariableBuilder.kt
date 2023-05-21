@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.util.SYNTHETIC_OFFSET
 import org.jetbrains.kotlin.name.Name
 
+@Deprecated("move to IR-RUM-AIR-IR")
 class RuiStateVariableBuilder private constructor(
     ruiClassBuilder: RuiClassBuilder,
     val ruiStateVariable: RumStateVariable,
@@ -71,17 +72,17 @@ class RuiStateVariableBuilder private constructor(
 
     }
 
-    fun irIsDirty(receiver: IrExpression): IrExpression {
-        val variableIndex = ruiStateVariable.index
-        val maskIndex = variableIndex / RUI_STATE_VARIABLE_LIMIT
-        val bitIndex = variableIndex % RUI_STATE_VARIABLE_LIMIT
-
-        val mask = ruiClassBuilder.rumClass.dirtyMasks[maskIndex]
-
-        return irNotEqual(
-            irAnd(mask.builder.propertyBuilder.irGetValue(receiver), irConst(1L shl bitIndex)),
-            irConst(0L)
-        )
-    }
+//    fun irIsDirty(receiver: IrExpression): IrExpression {
+//        val variableIndex = ruiStateVariable.index
+//        val maskIndex = variableIndex / RUI_STATE_VARIABLE_LIMIT
+//        val bitIndex = variableIndex % RUI_STATE_VARIABLE_LIMIT
+//
+//        val mask = ruiClassBuilder.rumClass.dirtyMasks[maskIndex]
+//
+//        return irNotEqual(
+//            irAnd(mask.builder.propertyBuilder.irGetValue(receiver), irConst(1L shl bitIndex)),
+//            irConst(0L)
+//        )
+//    }
 
 }

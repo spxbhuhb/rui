@@ -6,6 +6,7 @@ package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumHigherOrderArgument
 import hu.simplexion.rui.kotlin.plugin.ir.rum.RumHigherOrderCall
 
+@Deprecated("move to IR-RUM-AIR-IR")
 class RuiHigherOrderCallBuilder(
     ruiClassBuilder: RuiClassBuilder,
     ruiHigherOrderCall: RumHigherOrderCall
@@ -30,7 +31,7 @@ class RuiHigherOrderCallBuilder(
     fun buildHigherOrderArguments() {
         for (argument in rumCall.valueArguments) {
             if (argument is RumHigherOrderArgument) {
-                argument.builder.buildDeclarations()
+                //   argument.builder.buildDeclarations()
             }
         }
     }

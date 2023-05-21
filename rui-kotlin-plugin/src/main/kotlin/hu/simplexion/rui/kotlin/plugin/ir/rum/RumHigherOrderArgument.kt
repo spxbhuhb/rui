@@ -4,15 +4,13 @@
 package hu.simplexion.rui.kotlin.plugin.ir.rum
 
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
-import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiHigherOrderArgumentBuilder
 import org.jetbrains.kotlin.ir.expressions.IrFunctionExpression
 
 class RumHigherOrderArgument(
     rumClass: RumClass,
     val index: Int,
     val value: IrFunctionExpression,
-    dependencies: List<RumStateVariable>,
-    val implicitClass: RumClass
+    dependencies: RumDependencies,
 ) : RumExpression(rumClass, value, RumExpressionOrigin.HIGHER_ORDER_ARGUMENT, dependencies) {
 
     /**
@@ -20,8 +18,6 @@ class RumHigherOrderArgument(
      * component (in addition to the state variables of the start and intermediate scopes).
      */
     val valueParameters = value.function.valueParameters
-
-    val builder = RuiHigherOrderArgumentBuilder(rumClass.builder, this)
 
     override fun <R, D> accept(visitor: RumElementVisitor<R, D>, data: D): R =
         visitor.visitHigherOrderArgument(this, data)

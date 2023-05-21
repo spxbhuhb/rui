@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.backend.common.ir.addDispatchReceiver
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.Modality
+import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.declarations.*
 import org.jetbrains.kotlin.ir.builders.irBlockBody
@@ -73,6 +74,10 @@ open class ClassBoundIrBuilder(
     val FqName.symbolMap: RuiClassSymbols
         get() = context.ruiSymbolMap.getSymbolMap(this)
 
+    // FIXME check uses of irThisReceiver
+    fun irThisReceiver(): IrExpression =
+        IrGetValueImpl(SYNTHETIC_OFFSET, SYNTHETIC_OFFSET, irClass.thisReceiver!!.symbol)
+
     // --------------------------------------------------------------------------------------------------------
     // Properties
     // --------------------------------------------------------------------------------------------------------
@@ -81,7 +86,7 @@ open class ClassBoundIrBuilder(
      * Adds a constructor parameter and a property with the same name. The property
      * is initialized from the constructor parameter.
      */
-    fun addIrParameterProperty(
+    fun addPropertyWitConstructorParameter(
         inName: Name,
         inType: IrType,
         inIsVar: Boolean = false,
@@ -188,29 +193,27 @@ open class ClassBoundIrBuilder(
         )
     }
 
-    fun IrProperty.irGetValue(receiver: IrExpression): IrCall {
-        return IrCallImpl(
+    fun irGetValue(irProperty: IrProperty, receiver: IrExpression?): IrCall =
+        IrCallImpl(
             SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
-            backingField!!.type,
-            getter!!.symbol,
+            irProperty.backingField!!.type,
+            irProperty.getter!!.symbol,
             0, 0,
             origin = IrStatementOrigin.GET_PROPERTY
         ).apply {
             dispatchReceiver = receiver
         }
-    }
 
-    fun IrProperty.irSetValue(value: IrExpression, receiver: IrExpression): IrCall {
-        return IrCallImpl(
+    fun irSetValue(irProperty: IrProperty, value: IrExpression, receiver: IrExpression?): IrCall =
+        IrCallImpl(
             SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
-            backingField!!.type,
-            setter!!.symbol,
+            irProperty.backingField!!.type,
+            irProperty.setter!!.symbol,
             0, 1
         ).apply {
             dispatchReceiver = receiver
             putValueArgument(0, value)
         }
-    }
 
     // --------------------------------------------------------------------------------------------------------
     // Functions
@@ -255,12 +258,12 @@ open class ClassBoundIrBuilder(
             }
 
             function.addValueParameter {
-                name = Name.identifier("it")
+                name = RUI_EXTERNAL_PATCH_ARGUMENT_NAME_FRAGMENT
                 type = classBoundFragmentType
             }
 
             function.addValueParameter {
-                name = Name.identifier("scopeMask")
+                name = RUI_EXTERNAL_PATCH_ARGUMENT_NAME_SCOPE_MASK
                 type = irBuiltIns.longType
             }
 
@@ -331,6 +334,16 @@ open class ClassBoundIrBuilder(
         }
     }
 
+    fun irImplicitAs(toType: IrType, argument: IrExpression): IrTypeOperatorCallImpl {
+        return IrTypeOperatorCallImpl(
+            SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
+            toType,
+            IrTypeOperator.IMPLICIT_CAST,
+            toType,
+            argument
+        )
+    }
+
     // --------------------------------------------------------------------------------------------------------
     // Logic
     // --------------------------------------------------------------------------------------------------------
@@ -378,6 +391,29 @@ open class ClassBoundIrBuilder(
         return irNot(irEqual(lhs, rhs))
     }
 
+    fun irOrOr(lhs: IrExpression, rhs: IrExpression): IrExpression {
+        return IrWhenImpl(
+            UNDEFINED_OFFSET,
+            UNDEFINED_OFFSET,
+            origin = IrStatementOrigin.OROR,
+            type = irContext.irBuiltIns.booleanType,
+            branches = listOf(
+                IrBranchImpl(
+                    UNDEFINED_OFFSET,
+                    UNDEFINED_OFFSET,
+                    condition = lhs,
+                    result = irConst(true)
+                ),
+                IrElseBranchImpl(
+                    UNDEFINED_OFFSET,
+                    UNDEFINED_OFFSET,
+                    condition = irConst(true),
+                    result = rhs
+                )
+            )
+        )
+    }
+
     // --------------------------------------------------------------------------------------------------------
     // Operators
     // --------------------------------------------------------------------------------------------------------
@@ -409,6 +445,52 @@ open class ClassBoundIrBuilder(
             if (extensionReceiver != null) it.extensionReceiver = extensionReceiver
             args.forEachIndexed { index, arg ->
                 it.putValueArgument(index, arg)
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // Trace
+    // --------------------------------------------------------------------------------------------------------
+
+    fun irTrace(point: String, parameters: List<IrExpression>): IrStatement {
+        return irTrace(irThisReceiver(), point, parameters)
+    }
+
+    fun irTrace(function: IrFunction, point: String, parameters: List<IrExpression>): IrStatement {
+        return irTrace(irGet(function.dispatchReceiverParameter!!), point, parameters)
+    }
+
+    fun irTrace(fragment: IrExpression, point: String, parameters: List<IrExpression>): IrStatement {
+        return irTraceDirect(irGetValue(airClass.adapter, fragment), point, parameters)
+    }
+
+    /**
+     * @param dispatchReceiver The `RuiAdapter` instance to use for the trace.
+     */
+    fun irTraceDirect(dispatchReceiver: IrExpression, point: String, parameters: List<IrExpression>): IrStatement {
+        return IrCallImpl(
+            SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
+            irBuiltIns.unitType,
+            context.ruiAdapterTrace,
+            typeArgumentsCount = 0,
+            RUI_TRACE_ARGUMENT_COUNT,
+        ).also {
+            it.dispatchReceiver = dispatchReceiver
+            it.putValueArgument(RUI_TRACE_ARGUMENT_NAME, irConst(irClass.name.identifier))
+            it.putValueArgument(RUI_TRACE_ARGUMENT_POINT, irConst(point))
+            it.putValueArgument(RUI_TRACE_ARGUMENT_DATA, buildTraceVarArg(parameters))
+        }
+    }
+
+    fun buildTraceVarArg(parameters: List<IrExpression>): IrExpression {
+        return IrVarargImpl(
+            SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
+            irBuiltIns.arrayClass.typeWith(irBuiltIns.anyNType),
+            context.ruiFragmentType,
+        ).also { vararg ->
+            parameters.forEach {
+                vararg.addElement(it)
             }
         }
     }

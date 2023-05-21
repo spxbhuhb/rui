@@ -33,6 +33,7 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.SpecialNames
 import org.jetbrains.kotlin.types.Variance
 
+@Deprecated("move to IR-RUM-AIR-IR")
 class RuiClassBuilder(
     override val rumClass: RumClass
 ) : RuiBuilder {
@@ -277,24 +278,24 @@ class RuiClassBuilder(
 
     fun build() {
 
-        val rootBuilder = rumClass.rootBlock.builder
-
-        rootBuilder.buildDeclarations()
+//        val rootBuilder = rumClass.rootBlock.builder
+//
+//        rootBuilder.buildDeclarations()
 
         // we need to build these functions only when trace is enabled, otherwise we can use
         // a fake override and use the version from RuiGeneratedFragment
 
-        if (ruiContext.withTrace) {
-            buildRuiCall(create, rootBuilder, rootBuilder.symbolMap.create)
-            buildRuiCall(mount, rootBuilder, rootBuilder.symbolMap.mount)
-            buildRuiCall(unmount, rootBuilder, rootBuilder.symbolMap.unmount)
-            buildRuiCall(dispose, rootBuilder, rootBuilder.symbolMap.dispose)
-        }
+//        if (ruiContext.withTrace) {
+//            buildRuiCall(create, rootBuilder, rootBuilder.symbolMap.create)
+//            buildRuiCall(mount, rootBuilder, rootBuilder.symbolMap.mount)
+//            buildRuiCall(unmount, rootBuilder, rootBuilder.symbolMap.unmount)
+//            buildRuiCall(dispose, rootBuilder, rootBuilder.symbolMap.dispose)
+//        }
 
         // paths has to be generated in all cases because it calls external patch
         // which is class dependent
 
-        buildRuiCall(patch, rootBuilder, rootBuilder.symbolMap.patch)
+//        buildRuiCall(patch, rootBuilder, rootBuilder.symbolMap.patch)
 
         // State initialisation must precede fragment initialisation, so the fragments
         // will get initialized values in their constructor.
@@ -304,7 +305,7 @@ class RuiClassBuilder(
         traceInit()
 
         initializer.body.statements += rumClass.initializerStatements
-        initializer.body.statements += fragmentPropertyBuilder.irSetField(rootBuilder.irNewInstance())
+        //       initializer.body.statements += fragmentPropertyBuilder.irSetField(rootBuilder.irNewInstance())
 
         // The initializer has to be the last, so it will be able to access all properties
         irClass.declarations += initializer
@@ -370,7 +371,7 @@ class RuiClassBuilder(
 
                 rumClass.dirtyMasks.forEach {
                     args += irString("${it.name}:")
-                    args += it.builder.propertyBuilder.irGetValue(irGet(function.dispatchReceiverParameter!!))
+                    //                   args += it.builder.propertyBuilder.irGetValue(irGet(function.dispatchReceiverParameter!!))
                 }
 
                 irTrace(function, "patch", args)
@@ -448,7 +449,7 @@ class RuiClassBuilder(
         )
 
         // SOURCE  ruiDirty0 = 0L
-        rumClass.dirtyMasks.forEach { +it.builder.irClear(function.dispatchReceiverParameter!!) }
+        //       rumClass.dirtyMasks.forEach { +it.builder.irClear(function.dispatchReceiverParameter!!) }
     }
 
     /**
@@ -474,7 +475,7 @@ class RuiClassBuilder(
         val invoke = function2Type.functions.first { it.name.identifier == "invoke" }.symbol
 
         val fragment = irTemporary(irGetFragment(function))
-        val rootBuilder = rumClass.rootBlock.builder
+//        val rootBuilder = rumClass.rootBlock.builder
 
         // returns with the extended scope mask
         return irTemporary(
@@ -485,11 +486,11 @@ class RuiClassBuilder(
                 typeArgumentsCount = 0,
                 origin = IrStatementOrigin.INVOKE
             ).apply {
-                dispatchReceiver = irCallOp(
-                    rootBuilder.symbolMap.externalPatchGetter.symbol,
-                    function2Type.defaultType,
-                    irGet(fragment)
-                )
+//                dispatchReceiver = irCallOp(
+//                    rootBuilder.symbolMap.externalPatchGetter.symbol,
+//                    function2Type.defaultType,
+//                    irGet(fragment)
+//                )
                 putValueArgument(0, irGet(fragment))
                 putValueArgument(1, irGet(function.valueParameters[RUI_PATCH_ARGUMENT_INDEX_SCOPE_MASK]))
             }

@@ -7,15 +7,12 @@ import hu.simplexion.rui.kotlin.plugin.ir.RuiPluginContext
 import hu.simplexion.rui.kotlin.plugin.ir.air.AirEntryPoint
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
 import hu.simplexion.rui.kotlin.plugin.ir.rum2air.RumEntryPoint2Air
-import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiEntryPointBuilder
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 
 class RumEntryPoint(
     val rumClass: RumClass,
     val irFunction: IrSimpleFunction,
 ) : RumElement {
-
-    val builder = RuiEntryPointBuilder(rumClass.builder, this)
 
     fun toAir(context: RuiPluginContext): AirEntryPoint = RumEntryPoint2Air(context, this).toAir()
 

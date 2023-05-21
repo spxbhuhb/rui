@@ -10,7 +10,7 @@ class RumValueArgument(
     rumClass: RumClass,
     val index: Int,
     val value: IrExpression,
-    dependencies: List<RumStateVariable>
+    dependencies: RumDependencies
 ) : RumExpression(rumClass, value, RumExpressionOrigin.VALUE_ARGUMENT, dependencies) {
 
     override fun <R, D> accept(visitor: RumElementVisitor<R, D>, data: D): R =

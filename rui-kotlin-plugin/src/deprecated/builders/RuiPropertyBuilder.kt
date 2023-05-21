@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.ir.util.parentAsClass
 import org.jetbrains.kotlin.name.Name
 
+@Deprecated("move to IR-RUM-AIR-IR")
 open class RuiPropertyBuilder(
     final override val ruiClassBuilder: RuiClassBuilder,
     val name: Name,

@@ -26,7 +26,7 @@ class DumpRumTreeVisitor(
     override fun visitClass(rumClass: RumClass) {
         indented {
             with(rumClass) {
-                println { "CLASS name:${irClass.name} boundary:$boundary" }
+                println { "CLASS name:$name boundary:(${boundary.startOffset},${boundary.statementIndex})" }
             }
             super.visitClass(rumClass)
         }
@@ -62,7 +62,7 @@ class DumpRumTreeVisitor(
     override fun visitBlock(statement: RumBlock) {
         indented {
             with(statement) {
-                println { "BLOCK index:$index name:$name" }
+                println { "BLOCK index:$index name:$name startOffset: ${statement.irBlock.startOffset}" }
             }
             super.visitBlock(statement)
         }
@@ -71,7 +71,7 @@ class DumpRumTreeVisitor(
     override fun visitCall(statement: RumCall) {
         indented {
             with(statement) {
-                println { "CALL index:$index name:$name type:<$target>" }
+                println { "CALL index:$index name:$name startOffset: ${statement.irCall.startOffset} type:<$target>" }
             }
             super.visitCall(statement)
         }
@@ -158,7 +158,7 @@ class DumpRumTreeVisitor(
         printer.popIndent()
     }
 
-    fun List<RumStateVariable>.withLabel(label: String) =
-        "$label:[${this.joinToString(", ") { it.index.toString() }}]"
+    fun RumDependencies.withLabel(label: String) =
+        "$label:[${this.joinToString(", ") { it.toString() }}]"
 
 }

@@ -28,7 +28,7 @@ class RuiSymbolMap(
 
     private fun loadClass(fqName: FqName): RuiClassSymbols {
         val irClass =
-            ruiContext.rumClasses[fqName]?.irClass
+            ruiContext.airClasses[fqName]?.irClass
                 ?: ruiContext.irContext.referenceClass(fqName)?.owner
                 ?: throw RuiCompilationException(RUI_IR_INVALID_EXTERNAL_CLASS, additionalInfo = "missing class: ${fqName.asString()}")
 

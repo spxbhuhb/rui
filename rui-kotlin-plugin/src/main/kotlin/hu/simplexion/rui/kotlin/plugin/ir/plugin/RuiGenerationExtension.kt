@@ -9,10 +9,7 @@ import hu.simplexion.rui.runtime.Plugin.PLUGIN_ID
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
-import org.jetbrains.kotlin.ir.util.IrMessageLogger
-import org.jetbrains.kotlin.ir.util.addChild
-import org.jetbrains.kotlin.ir.util.dump
-import org.jetbrains.kotlin.ir.util.file
+import org.jetbrains.kotlin.ir.util.*
 
 internal class RuiGenerationExtension(
     val options: RuiOptions
@@ -55,18 +52,31 @@ internal class RuiGenerationExtension(
 
             // --------  RUM to AIR  --------
 
-            val airClasses = ir2Rum.rumClasses.map { it.toAir(this) }
+            ir2Rum.rumClasses.forEach { airClasses[it.fqName] = it.toAir(this) }
             val airEntryPoints = ir2Rum.rumEntryPoints.map { it.toAir(this) }
 
             // --------  AIR to IR  --------
 
-            airClasses.forEach { it.rumElement.originalFunction.file.addChild(it.toIr(this)) }
-            airEntryPoints.forEach { it.toIr(this) }
+            airClasses.values.forEach {
+                it.toIr(this)
+                if (!it.rumClass.compilationError) {
+                    it.rumElement.originalFunction.file.addChild(it.irClass)
+                }
+            }
+            airEntryPoints.forEach {
+                if (!it.airClass.rumClass.compilationError) {
+                    it.toIr(this)
+                }
+            }
 
             // --------  finishing up  --------
 
             RuiDumpPoint.After.dump(this) {
                 output("DUMP AFTER", moduleFragment.dump())
+            }
+
+            RuiDumpPoint.KotlinLike.dump(this) {
+                output("KOTLIN LIKE", moduleFragment.dumpKotlinLike())
             }
 
         }

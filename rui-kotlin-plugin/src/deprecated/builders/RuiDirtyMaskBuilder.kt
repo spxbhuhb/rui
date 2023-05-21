@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.name.Name
 
+@Deprecated("move to IR-RUM-AIR-IR")
 class RuiDirtyMaskBuilder(
     override val ruiClassBuilder: RuiClassBuilder,
     val rumDirtyMask: RumDirtyMask

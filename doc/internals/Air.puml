@@ -3,7 +3,6 @@
 left to right direction
 
 class AirClass {
-    originalFunction : IrFunction
     rumElement : RumClass
 
     irClass : IrClass
@@ -16,33 +15,57 @@ class AirClass {
     constructor : IrConstructor
     initializer : IrAnonymousInitializer
 
-    builder: AirBuilder
     patch : IrSimpleFunction
 
-    properties : AirProperty []
+    stateVariableMap : AirStateVariable {}
+    stateVariableList : AirStateVariable []
+
+    dirtyMasks : AirDirtyMask []
+
+    builder: AirBuilder
+
     functions : AirFunction []
 }
 AirElement <|-- AirClass
 
 class AirEntryPoint {
+    rumElement : RumClass
     airClass : AirClass
 }
 AirElement <|-- AirEntryPoint
 
-class AirBlock
-AirBuilder <|-- AirBlock
+class AirBuilderBlock {
+    rumElement : RumBlock
+}
+AirBuilder <|-- AirBuilderBlock
 
-class AirCall
-AirBuilder <|-- AirCall
+class AirBuilderCall {
+    rumElement : RumCall
+}
+AirBuilder <|-- AirBuilderCall
 
-class AirBuilder {
-    symbolMap : RuiClassSymbols
+class AirBuilderWhen {
+    rumElement : RumWhen
+}
+AirBuilder <|-- AirBuilderWhen
+
+interface AirBuilder {
     externalPatch : AirExternalPatch
     subBuilders : AirBuilder
 }
 AirFunction <|-- AirBuilder
 
-class AirExternalPatch
+class AirExternalPatchBlock {
+    rumElement : RumBlock
+}
+AirExternalPatch <|-- AirExternalPatchBlock
+
+class AirExternalPatchCall {
+    rumElement : RumCall
+}
+AirExternalPatch <|-- AirExternalPatchCall
+
+interface AirExternalPatch
 AirFunction <|-- AirExternalPatch
 
 class AirSelect {
@@ -52,15 +75,19 @@ AirFunction <|-- AirSelect
 
 interface AirFunction {
     rumElement: RumRenderingStatement
+    symbolMap : RuiClassSymbols
     irFunction : IrSimpleFunction
 }
 AirElement <|-- AirFunction
 
-class AirStateVariable
+class AirStateVariable {
+    rumElement : RumStateVariable
+}
 AirProperty <|-- AirStateVariable
 
 class AirDirtyMask {
-    invalidate : AirFunction
+    rumElement : RumDirtyMask
+    invalidate : IrSimpleFunction
 }
 AirProperty <|-- AirDirtyMask
 

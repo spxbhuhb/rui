@@ -8,8 +8,8 @@ import hu.simplexion.rui.kotlin.plugin.ir.RUI_STATE_VARIABLE_LIMIT
 import hu.simplexion.rui.kotlin.plugin.ir.diagnostics.ErrorsRui
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
 import hu.simplexion.rui.kotlin.plugin.ir.rum2air.RumInternalStateVariable2Air
-import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiStateVariableBuilder
 import org.jetbrains.kotlin.ir.declarations.IrVariable
+import org.jetbrains.kotlin.ir.symbols.IrSymbol
 
 class RumInternalStateVariable(
     override val rumClass: RumClass,
@@ -20,7 +20,7 @@ class RumInternalStateVariable(
     override val originalName = irVariable.name.identifier
     override val name = irVariable.name
 
-    override val builder = RuiStateVariableBuilder.builderFor(rumClass.builder, this)
+    override fun matches(symbol: IrSymbol): Boolean = (symbol == irVariable.symbol)
 
     override fun toAir(parent: ClassBoundIrBuilder) = RumInternalStateVariable2Air(parent, this).toAir()
 

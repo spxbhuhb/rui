@@ -5,6 +5,7 @@ package hu.simplexion.rui.kotlin.plugin.ir.transform.builders
 
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 
+@Deprecated("move to IR-RUM-AIR-IR")
 interface RuiFragmentBuilder : RuiBuilderWithSymbolMap {
 
     /**

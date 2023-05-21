@@ -5,11 +5,10 @@ package hu.simplexion.rui.kotlin.plugin.ir.successes
 
 import hu.simplexion.rui.runtime.Rui
 import hu.simplexion.rui.runtime.testing.RuiTestFunction
-import hu.simplexion.rui.runtime.testing.T0
+import hu.simplexion.rui.runtime.testing.T1
 
 @Rui
 @RuiTestFunction
-fun Sequence() {
-    T0()
-    T0()
+fun OneCallConstArgument() {
+    T1(1)
 }

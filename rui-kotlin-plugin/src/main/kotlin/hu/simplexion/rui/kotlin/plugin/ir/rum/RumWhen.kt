@@ -5,9 +5,8 @@ package hu.simplexion.rui.kotlin.plugin.ir.rum
 
 import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_WHEN
-import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilder
+import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilderBlock
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
-import hu.simplexion.rui.kotlin.plugin.ir.transform.builders.RuiWhenBuilder
 import org.jetbrains.kotlin.ir.declarations.IrVariable
 import org.jetbrains.kotlin.ir.expressions.IrWhen
 
@@ -22,9 +21,7 @@ class RumWhen(
 
     val branches = mutableListOf<RumBranch>()
 
-    override val builder = RuiWhenBuilder(rumClass.builder, this)
-
-    override fun toAir(parent: ClassBoundIrBuilder): AirBuilder {
+    override fun toAir(parent: ClassBoundIrBuilder): AirBuilderBlock {
         TODO("Not yet implemented")
     }
 
