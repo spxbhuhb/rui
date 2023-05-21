@@ -13,8 +13,8 @@ Compilation process overview:
 
 RUM (Rui Model) overview:
 
-<img src="https://github.com/spxbhuhb/rui/assets/16266294/61cadad0-1387-41e5-b0e5-ca2ddbc2cf64" alt="RUM" style="height: 600px"/>
+<img src="https://github.com/spxbhuhb/rui/assets/16266294/e2b5b8dc-b454-42eb-b544-13ffec8d0a26" alt="RUM" style="width: 600px"/>
 
 AIR (Almost IR) overview:
 
-<img src="https://github.com/spxbhuhb/rui/assets/16266294/e2b5b8dc-b454-42eb-b544-13ffec8d0a26" alt="AIR" style="width: 600px"/>
+<img src="https://github.com/spxbhuhb/rui/assets/16266294/61cadad0-1387-41e5-b0e5-ca2ddbc2cf64" alt="AIR" style="height: 600px"/>

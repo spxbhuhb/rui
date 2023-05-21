@@ -22,6 +22,8 @@ open class RumCall(
 
     val valueArguments = mutableListOf<RumExpression>()
 
+    override fun symbolMap(irBuilder: ClassBoundIrBuilder) = irBuilder.context.ruiSymbolMap.getSymbolMap(target)
+
     override fun toAir(parent: ClassBoundIrBuilder) = RumCall2Air(parent, this).toAir()
 
     override fun <R, D> accept(visitor: RumElementVisitor<R, D>, data: D): R =

@@ -96,6 +96,7 @@ val RUI_FQN_ADAPTER_CLASS = FqName.fromSegments(Plugin.RUI_ADAPTER_CLASS)
 val RUI_FQN_BRIDGE_CLASS = FqName.fromSegments(Plugin.RUI_BRIDGE_CLASS)
 val RUI_FQN_BLOCK_CLASS = FqName.fromSegments(Plugin.RUI_BLOCK_CLASS)
 val RUI_FQN_WHEN_CLASS = FqName.fromSegments(Plugin.RUI_WHEN_CLASS)
+val RUI_FQN_FOR_LOOP_CLASS = FqName.fromSegments(Plugin.RUI_FOR_LOOP_CLASS)
 val RUI_FQN_ENTRY_FUNCTION = FqName.fromSegments(Plugin.RUI_ENTRY_FUNCTION)
 val RUI_FQN_IMPLICIT0_CLASS = FqName.fromSegments(Plugin.RUI_IMPLICIT0_CLASS)
 

@@ -22,7 +22,7 @@ class AirClass {
 
     dirtyMasks : AirDirtyMask []
 
-    builder: AirBuilder
+    rendering: AirBuilder
 
     functions : AirFunction []
 }

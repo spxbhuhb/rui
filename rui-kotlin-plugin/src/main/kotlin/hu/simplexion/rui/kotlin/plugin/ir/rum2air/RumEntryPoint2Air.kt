@@ -11,6 +11,9 @@ class RumEntryPoint2Air(
 ) : ClassBoundIrBuilder(context) {
 
     fun toAir(): AirEntryPoint {
-        TODO()
+        return AirEntryPoint(
+            entryPoint,
+            context.airClasses[entryPoint.rumClass.fqName]!!
+        )
     }
 }

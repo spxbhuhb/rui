@@ -30,7 +30,7 @@ class AirClass(
 
     lateinit var dirtyMasks: List<AirDirtyMask>
 
-    lateinit var builder: AirBuilder
+    lateinit var rendering: AirBuilder
 
     val functions = mutableListOf<AirFunction>()
 

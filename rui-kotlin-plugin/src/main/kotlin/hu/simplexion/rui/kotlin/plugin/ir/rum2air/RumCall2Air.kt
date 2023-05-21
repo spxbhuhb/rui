@@ -12,20 +12,16 @@ class RumCall2Air(
 
     fun toAir(): AirBuilderCall = with(rumCall) {
 
-        val symbolMap = context.ruiSymbolMap.getSymbolMap(rumCall.target)
-
         val externalPatch = AirExternalPatchCall(
             rumCall,
-            externalPatch(irCall.startOffset),
-            symbolMap
+            externalPatch(irCall.startOffset)
         )
         airClass.functions += externalPatch
 
         val builder = AirBuilderCall(
             rumCall,
-            symbolMap,
             builder(irCall.startOffset),
-            externalPatch.irFunction.symbol,
+            externalPatch,
             emptyList()
         )
         airClass.functions += builder

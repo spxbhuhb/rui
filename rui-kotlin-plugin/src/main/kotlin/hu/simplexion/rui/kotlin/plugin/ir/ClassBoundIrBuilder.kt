@@ -499,6 +499,9 @@ open class ClassBoundIrBuilder(
     // Misc
     // --------------------------------------------------------------------------------------------------------
 
+    val String.function: IrFunction
+        get() = airClass.irClass.declarations.first { it is IrFunction && it.name.asString() == this } as IrFunction
+
     val String.name: Name
         get() = Name.identifier(this)
 

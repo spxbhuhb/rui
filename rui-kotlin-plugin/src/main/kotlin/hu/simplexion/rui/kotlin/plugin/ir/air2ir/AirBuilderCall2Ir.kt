@@ -57,9 +57,9 @@ class AirBuilderCall2Ir(
         IrFunctionReferenceImpl.fromSymbolOwner(
             SYNTHETIC_OFFSET, SYNTHETIC_OFFSET,
             classBoundExternalPatchType,
-            call.externalPatch,
+            call.externalPatch.irFunction.symbol,
             typeArgumentsCount = 0,
-            reflectionTarget = call.externalPatch
+            reflectionTarget = call.externalPatch.irFunction.symbol
         ).also {
             it.dispatchReceiver = irGet(scope)
         }

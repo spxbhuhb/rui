@@ -22,6 +22,8 @@ class AirClass2Ir(
     airClass: AirClass
 ) : ClassBoundIrBuilder(context, airClass) {
 
+    val renderingSymbolMap = airClass.rendering.rumElement.symbolMap(this)
+
     fun toIr(): IrClass {
         airClass.initializer.toIr()
         airClass.functions.forEach { it.toIr(this) }
@@ -39,7 +41,7 @@ class AirClass2Ir(
             }
 
             val builderCall = irCallOp(
-                airClass.builder.irFunction.symbol,
+                airClass.rendering.irFunction.symbol,
                 type = classBoundFragmentType,
                 dispatchReceiver = irThisReceiver(),
                 argument = irThisReceiver()
@@ -66,7 +68,7 @@ class AirClass2Ir(
                     irConst(0L)
                 ),
                 irCallOp(
-                    airClass.builder.symbolMap.patch.symbol,
+                    renderingSymbolMap.patch.symbol,
                     type = irBuiltIns.unitType,
                     dispatchReceiver = irGetFragment(patch),
                     argument = irGet(extendedScopeMask)
@@ -78,7 +80,6 @@ class AirClass2Ir(
         }
 
     }
-
 
     /**
      * Call the external patch of `ruiFragment`. This is somewhat complex because the function
@@ -114,7 +115,7 @@ class AirClass2Ir(
                 origin = IrStatementOrigin.INVOKE
             ).apply {
                 dispatchReceiver = irCallOp(
-                    airClass.builder.symbolMap.externalPatchGetter.symbol,
+                    renderingSymbolMap.externalPatchGetter.symbol,
                     function2Type.defaultType,
                     irGet(fragment)
                 )

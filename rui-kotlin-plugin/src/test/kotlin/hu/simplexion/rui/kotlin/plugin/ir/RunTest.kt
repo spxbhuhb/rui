@@ -39,7 +39,7 @@ class RunTest {
     val sourceDir = "src/test/kotlin/hu/simplexion/rui/kotlin/plugin/ir/run"
 
     @Test
-    fun block() = compile("Block.kt")
+    fun block() = compile("Block.kt", manual = true)
 
     @Test
     fun eventHandler() = compile("EventHandler.kt")
@@ -48,7 +48,7 @@ class RunTest {
     fun ifWithoutElse() = compile("IfWithoutElse.kt")
 
     @Test
-    fun ifElse() = compile("IfElse.kt", manual = true)
+    fun ifElse() = compile("IfElse.kt")
 
     @Test
     fun blockAsRoot() = compile("BlockAsRoot.kt")

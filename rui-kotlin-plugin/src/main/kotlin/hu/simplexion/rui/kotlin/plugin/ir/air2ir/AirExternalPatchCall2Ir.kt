@@ -39,17 +39,16 @@ class AirExternalPatchCall2Ir(
     val externalPatch: AirExternalPatchCall
 ) : ClassBoundIrBuilder(parent) {
 
-    val symbolMap
-        get() = externalPatch.symbolMap
-
-    val dispatchReceiver
-        get() = externalPatch.irFunction.dispatchReceiverParameter!!
-
     val rumCall
         get() = externalPatch.rumElement
 
     val arguments
         get() = rumCall.valueArguments
+
+    val dispatchReceiver
+        get() = externalPatch.irFunction.dispatchReceiverParameter!!
+
+    val symbolMap = rumCall.symbolMap(this)
 
     val callSiteDependencyMask = calcCallSiteDependencyMask()
 

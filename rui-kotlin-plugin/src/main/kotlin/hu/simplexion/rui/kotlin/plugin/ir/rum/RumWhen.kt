@@ -4,6 +4,7 @@
 package hu.simplexion.rui.kotlin.plugin.ir.rum
 
 import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
+import hu.simplexion.rui.kotlin.plugin.ir.RUI_FQN_WHEN_CLASS
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_WHEN
 import hu.simplexion.rui.kotlin.plugin.ir.air.AirBuilderBlock
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
@@ -20,6 +21,8 @@ class RumWhen(
     override val name = "$RUI_WHEN$index"
 
     val branches = mutableListOf<RumBranch>()
+
+    override fun symbolMap(irBuilder: ClassBoundIrBuilder) = irBuilder.context.ruiSymbolMap.getSymbolMap(RUI_FQN_WHEN_CLASS)
 
     override fun toAir(parent: ClassBoundIrBuilder): AirBuilderBlock {
         TODO("Not yet implemented")

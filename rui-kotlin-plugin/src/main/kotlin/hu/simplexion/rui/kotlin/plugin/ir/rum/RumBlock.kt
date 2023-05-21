@@ -5,6 +5,7 @@ package hu.simplexion.rui.kotlin.plugin.ir.rum
 
 import hu.simplexion.rui.kotlin.plugin.ir.ClassBoundIrBuilder
 import hu.simplexion.rui.kotlin.plugin.ir.RUI_BLOCK
+import hu.simplexion.rui.kotlin.plugin.ir.RUI_FQN_BLOCK_CLASS
 import hu.simplexion.rui.kotlin.plugin.ir.rum.visitors.RumElementVisitor
 import hu.simplexion.rui.kotlin.plugin.ir.rum2air.RumBlock2Air
 import org.jetbrains.kotlin.ir.expressions.IrBlock
@@ -18,6 +19,8 @@ class RumBlock(
     override val name = "$RUI_BLOCK$index"
 
     val statements = mutableListOf<RumRenderingStatement>()
+
+    override fun symbolMap(irBuilder: ClassBoundIrBuilder) = irBuilder.context.ruiSymbolMap.getSymbolMap(RUI_FQN_BLOCK_CLASS)
 
     override fun toAir(parent: ClassBoundIrBuilder) = RumBlock2Air(parent, this).toAir()
 

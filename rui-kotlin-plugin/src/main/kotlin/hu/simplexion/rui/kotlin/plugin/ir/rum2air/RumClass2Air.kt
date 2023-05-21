@@ -79,7 +79,7 @@ class RumClass2Air(
             patch
         )
 
-        airClass.builder = rumClass.rendering.toAir(this)
+        airClass.rendering = rumClass.rendering.toAir(this)
         airClass.stateVariableList = rumClass.stateVariables.map { it.toAir(this@RumClass2Air) }
         airClass.stateVariableMap = airClass.stateVariableList.associateBy { it.rumElement.originalName }
         airClass.dirtyMasks = rumClass.dirtyMasks.map { it.toAir(this@RumClass2Air) }
