@@ -8,5 +8,5 @@
 
 ## Plugin Development
 
-* [Internals](./Internals.md)
+* [Internals](./README.md)
 * [Troubleshooting](./Troubleshooting.md)
