@@ -54,9 +54,9 @@ class RumClass2Air(
         val constructor = constructor()
         val patch = patch()
 
-        val adapter = addPropertyWitConstructorParameter(RUI_ADAPTER.name, classBoundAdapterType, overridden = context.ruiAdapter)
-        val scope = addPropertyWitConstructorParameter(RUI_SCOPE.name, classBoundFragmentType.makeNullable(), overridden = context.ruiScope)
-        val externalPatch = addPropertyWitConstructorParameter(RUI_EXTERNAL_PATCH.name, classBoundExternalPatchType, overridden = context.ruiExternalPatch)
+        val adapter = addPropertyWithConstructorParameter(RUI_ADAPTER.name, classBoundAdapterType, overridden = context.ruiAdapter)
+        val scope = addPropertyWithConstructorParameter(RUI_SCOPE.name, classBoundFragmentType.makeNullable(), overridden = context.ruiScope)
+        val externalPatch = addPropertyWithConstructorParameter(RUI_EXTERNAL_PATCH.name, classBoundExternalPatchType, overridden = context.ruiExternalPatch)
 
         val fragment = addIrProperty(RUI_FRAGMENT.name, context.ruiFragmentType, inIsVar = false, overridden = context.ruiFragment)
 

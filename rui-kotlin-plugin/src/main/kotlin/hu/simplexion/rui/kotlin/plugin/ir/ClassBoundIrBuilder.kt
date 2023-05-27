@@ -86,7 +86,7 @@ open class ClassBoundIrBuilder(
      * Adds a constructor parameter and a property with the same name. The property
      * is initialized from the constructor parameter.
      */
-    fun addPropertyWitConstructorParameter(
+    fun addPropertyWithConstructorParameter(
         inName: Name,
         inType: IrType,
         inIsVar: Boolean = false,

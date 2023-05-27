@@ -11,7 +11,7 @@ class RumExternalStateVariable2Air(
 
     fun toAir(): AirStateVariable = with(stateVariable) {
 
-        val property = addPropertyWitConstructorParameter(
+        val property = addPropertyWithConstructorParameter(
             name,
             irValueParameter.type,
             inIsVar = true,
