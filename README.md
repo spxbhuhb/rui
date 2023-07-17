@@ -12,6 +12,8 @@ Works on JVM and JS at the moment, may work on Native also, depending on the IR 
 
 Rui is in **proof-of-concept** status.
 
+The project is on hold until the end of summer. Sorry about that, I have too many things to code.
+
 ## Getting Started
 
 * [Example project](https://github.com/spxbhuhb/rui-example) (should work out-of-the-box)
